@@ -10,6 +10,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Sony PSE – SEO & AI Dashboard",
   description: "Sony PSE SEO & AI dashboard.",
+  icons: {
+    icon: "/bsq-logo.ico",
+  },
 };
 
 export default function RootLayout({

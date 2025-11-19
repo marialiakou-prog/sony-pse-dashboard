@@ -47,7 +47,7 @@ export default function Home() {
             <div className="flex items-center">
               <Image
                 src="/sony-logo.png"
-                alt="Sony"
+                alt="Sony logo"
                 width={80}
                 height={24}
                 priority
