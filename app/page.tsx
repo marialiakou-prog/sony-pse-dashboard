@@ -9,6 +9,9 @@ type CountryCode = "GB" | "DE" | "FR" | "IT" | "ES";
 export default function Home() {
   const [activeTab, setActiveTab] = useState<MainTab>("executive-summary");
   const [keywordCountry, setKeywordCountry] = useState<CountryCode>("GB");
+  const [landingPageFilter, setLandingPageFilter] = useState<string>("all");
+  const [queryPositionFilter, setQueryPositionFilter] = useState<string>("all");
+  const [brandQueryFilter, setBrandQueryFilter] = useState<string>("brand");
 
   const headerTitle = useMemo(() => {
     switch (activeTab) {
@@ -31,6 +34,69 @@ export default function Home() {
         return "SEO & AI performance at a glance.";
     }
   }, [activeTab]);
+
+  const keywordRankingByMonth = useMemo(() => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth(); // 0 = Jan
+
+    // Start from April of the current year
+    const startMonth = 3; // April
+
+    // Last month relative to "now"
+    const lastMonthDate = new Date(currentYear, currentMonth - 1, 1);
+
+    const months: {
+      month: string;
+      top3: number;
+      fourTo10: number;
+      elevenTo20: number;
+      twentyOneTo50: number;
+      fiftyOneTo100: number;
+    }[] = [];
+
+    for (
+      let d = new Date(currentYear, startMonth, 1);
+      d <= lastMonthDate;
+      d.setMonth(d.getMonth() + 1)
+    ) {
+      const label = d.toLocaleString("en-GB", {
+        month: "short",
+        year: "2-digit",
+      });
+
+      // Simple synthetic pattern so bars change over time
+      const monthIndexFromApril = d.getMonth() - startMonth;
+      const baseTop3 = 18 + monthIndexFromApril * 1.2;
+      const baseFourTo10 = 24 + monthIndexFromApril * 1.5;
+      const baseElevenTo20 = 20 - monthIndexFromApril * 0.8;
+      const baseTwentyOneTo50 = 12 - monthIndexFromApril * 0.6;
+      const baseFiftyOneTo100 = 6 - monthIndexFromApril * 0.4;
+
+      months.push({
+        month: label.replace(" ", "-"),
+        top3: Math.max(5, Math.round(baseTop3)),
+        fourTo10: Math.max(5, Math.round(baseFourTo10)),
+        elevenTo20: Math.max(3, Math.round(baseElevenTo20)),
+        twentyOneTo50: Math.max(2, Math.round(baseTwentyOneTo50)),
+        fiftyOneTo100: Math.max(1, Math.round(baseFiftyOneTo100)),
+      });
+    }
+
+    if (months.length === 0) {
+      return [
+        { month: "Apr-25", top3: 18, fourTo10: 24, elevenTo20: 20, twentyOneTo50: 12, fiftyOneTo100: 6 },
+        { month: "May-25", top3: 20, fourTo10: 26, elevenTo20: 19, twentyOneTo50: 11, fiftyOneTo100: 5 },
+        { month: "Jun-25", top3: 22, fourTo10: 27, elevenTo20: 18, twentyOneTo50: 10, fiftyOneTo100: 5 },
+        { month: "Jul-25", top3: 23, fourTo10: 28, elevenTo20: 17, twentyOneTo50: 9, fiftyOneTo100: 5 },
+        { month: "Aug-25", top3: 24, fourTo10: 29, elevenTo20: 16, twentyOneTo50: 9, fiftyOneTo100: 4 },
+        { month: "Sep-25", top3: 25, fourTo10: 30, elevenTo20: 15, twentyOneTo50: 8, fiftyOneTo100: 4 },
+        { month: "Oct-25", top3: 26, fourTo10: 31, elevenTo20: 14, twentyOneTo50: 8, fiftyOneTo100: 3 },
+      ];
+    }
+
+    return months;
+  }, []);
 
   return (
     <main className="min-h-screen flex bg-transparent text-slate-900">
@@ -224,6 +290,275 @@ export default function Home() {
               activeTab === "seo-health" ? "opacity-100" : "hidden"
             }`}
           >
+            {false && (
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                Keywords Ranking
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Distribution of tracked queries by Google position group.
+              </p>
+              <div className="mt-4 space-y-3 text-[11px] text-slate-700">
+                <div>
+                  <div className="flex items-center justify-between text-[10px] text-slate-500">
+                    <span>All tracked keywords</span>
+                    <span className="text-slate-400">Count by position group</span>
+                  </div>
+                  <div className="mt-2 flex h-3 w-full overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full bg-[#4aa6c5]/80"
+                      style={{ width: "24%" }}
+                    />
+                    <div
+                      className="h-full bg-[#3551e6]/80"
+                      style={{ width: "32%" }}
+                    />
+                    <div
+                      className="h-full bg-emerald-400/80"
+                      style={{ width: "22%" }}
+                    />
+                    <div
+                      className="h-full bg-amber-400/80"
+                      style={{ width: "16%" }}
+                    />
+                    <div
+                      className="h-full bg-slate-300/90"
+                      style={{ width: "6%" }}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#4aa6c5]" />
+                      Top 3
+                    </span>
+                    <span className="font-medium text-slate-900">24 keywords</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
+                      4–10
+                    </span>
+                    <span className="font-medium text-slate-900">32 keywords</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                      11–20
+                    </span>
+                    <span className="font-medium text-slate-900">22 keywords</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                      21–50
+                    </span>
+                    <span className="font-medium text-slate-900">16 keywords</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                      51–100
+                    </span>
+                    <span className="font-medium text-slate-900">6 keywords</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+            )}
+
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                Keywords Ranking
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Distribution of tracked queries by Google position group over recent months.
+              </p>
+              <div className="mt-4 text-[11px] text-slate-700">
+                <div className="h-40 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] text-slate-500">
+                  <div className="flex items-center justify-between">
+                    <span>Ranking buckets (by position group)</span>
+                    <span className="text-slate-400">From Apr to last month</span>
+                  </div>
+                  <div className="mt-3 flex h-24 items-end gap-2">
+                    {(() => {
+                      const baseHeight = 40; // px
+                      const step = 6;       // px per month
+
+                      return keywordRankingByMonth.map((monthData, index) => {
+                        const total =
+                          monthData.top3 +
+                          monthData.fourTo10 +
+                          monthData.elevenTo20 +
+                          monthData.twentyOneTo50 +
+                          monthData.fiftyOneTo100;
+
+                        const barHeight = baseHeight + index * step;
+
+                        const top3Height = Math.max(
+                          3,
+                          (monthData.top3 / total) * barHeight
+                        );
+                        const fourTo10Height = Math.max(
+                          3,
+                          (monthData.fourTo10 / total) * barHeight
+                        );
+                        const elevenTo20Height = Math.max(
+                          3,
+                          (monthData.elevenTo20 / total) * barHeight
+                        );
+                        const twentyOneTo50Height = Math.max(
+                          3,
+                          (monthData.twentyOneTo50 / total) * barHeight
+                        );
+                        const fiftyOneTo100Height = Math.max(
+                          3,
+                          (monthData.fiftyOneTo100 / total) * barHeight
+                        );
+
+                        return (
+                          <div
+                            key={monthData.month}
+                            className="flex flex-1 flex-col justify-end gap-1"
+                          >
+                          <div className="flex h-full w-8 flex-col-reverse overflow-hidden rounded-sm bg-slate-100 mx-auto">
+                              <div
+                                className="w-full bg-slate-300/90"
+                                style={{ height: `${fiftyOneTo100Height}px` }}
+                              />
+                              <div
+                                className="w-full bg-amber-400/80"
+                                style={{ height: `${twentyOneTo50Height}px` }}
+                              />
+                              <div
+                                className="w-full bg-emerald-400/80"
+                                style={{ height: `${elevenTo20Height}px` }}
+                              />
+                              <div
+                                className="w-full bg-[#3551e6]/80"
+                                style={{ height: `${fourTo10Height}px` }}
+                              />
+                              <div
+                                className="w-full bg-[#4aa6c5]/80"
+                                style={{ height: `${top3Height}px` }}
+                              />
+                            </div>
+                            <p className="text-[10px] text-slate-500 text-center">
+                              {monthData.month}
+                            </p>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-3 text-[10px]">
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#4aa6c5]" />
+                    Top 3
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
+                    4–10
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    11–20
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                    21–50
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                    51–100
+                  </span>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Ranking KPIs
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Snapshot of keywords in each position group.
+                </p>
+              </div>
+              <div className="mt-3 space-y-2 text-[11px] text-slate-700">
+                <div className="flex items-center text-[10px] font-medium text-slate-500">
+                  <span className="w-1/3">Bucket</span>
+                  <span className="w-1/3 text-right">Keywords</span>
+                  <span className="w-1/3 text-right">vs. prev. month</span>
+                </div>
+                <div className="flex items-center text-[11px]">
+                  <span className="flex w-1/3 items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#4aa6c5]" />
+                    Top 3
+                  </span>
+                  <span className="w-1/3 text-right text-slate-900">
+                    124
+                  </span>
+                  <span className="w-1/3 text-right text-[10px] text-emerald-500">
+                    +8
+                  </span>
+                </div>
+                <div className="flex items-center text-[11px]">
+                  <span className="flex w-1/3 items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
+                    4–10
+                  </span>
+                  <span className="w-1/3 text-right text-slate-900">
+                    212
+                  </span>
+                  <span className="w-1/3 text-right text-[10px] text-emerald-500">
+                    +14
+                  </span>
+                </div>
+                <div className="flex items-center text-[11px]">
+                  <span className="flex w-1/3 items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    11–20
+                  </span>
+                  <span className="w-1/3 text-right text-slate-900">
+                    178
+                  </span>
+                  <span className="w-1/3 text-right text-[10px] text-amber-500">
+                    -6
+                  </span>
+                </div>
+                <div className="flex items-center text-[11px]">
+                  <span className="flex w-1/3 items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                    21–50
+                  </span>
+                  <span className="w-1/3 text-right text-slate-900">
+                    96
+                  </span>
+                  <span className="w-1/3 text-right text-[10px] text-slate-500">
+                    0
+                  </span>
+                </div>
+                <div className="flex items-center text-[11px]">
+                  <span className="flex w-1/3 items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                    51–100
+                  </span>
+                  <span className="w-1/3 text-right text-slate-900">
+                    38
+                  </span>
+                  <span className="w-1/3 text-right text-[10px] text-emerald-500">
+                    -3
+                  </span>
+                </div>
+                <p className="mt-2 text-[10px] text-slate-400">
+                  Data for last completed month.
+                </p>
+              </div>
+            </article>
+
             <article className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keyword visibility & traffic
@@ -236,7 +571,7 @@ export default function Home() {
                   <span>Ranking buckets (by clicks)</span>
                   <span className="text-slate-400">Last 7 days</span>
                 </div>
-                <div className="mt-3 flex h-24 items-end gap-4">
+                <div className="mt-3 flex h-24 items-end gap-4 relative">
                   <div className="flex flex-1 flex-col justify-end gap-1">
                     <div className="flex h-full items-end gap-[3px]">
                       <div className="h-16 flex-1 rounded-sm bg-[#4aa6c5]/80" />
@@ -279,41 +614,174 @@ export default function Home() {
               </div>
 
               <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
+                <div className="flex items-center justify-between text-[10px] text-slate-500 mb-1">
+                  <span>Top queries (sample)</span>
+                  <div className="flex items-center gap-1">
+                    <span>Position</span>
+                    <select
+                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px]"
+                      value={queryPositionFilter}
+                      onChange={(e) => setQueryPositionFilter(e.target.value)}
+                    >
+                      <option value="all">All</option>
+                      <option value="1-3">1–3</option>
+                      <option value="4-10">4–10</option>
+                      <option value="11-20">11–20</option>
+                      <option value="21+">21+</option>
+                    </select>
+                  </div>
+                </div>
                 <div className="flex items-center justify-between text-[10px] font-medium text-slate-500">
                   <span className="w-2/5">Query</span>
                   <span className="w-1/5 text-right">Avg. pos.</span>
                   <span className="w-1/5 text-right">Impr.</span>
                   <span className="w-1/5 text-right">CTR</span>
                 </div>
-                <div className="mt-2 space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="w-2/5 truncate">sony broadcast cameras</span>
-                    <span className="w-1/5 text-right text-[#4aa6c5] font-medium">2.3</span>
-                    <span className="w-1/5 text-right">92k</span>
-                    <span className="w-1/5 text-right text-[#4aa6c5]">8.4%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="w-2/5 truncate">sony ptz camera</span>
-                    <span className="w-1/5 text-right text-[#4aa6c5] font-medium">4.7</span>
-                    <span className="w-1/5 text-right">41k</span>
-                    <span className="w-1/5 text-right text-[#4aa6c5]">6.1%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="w-2/5 truncate">sony live production switcher</span>
-                    <span className="w-1/5 text-right text-[#3551e6] font-medium">9.8</span>
-                    <span className="w-1/5 text-right">18k</span>
-                    <span className="w-1/5 text-right text-[#3551e6]">3.2%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="w-2/5 truncate">sony bravia broadcast monitor</span>
-                    <span className="w-1/5 text-right text-[#3551e6] font-medium">14.2</span>
-                    <span className="w-1/5 text-right">11k</span>
-                    <span className="w-1/5 text-right text-[#3551e6]">1.9%</span>
-                  </div>
+                <div className="mt-2 max-h-24 overflow-y-auto pr-1 space-y-1.5">
+                  {[
+                    {
+                      id: "q-broadcast",
+                      query: "sony broadcast cameras",
+                      avgPos: "2.3",
+                      avgTone: "text-[#4aa6c5]",
+                      impr: "92k",
+                      ctr: "8.4%",
+                      bucket: "1-3",
+                    },
+                    {
+                      id: "q-ptz",
+                      query: "sony ptz camera",
+                      avgPos: "4.7",
+                      avgTone: "text-[#4aa6c5]",
+                      impr: "41k",
+                      ctr: "6.1%",
+                      bucket: "4-10",
+                    },
+                    {
+                      id: "q-switcher",
+                      query: "sony live production switcher",
+                      avgPos: "9.8",
+                      avgTone: "text-[#3551e6]",
+                      impr: "18k",
+                      ctr: "3.2%",
+                      bucket: "4-10",
+                    },
+                    {
+                      id: "q-bravia",
+                      query: "sony bravia broadcast monitor",
+                      avgPos: "14.2",
+                      avgTone: "text-[#3551e6]",
+                      impr: "11k",
+                      ctr: "1.9%",
+                      bucket: "11-20",
+                    },
+                    {
+                      id: "q-remote-production",
+                      query: "sony remote production",
+                      avgPos: "5.6",
+                      avgTone: "text-[#4aa6c5]",
+                      impr: "23k",
+                      ctr: "4.2%",
+                      bucket: "4-10",
+                    },
+                    {
+                      id: "q-4k-switcher",
+                      query: "sony 4k switcher",
+                      avgPos: "8.9",
+                      avgTone: "text-[#3551e6]",
+                      impr: "15k",
+                      ctr: "3.0%",
+                      bucket: "4-10",
+                    },
+                    {
+                      id: "q-studio-camera",
+                      query: "sony studio camera system",
+                      avgPos: "3.8",
+                      avgTone: "text-[#4aa6c5]",
+                      impr: "37k",
+                      ctr: "5.6%",
+                      bucket: "1-3",
+                    },
+                    {
+                      id: "q-bravia-professional",
+                      query: "sony bravia professional display",
+                      avgPos: "12.4",
+                      avgTone: "text-[#3551e6]",
+                      impr: "19k",
+                      ctr: "2.3%",
+                      bucket: "11-20",
+                    },
+                    {
+                      id: "q-broadcast-monitor",
+                      query: "sony hdr broadcast monitor",
+                      avgPos: "22.1",
+                      avgTone: "text-[#3551e6]",
+                      impr: "9.8k",
+                      ctr: "1.4%",
+                      bucket: "21+",
+                    },
+                    {
+                      id: "q-system-camera",
+                      query: "sony system camera",
+                      avgPos: "2.9",
+                      avgTone: "text-[#4aa6c5]",
+                      impr: "34k",
+                      ctr: "7.2%",
+                      bucket: "1-3",
+                    },
+                    {
+                      id: "q-broadcast-lens",
+                      query: "sony broadcast lens",
+                      avgPos: "6.3",
+                      avgTone: "text-[#4aa6c5]",
+                      impr: "27k",
+                      ctr: "3.9%",
+                      bucket: "4-10",
+                    },
+                    {
+                      id: "q-replay-server",
+                      query: "sony replay server",
+                      avgPos: "13.6",
+                      avgTone: "text-[#3551e6]",
+                      impr: "12k",
+                      ctr: "2.0%",
+                      bucket: "11-20",
+                    },
+                    {
+                      id: "q-production-accessories",
+                      query: "sony production accessories",
+                      avgPos: "24.4",
+                      avgTone: "text-[#3551e6]",
+                      impr: "8.1k",
+                      ctr: "1.1%",
+                      bucket: "21+",
+                    },
+                  ]
+                    .filter((row) =>
+                      queryPositionFilter === "all"
+                        ? true
+                        : row.bucket === queryPositionFilter
+                    )
+                    .map((row) => (
+                      <div
+                        key={row.id}
+                        className="flex items-center justify-between"
+                      >
+                        <span className="w-2/5 truncate">{row.query}</span>
+                        <span
+                          className={`w-1/5 text-right font-medium ${row.avgTone}`}
+                        >
+                          {row.avgPos}
+                        </span>
+                        <span className="w-1/5 text-right">{row.impr}</span>
+                        <span className="w-1/5 text-right">{row.ctr}</span>
+                      </div>
+                    ))}
                 </div>
               </div>
             </article>
 
+            {false && (
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
                 Priority keyword actions
@@ -365,47 +833,218 @@ export default function Home() {
                 </div>
               </div>
             </article>
+            )}
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                Keyword movement & intent mix
-              </p>
-              <div className="mt-3 grid gap-4 md:grid-cols-2 text-xs text-slate-700">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Movement vs. last 7 days</span>
-                    <span className="text-slate-400">Top 100 tracked queries</span>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#4aa6c5]" />
-                        Improved
-                      </span>
-                      <span className="text-emerald-500 font-medium">38</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
-                        Stable
-                      </span>
-                      <span className="text-slate-700 font-medium">44</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#f4716a]" />
-                        Declined
-                      </span>
-                      <span className="text-red-400 font-medium">18</span>
-                    </div>
-                  </div>
-                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
-                    <div className="h-full w-[38%] bg-[#4aa6c5]/80" />
-                    <div className="h-full w-[44%] bg-[#3551e6]/80" />
-                    <div className="h-full w-[18%] bg-[#f4716a]/80" />
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                    Landing pages by keyword
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Explore how key queries map to core landing pages.
+                  </p>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                    <span>Filter</span>
+                    <select
+                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px]"
+                      value={landingPageFilter}
+                      onChange={(e) => setLandingPageFilter(e.target.value)}
+                    >
+                      <option value="all">All queries</option>
+                      <option value="sony-broadcast-cameras">sony broadcast cameras</option>
+                      <option value="sony-ptz-camera">sony ptz camera</option>
+                      <option value="sony-live-production-switcher">sony live production switcher</option>
+                      <option value="sony-bravia-broadcast-monitor">sony bravia broadcast monitor</option>
+                    </select>
                   </div>
                 </div>
+              </div>
 
+              <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
+                <div className="flex items-center justify-between text-[10px] font-medium text-slate-500">
+                  <span className="w-2/5">Landing page</span>
+                  <span className="w-1/5 text-right">Keywords</span>
+                  <span className="w-1/5 text-right">Impressions</span>
+                  <span className="w-1/5 text-right">Clicks</span>
+                  <span className="w-1/5 text-right">Avg. pos.</span>
+                </div>
+                <div className="mt-2 space-y-1.5">
+                  {[
+                    {
+                      id: "lp-broadcast",
+                      path: "/broadcast-cameras/4k-system",
+                      keywords: "18",
+                      impressions: "92k",
+                      clicks: "4.2k",
+                      avgPos: "3.1",
+                      avgPosTone: "text-emerald-500",
+                      query: "sony-broadcast-cameras",
+                    },
+                    {
+                      id: "lp-ptz",
+                      path: "/ptz-remote-cameras/overview",
+                      keywords: "14",
+                      impressions: "61k",
+                      clicks: "2.8k",
+                      avgPos: "4.4",
+                      avgPosTone: "text-emerald-500",
+                      query: "sony-ptz-camera",
+                    },
+                    {
+                      id: "lp-switchers",
+                      path: "/live-production-switchers",
+                      keywords: "11",
+                      impressions: "48k",
+                      clicks: "1.9k",
+                      avgPos: "6.2",
+                      avgPosTone: "text-amber-500",
+                      query: "sony-live-production-switcher",
+                    },
+                    {
+                      id: "lp-bravia",
+                      path: "/bravia-broadcast-monitors",
+                      keywords: "9",
+                      impressions: "33k",
+                      clicks: "1.1k",
+                      avgPos: "7.5",
+                      avgPosTone: "text-amber-500",
+                      query: "sony-bravia-broadcast-monitor",
+                    },
+                    {
+                      id: "lp-ip-live",
+                      path: "/ip-live-production/solutions",
+                      keywords: "7",
+                      impressions: "21k",
+                      clicks: "680",
+                      avgPos: "9.8",
+                      avgPosTone: "text-red-400",
+                      query: "sony-live-production-switcher",
+                    },
+                    {
+                      id: "lp-system-entry",
+                      path: "/system-cameras/entry-level",
+                      keywords: "6",
+                      impressions: "14k",
+                      clicks: "520",
+                      avgPos: "8.7",
+                      avgPosTone: "text-amber-500",
+                      query: "sony-broadcast-cameras",
+                    },
+                    {
+                      id: "lp-remote-cloud",
+                      path: "/remote-production/cloud",
+                      keywords: "5",
+                      impressions: "11k",
+                      clicks: "390",
+                      avgPos: "10.4",
+                      avgPosTone: "text-red-400",
+                      query: "sony-ptz-camera",
+                    },
+                    {
+                      id: "lp-virtual-stage",
+                      path: "/virtual-production/stage",
+                      keywords: "4",
+                      impressions: "9.2k",
+                      clicks: "310",
+                      avgPos: "9.1",
+                      avgPosTone: "text-amber-500",
+                      query: "sony-live-production-switcher",
+                    },
+                    {
+                      id: "lp-sports",
+                      path: "/solutions/sports-production",
+                      keywords: "4",
+                      impressions: "8.5k",
+                      clicks: "280",
+                      avgPos: "9.6",
+                      avgPosTone: "text-amber-500",
+                      query: "sony-broadcast-cameras",
+                    },
+                    {
+                      id: "lp-house-of-worship",
+                      path: "/solutions/house-of-worship",
+                      keywords: "3",
+                      impressions: "7.9k",
+                      clicks: "250",
+                      avgPos: "9.9",
+                      avgPosTone: "text-amber-500",
+                      query: "sony-bravia-broadcast-monitor",
+                    },
+                    {
+                      id: "lp-education",
+                      path: "/education/lecture-capture",
+                      keywords: "3",
+                      impressions: "7.1k",
+                      clicks: "230",
+                      avgPos: "10.2",
+                      avgPosTone: "text-amber-500",
+                      query: "sony-ptz-camera",
+                    },
+                    {
+                      id: "lp-cinema-line",
+                      path: "/cinema-line/cameras",
+                      keywords: "3",
+                      impressions: "6.4k",
+                      clicks: "210",
+                      avgPos: "10.8",
+                      avgPosTone: "text-amber-500",
+                      query: "sony-broadcast-cameras",
+                    },
+                  ]
+                    .filter((row) =>
+                      landingPageFilter === "all"
+                        ? true
+                        : row.query === landingPageFilter
+                    )
+                    .map((row) => (
+                      <div
+                        key={row.id}
+                        className="flex items-center justify-between"
+                      >
+                        <span className="w-2/5 truncate">{row.path}</span>
+                        <span className="w-1/5 text-right text-slate-700">
+                          {row.keywords}
+                        </span>
+                        <span className="w-1/5 text-right text-slate-700">
+                          {row.impressions}
+                        </span>
+                        <span className="w-1/5 text-right text-slate-700">
+                          {row.clicks}
+                        </span>
+                        <span
+                          className={`w-1/5 text-right font-medium ${row.avgPosTone}`}
+                        >
+                          {row.avgPos}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Keyword movement & intent mix
+                </p>
+                <div className="flex items-center gap-1 text-[11px] text-slate-500">
+                  <span>Filter</span>
+                  <select
+                    className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px]"
+                    value={brandQueryFilter}
+                    onChange={(e) => setBrandQueryFilter(e.target.value)}
+                  >
+                    <option value="brand">Brand queries</option>
+                    <option value="non-brand">Non‑brand queries</option>
+                    <option value="all">All queries</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mt-3 grid gap-8 md:grid-cols-2 text-xs text-slate-700">
+                {/* Intent & brand split (moved to left) */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-[11px] text-slate-500">
                     <span>Intent & brand split</span>
@@ -431,93 +1070,95 @@ export default function Home() {
                     Aim to grow non-brand discovery without losing share on core brand queries.
                   </p>
                 </div>
-              </div>
-            </article>
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                Keyword landing pages
-              </p>
-              <p className="mt-1 text-xs text-slate-500">
-                Pages that capture the most keyword demand and where to optimise next.
-              </p>
-              <div className="mt-3 grid gap-4 md:grid-cols-2 text-xs text-slate-700">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span className="w-2/5">Landing page</span>
-                    <span className="w-1/5 text-right">Clicks</span>
-                    <span className="w-1/5 text-right">Conv.</span>
-                    <span className="w-1/5 text-right">Cluster</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="w-2/5 truncate">/broadcast-cameras</span>
-                    <span className="w-1/5 text-right">32k</span>
-                    <span className="w-1/5 text-right text-emerald-500">3.4%</span>
-                    <span className="w-1/5 text-right text-slate-500">System cameras</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="w-2/5 truncate">/ptz-cameras</span>
-                    <span className="w-1/5 text-right">18k</span>
-                    <span className="w-1/5 text-right text-emerald-500">2.1%</span>
-                    <span className="w-1/5 text-right text-slate-500">PTZ & remote</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="w-2/5 truncate">/live-production-switchers</span>
-                    <span className="w-1/5 text-right">9.4k</span>
-                    <span className="w-1/5 text-right text-amber-400">1.6%</span>
-                    <span className="w-1/5 text-right text-slate-500">Switchers & servers</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="w-2/5 truncate">/bravia-broadcast-monitors</span>
-                    <span className="w-1/5 text-right">6.8k</span>
-                    <span className="w-1/5 text-right text-sky-500">1.2%</span>
-                    <span className="w-1/5 text-right text-slate-500">Broadcast monitors</span>
-                  </div>
-                </div>
-
+                {/* Brand / non-brand queries table */}
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span>SERP features coverage</span>
-                    <span className="text-slate-400">Share of tracked queries</span>
+                  <div className="flex items-center justify-between text-[10px] font-medium text-slate-500">
+                    <span className="w-2/5">Query</span>
+                    <span className="w-1/5 text-right">Impr.</span>
+                    <span className="w-1/5 text-right">CTR</span>
                   </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#4aa6c5]" />
-                        Sitelinks
-                      </span>
-                      <span className="text-slate-700 font-medium">62%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-slate-100">
-                      <div className="h-full w-[62%] rounded-full bg-[#4aa6c5]/80" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
-                        FAQ / rich results
-                      </span>
-                      <span className="text-slate-700 font-medium">28%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-slate-100">
-                      <div className="h-full w-[28%] rounded-full bg-[#3551e6]/80" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
-                        Video / Discover
-                      </span>
-                      <span className="text-slate-700 font-medium">14%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-slate-100">
-                      <div className="h-full w-[14%] rounded-full bg-[#3551e6]/80" />
-                    </div>
+                  <div className="mt-1 max-h-24 space-y-1.5 overflow-y-auto pr-1">
+                    {[
+                      {
+                        id: "brand-1",
+                        query: "sony broadcast cameras",
+                        type: "brand",
+                        impr: "92k",
+                        ctr: "8.4%",
+                      },
+                      {
+                        id: "brand-2",
+                        query: "sony bravia broadcast monitor",
+                        type: "brand",
+                        impr: "33k",
+                        ctr: "5.1%",
+                      },
+                      {
+                        id: "brand-3",
+                        query: "sony ptz camera",
+                        type: "brand",
+                        impr: "41k",
+                        ctr: "6.1%",
+                      },
+                      {
+                        id: "brand-4",
+                        query: "sony live production switcher",
+                        type: "brand",
+                        impr: "18k",
+                        ctr: "3.2%",
+                      },
+                      {
+                        id: "non-1",
+                        query: "4k broadcast camera",
+                        type: "non-brand",
+                        impr: "27k",
+                        ctr: "3.9%",
+                      },
+                      {
+                        id: "non-2",
+                        query: "ptz camera for church",
+                        type: "non-brand",
+                        impr: "19k",
+                        ctr: "2.8%",
+                      },
+                      {
+                        id: "non-3",
+                        query: "live production switcher",
+                        type: "non-brand",
+                        impr: "22k",
+                        ctr: "2.3%",
+                      },
+                      {
+                        id: "non-4",
+                        query: "hdr broadcast monitor",
+                        type: "non-brand",
+                        impr: "14k",
+                        ctr: "1.6%",
+                      },
+                    ]
+                      .filter((row) =>
+                        brandQueryFilter === "all"
+                          ? true
+                          : row.type === brandQueryFilter
+                      )
+                      .map((row) => (
+                        <div
+                          key={row.id}
+                          className="flex items-center justify-between"
+                        >
+                          <span className="w-2/5 truncate">{row.query}</span>
+                          <span className="w-1/5 text-right">
+                            {row.impr}
+                          </span>
+                          <span className="w-1/5 text-right">{row.ctr}</span>
+                        </div>
+                      ))}
                   </div>
-                  <p className="mt-2 text-[11px] text-slate-500">
-                    Prioritise schema and on-page enhancements for pages that could win additional features.
-                  </p>
                 </div>
               </div>
             </article>
+
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
               <div className="flex items-center justify-between">
