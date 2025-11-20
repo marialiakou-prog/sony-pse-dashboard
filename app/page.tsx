@@ -12,6 +12,7 @@ export default function Home() {
   const [landingPageFilter, setLandingPageFilter] = useState<string>("all");
   const [queryPositionFilter, setQueryPositionFilter] = useState<string>("all");
   const [brandQueryFilter, setBrandQueryFilter] = useState<string>("brand");
+  const [aiTrafficMetric, setAiTrafficMetric] = useState<"visits" | "cdcs">("visits");
 
   const headerTitle = useMemo(() => {
     switch (activeTab) {
@@ -166,16 +167,6 @@ export default function Home() {
           </button>
 
         </nav>
-
-        <div className="mt-auto rounded-2xl border border-slate-800 bg-slate-900 px-3.5 py-3.5 text-xs text-slate-200 shadow-sm">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-            Today&apos;s focus
-          </p>
-          <p className="mt-2 text-[13px]">
-            Monitor SEO health for flagship product pages and review AI
-            content opportunities.
-          </p>
-        </div>
       </aside>
 
       {/* Main content */}
@@ -202,7 +193,7 @@ export default function Home() {
             <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
               <span>Period</span>
               <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100">
-                Last 7 days
+                Last month
               </span>
             </div>
           </div>
@@ -212,17 +203,17 @@ export default function Home() {
         <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6 bg-[#f8fafc]">
           {/* Executive summary KPI cards */}
           <section
-            className={`grid gap-4 md:grid-cols-2 xl:grid-cols-4 ${
+            className={`grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 ${
               activeTab === "executive-summary" ? "opacity-100" : "hidden"
             }`}
           >
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Avg. Google rank
               </p>
               <div className="mt-3 flex items-baseline gap-2">
                 <p className="text-2xl font-semibold text-slate-900">7.4</p>
-                <span className="text-xs text-[#4aa6c5]">+1.2 vs. last week</span>
+                <span className="text-xs text-[#4aa6c5]">+1.2 vs. last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
                 Top 3 positions for 29 high-intent keywords.
@@ -230,7 +221,7 @@ export default function Home() {
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Organic sessions
               </p>
               <div className="mt-3 flex items-baseline gap-2">
@@ -238,12 +229,12 @@ export default function Home() {
                 <span className="text-xs text-[#4aa6c5]">+6.8%</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Sessions from non-branded organic search across all markets.
+                Sessions from organic search across all markets.
               </p>
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 CTR on key SERPs
               </p>
               <div className="mt-3 flex items-baseline gap-2">
@@ -256,15 +247,15 @@ export default function Home() {
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                Open technical issues
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                Organic CDC
               </p>
               <div className="mt-3 flex items-baseline gap-2">
-                <p className="text-2xl font-semibold text-slate-900">14</p>
-                <span className="text-xs text-amber-300">4 critical</span>
+                <p className="text-2xl font-semibold text-slate-900">150</p>
+                <span className="text-xs text-[#4aa6c5]">+12% vs. last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Canonical conflicts, slow templates, and indexing gaps.
+                CDC Conversions from Organic Sessions
               </p>
             </article>
           </section>
@@ -277,7 +268,7 @@ export default function Home() {
           >
             {false && (
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keywords Ranking
               </p>
               <p className="mt-1 text-xs text-slate-500">
@@ -285,7 +276,7 @@ export default function Home() {
               </p>
               <div className="mt-4 space-y-3 text-[11px] text-slate-700">
                 <div>
-                  <div className="flex items-center justify-between text-[10px] text-slate-500">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500">
                     <span>All tracked keywords</span>
                     <span className="text-slate-400">Count by position group</span>
                   </div>
@@ -354,19 +345,29 @@ export default function Home() {
             )}
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keywords Ranking
               </p>
               <p className="mt-1 text-xs text-slate-500">
                 Distribution of tracked queries by Google position group over recent months.
               </p>
               <div className="mt-4 text-[11px] text-slate-700">
-                <div className="h-40 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] text-slate-500">
+                <div className="h-40 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[11px] text-slate-500">
                   <div className="flex items-center justify-between">
                     <span>Ranking buckets (by position group)</span>
                     <span className="text-slate-400">From Apr to last month</span>
                   </div>
                   <div className="mt-3 flex h-24 items-end gap-2">
+                    {/* Y-axis labels */}
+                    <div className="flex flex-col justify-between text-[9px] text-slate-400 mr-1 pb-5">
+                      <span>100</span>
+                      <span>75</span>
+                      <span>50</span>
+                      <span>25</span>
+                      <span>0</span>
+                    </div>
+
+                    <div className="flex-1 flex h-24 items-end gap-2">
                     {(() => {
                       const baseHeight = 40; // px
                       const step = 6;       // px per month
@@ -429,16 +430,17 @@ export default function Home() {
                                 style={{ height: `${top3Height}px` }}
                               />
                             </div>
-                            <p className="text-[10px] text-slate-500 text-center">
+                            <p className="text-[11px] text-slate-500 text-center">
                               {monthData.month}
                             </p>
                           </div>
                         );
                       });
                     })()}
+                    </div>
                   </div>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-3 text-[10px]">
+                <div className="mt-3 flex flex-wrap gap-3 text-[11px]">
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#4aa6c5]" />
                     Top 3
@@ -465,7 +467,7 @@ export default function Home() {
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                   Ranking KPIs
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
@@ -473,7 +475,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="mt-3 space-y-2 text-[11px] text-slate-700">
-                <div className="flex items-center text-[10px] font-medium text-slate-500">
+                <div className="flex items-center text-[11px] font-medium text-slate-500">
                   <span className="w-1/3">Bucket</span>
                   <span className="w-1/3 text-right">Keywords</span>
                   <span className="w-1/3 text-right">vs. prev. month</span>
@@ -486,7 +488,7 @@ export default function Home() {
                   <span className="w-1/3 text-right text-slate-900">
                     124
                   </span>
-                  <span className="w-1/3 text-right text-[10px] text-emerald-500">
+                  <span className="w-1/3 text-right text-[11px] text-emerald-500">
                     +8
                   </span>
                 </div>
@@ -498,7 +500,7 @@ export default function Home() {
                   <span className="w-1/3 text-right text-slate-900">
                     212
                   </span>
-                  <span className="w-1/3 text-right text-[10px] text-emerald-500">
+                  <span className="w-1/3 text-right text-[11px] text-emerald-500">
                     +14
                   </span>
                 </div>
@@ -510,7 +512,7 @@ export default function Home() {
                   <span className="w-1/3 text-right text-slate-900">
                     178
                   </span>
-                  <span className="w-1/3 text-right text-[10px] text-amber-500">
+                  <span className="w-1/3 text-right text-[11px] text-amber-500">
                     -6
                   </span>
                 </div>
@@ -522,7 +524,7 @@ export default function Home() {
                   <span className="w-1/3 text-right text-slate-900">
                     96
                   </span>
-                  <span className="w-1/3 text-right text-[10px] text-slate-500">
+                  <span className="w-1/3 text-right text-[11px] text-slate-500">
                     0
                   </span>
                 </div>
@@ -534,59 +536,70 @@ export default function Home() {
                   <span className="w-1/3 text-right text-slate-900">
                     38
                   </span>
-                  <span className="w-1/3 text-right text-[10px] text-emerald-500">
+                  <span className="w-1/3 text-right text-[11px] text-emerald-500">
                     -3
                   </span>
                 </div>
-                <p className="mt-2 text-[10px] text-slate-400">
+                <p className="mt-2 text-[11px] text-slate-400">
                   Data for last completed month.
                 </p>
               </div>
             </article>
 
             <article className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keyword visibility & traffic
               </p>
               <p className="mt-1 text-xs text-slate-500">
                 Snapshot of how priority queries rank, attract impressions, and convert into clicks.
               </p>
-              <div className="mt-4 h-40 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[10px] text-slate-500">
+              <div className="mt-4 h-40 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[11px] text-slate-500">
                 <div className="flex items-center justify-between">
                   <span>Ranking buckets (by clicks)</span>
-                  <span className="text-slate-400">Last 7 days</span>
+                  <span className="text-slate-400">Last month</span>
                 </div>
-                <div className="mt-3 flex h-24 items-end gap-4 relative">
-                  <div className="flex flex-1 flex-col justify-end gap-1">
+                <div className="mt-3 flex h-24 items-end gap-2">
+                  {/* Y-axis labels */}
+                  <div className="flex flex-col justify-between text-[9px] text-slate-400 mr-1 pb-5">
+                    <span>20k</span>
+                    <span>15k</span>
+                    <span>10k</span>
+                    <span>5k</span>
+                    <span>0</span>
+                  </div>
+
+                  <div className="flex-1 flex h-24 items-end gap-4 relative">
+                    <div className="flex flex-1 flex-col justify-end gap-1">
                     <div className="flex h-full items-end gap-[3px]">
                       <div className="h-16 flex-1 rounded-sm bg-[#4aa6c5]/80" />
                       <div className="h-8 flex-1 rounded-sm bg-[#3551e6]/70" />
                     </div>
-                    <p className="text-[10px] text-slate-500">Pos. 1–3</p>
+                    <p className="text-[11px] text-slate-500">Pos. 1–3</p>
                   </div>
                   <div className="flex flex-1 flex-col justify-end gap-1">
                     <div className="flex h-full items-end gap-[3px]">
                       <div className="h-11 flex-1 rounded-sm bg-[#4aa6c5]/80" />
                       <div className="h-9 flex-1 rounded-sm bg-[#3551e6]/70" />
                     </div>
-                    <p className="text-[10px] text-slate-500">Pos. 4–10</p>
+                    <p className="text-[11px] text-slate-500">Pos. 4–10</p>
                   </div>
                   <div className="flex flex-1 flex-col justify-end gap-1">
                     <div className="flex h-full items-end gap-[3px]">
                       <div className="h-7 flex-1 rounded-sm bg-[#4aa6c5]/80" />
                       <div className="h-10 flex-1 rounded-sm bg-[#3551e6]/70" />
                     </div>
-                    <p className="text-[10px] text-slate-500">Pos. 11–20</p>
+                    <p className="text-[11px] text-slate-500">Pos. 11–20</p>
                   </div>
                   <div className="flex flex-1 flex-col justify-end gap-1">
                     <div className="flex h-full items-end gap-[3px]">
                       <div className="h-4 flex-1 rounded-sm bg-[#4aa6c5]/80" />
                       <div className="h-9 flex-1 rounded-sm bg-[#3551e6]/70" />
                     </div>
-                    <p className="text-[10px] text-slate-500">Pos. 21+</p>
+                    <p className="text-[11px] text-slate-500">Pos. 21+</p>
+                  </div>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center gap-4 text-[10px]">
+                <div className="mt-2 mb-2 flex items-center gap-4 text-[11px]">
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-4 rounded-full bg-[#4aa6c5]" />
                     Clicks
@@ -599,12 +612,12 @@ export default function Home() {
               </div>
 
               <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
-                <div className="flex items-center justify-between text-[10px] text-slate-500 mb-1">
+                <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1">
                   <span>Top queries (sample)</span>
                   <div className="flex items-center gap-1">
                     <span>Position</span>
                     <select
-                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px]"
+                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px]"
                       value={queryPositionFilter}
                       onChange={(e) => setQueryPositionFilter(e.target.value)}
                     >
@@ -616,7 +629,7 @@ export default function Home() {
                     </select>
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-[10px] font-medium text-slate-500">
+                <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                   <span className="w-2/5">Query</span>
                   <span className="w-1/5 text-right">Avg. pos.</span>
                   <span className="w-1/5 text-right">Impr.</span>
@@ -768,7 +781,7 @@ export default function Home() {
 
             {false && (
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Priority keyword actions
               </p>
               <div className="mt-3 space-y-3 text-xs text-slate-700">
@@ -779,7 +792,7 @@ export default function Home() {
                       Monitor cannibalisation and keep core product queries above competitors.
                     </p>
                   </div>
-                  <span className="rounded-full bg-[#4aa6c5]/10 px-2 py-0.5 text-[10px] font-semibold text-[#4aa6c5]">
+                  <span className="rounded-full bg-[#4aa6c5]/10 px-2 py-0.5 text-[11px] font-semibold text-[#4aa6c5]">
                     Stable
                   </span>
                 </div>
@@ -790,7 +803,7 @@ export default function Home() {
                       Optimise on-page copy and internal links for high-intent queries in striking distance.
                     </p>
                   </div>
-                  <span className="rounded-full bg-[#3551e6]/10 px-2 py-0.5 text-[10px] font-semibold text-[#3551e6]">
+                  <span className="rounded-full bg-[#3551e6]/10 px-2 py-0.5 text-[11px] font-semibold text-[#3551e6]">
                     Opportunity
                   </span>
                 </div>
@@ -801,7 +814,7 @@ export default function Home() {
                       Test title/meta variants where CTR is below benchmark for the position.
                     </p>
                   </div>
-                  <span className="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-semibold text-sky-600">
+                  <span className="rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-semibold text-sky-600">
                     Experiment
                   </span>
                 </div>
@@ -812,7 +825,7 @@ export default function Home() {
                       Create landing pages for emerging search themes (e.g. bundles, accessories, TV + console).
                     </p>
                   </div>
-                  <span className="rounded-full bg-[#3551e6]/10 px-2 py-0.5 text-[10px] font-semibold text-[#3551e6]">
+                  <span className="rounded-full bg-[#3551e6]/10 px-2 py-0.5 text-[11px] font-semibold text-[#3551e6]">
                     Backlog
                   </span>
                 </div>
@@ -823,7 +836,7 @@ export default function Home() {
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                     Landing pages by keyword
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
@@ -831,10 +844,10 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                  <div className="flex items-center gap-1 text-[11px] text-slate-500">
                     <span>Filter</span>
                     <select
-                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px]"
+                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px]"
                       value={landingPageFilter}
                       onChange={(e) => setLandingPageFilter(e.target.value)}
                     >
@@ -849,7 +862,7 @@ export default function Home() {
               </div>
 
               <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
-                <div className="flex items-center justify-between text-[10px] font-medium text-slate-500">
+                <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                   <span className="w-2/5">Landing page</span>
                   <span className="w-1/5 text-right">Keywords</span>
                   <span className="w-1/5 text-right">Impressions</span>
@@ -1012,13 +1025,13 @@ export default function Home() {
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                  Keyword movement & intent mix
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Brand Split & Keywords Performance
                 </p>
                 <div className="flex items-center gap-1 text-[11px] text-slate-500">
                   <span>Filter</span>
                   <select
-                    className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px]"
+                    className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px]"
                     value={brandQueryFilter}
                     onChange={(e) => setBrandQueryFilter(e.target.value)}
                   >
@@ -1029,10 +1042,10 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-3 grid gap-8 md:grid-cols-2 text-xs text-slate-700">
-                {/* Intent & brand split (moved to left) */}
+                {/* Brand split (moved to left) */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Intent & brand split</span>
+                    <span>Brand Split</span>
                     <span className="text-slate-400">By impressions</span>
                   </div>
                   <div className="space-y-1.5">
@@ -1058,7 +1071,7 @@ export default function Home() {
 
                 {/* Brand / non-brand queries table */}
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[10px] font-medium text-slate-500">
+                  <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                     <span className="w-2/5">Query</span>
                     <span className="w-1/5 text-right">Impr.</span>
                     <span className="w-1/5 text-right">CTR</span>
@@ -1148,11 +1161,11 @@ export default function Home() {
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                     Top keywords by country
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
-                    Last 7 days • Top queries for key European markets.
+                    Last month • Top queries for key European markets.
                   </p>
                 </div>
                 <div className="flex gap-1 rounded-full bg-slate-100 p-0.5 text-[11px] text-slate-600">
@@ -1174,7 +1187,7 @@ export default function Home() {
               </div>
 
               <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
-                <div className="flex items-center justify-between text-[10px] font-medium text-slate-500">
+                <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                   <span className="w-2/5">Query</span>
                   <span className="w-1/5 text-right">Clicks</span>
                   <span className="w-1/5 text-right">Impr.</span>
@@ -1483,7 +1496,7 @@ export default function Home() {
                     </>
                   )}
                 </div>
-                <p className="mt-2 text-[10px] text-slate-500">
+                <p className="mt-2 text-[11px] text-slate-500">
                   PoP = change vs. previous 7 days (clicks).
                 </p>
               </div>
@@ -1499,99 +1512,95 @@ export default function Home() {
             <article className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                     SEO performance
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
-                    Traffic, impressions, and ranking trends (illustrative).
+                    Organic visits, impressions, and clicks trends.
                   </p>
                 </div>
                 <div className="hidden gap-2 text-[11px] text-slate-400 md:flex">
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-4 rounded-full bg-[#4aa6c5]" />
-                    Traffic
+                    Organic visits
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-4 rounded-full bg-[#3551e6]" />
-                    Impressions
+                    Clicks
                   </span>
                   <span className="inline-flex items-center gap-1">
-                    <span className="h-1.5 w-4 rounded-full bg-[#4aa6c5]" />
-                    Ranking
+                    <span className="h-1.5 w-4 rounded-full bg-[#1e40af]" />
+                    Impressions
                   </span>
                 </div>
               </div>
-              <div className="mt-4 h-40 rounded-lg border border-slate-200 bg-white px-3 py-3">
-                <div className="flex h-full items-end gap-2">
-                  {/* Day 1 */}
-                  <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-24 items-end gap-[3px]">
-                      <div className="h-10 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-7 flex-1 rounded-sm bg-[#3551e6]/80" />
-                      <div className="h-5 flex-1 rounded-sm bg-[#4aa6c5]/40" />
-                    </div>
-                    <p className="text-[10px] text-slate-500">Mon</p>
+              <div className="mt-4 h-48 rounded-lg border border-slate-200 bg-white px-3 py-3">
+                <div className="relative h-full flex gap-2">
+                  {/* Y-axis labels */}
+                  <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
+                    <span>17k</span>
+                    <span>12k</span>
+                    <span>8k</span>
+                    <span>4k</span>
+                    <span>0</span>
                   </div>
-                  {/* Day 2 */}
-                  <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-24 items-end gap-[3px]">
-                      <div className="h-12 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-8 flex-1 rounded-sm bg-[#3551e6]/80" />
-                      <div className="h-6 flex-1 rounded-sm bg-[#4aa6c5]/40" />
+
+                  <div className="relative flex-1 h-full">
+                    <div className="flex h-full items-end gap-2">
+                      {(() => {
+                        const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+                        const organic = [10, 12, 11, 13, 14, 13, 15];
+                        const impressions = [7, 8, 9, 10, 11, 10, 12];
+                        const clicks = [5, 6, 7, 8, 9, 8, 10];
+
+                        const maxVal = Math.max(...organic) + 2;
+                        const toHeight = (val: number) => `${(val / maxVal) * 100}%`;
+
+                        return days.map((day, idx) => (
+                          <div key={day} className="flex flex-1 flex-col justify-end gap-1">
+                            <div className="flex h-28 items-end gap-[3px]">
+                              <div
+                                className="flex-1 rounded-sm bg-[#4aa6c5]/80"
+                                style={{ height: toHeight(organic[idx]) }}
+                              />
+                              <div
+                                className="flex-1 rounded-sm bg-[#3551e6]/70"
+                                style={{ height: toHeight(clicks[idx]) }}
+                              />
+                            </div>
+                            <p className="text-[11px] text-slate-500">{day}</p>
+                          </div>
+                        ));
+                      })()}
                     </div>
-                    <p className="text-[10px] text-slate-500">Tue</p>
-                  </div>
-                  {/* Day 3 */}
-                  <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-24 items-end gap-[3px]">
-                      <div className="h-11 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-9 flex-1 rounded-sm bg-[#3551e6]/80" />
-                      <div className="h-7 flex-1 rounded-sm bg-[#4aa6c5]/40" />
-                    </div>
-                    <p className="text-[10px] text-slate-500">Wed</p>
-                  </div>
-                  {/* Day 4 */}
-                  <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-24 items-end gap-[3px]">
-                      <div className="h-13 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-10 flex-1 rounded-sm bg-[#3551e6]/80" />
-                      <div className="h-8 flex-1 rounded-sm bg-[#4aa6c5]/40" />
-                    </div>
-                    <p className="text-[10px] text-slate-500">Thu</p>
-                  </div>
-                  {/* Day 5 */}
-                  <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-24 items-end gap-[3px]">
-                      <div className="h-14 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-11 flex-1 rounded-sm bg-[#3551e6]/80" />
-                      <div className="h-9 flex-1 rounded-sm bg-[#4aa6c5]/40" />
-                    </div>
-                    <p className="text-[10px] text-slate-500">Fri</p>
-                  </div>
-                  {/* Day 6 */}
-                  <div className="hidden flex-1 flex-col justify-end gap-1 sm:flex">
-                    <div className="flex h-24 items-end gap-[3px]">
-                      <div className="h-13 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-10 flex-1 rounded-sm bg-[#3551e6]/80" />
-                      <div className="h-8 flex-1 rounded-sm bg-[#4aa6c5]/40" />
-                    </div>
-                    <p className="text-[10px] text-slate-500">Sat</p>
-                  </div>
-                  {/* Day 7 */}
-                  <div className="hidden flex-1 flex-col justify-end gap-1 md:flex">
-                    <div className="flex h-24 items-end gap-[3px]">
-                      <div className="h-15 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-12 flex-1 rounded-sm bg-[#3551e6]/80" />
-                      <div className="h-10 flex-1 rounded-sm bg-[#4aa6c5]/40" />
-                    </div>
-                    <p className="text-[10px] text-slate-500">Sun</p>
+                  {(() => {
+                    const impressions = [7, 8, 9, 10, 11, 10, 12];
+                    const maxVal = Math.max(15, ...impressions) + 2;
+                    const xStep = 100 / 6;
+                    const points = impressions.map((val, idx) => {
+                      const x = idx * xStep;
+                      const y = 100 - (val / maxVal) * 100;
+                      return `${idx === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+                    });
+                    const path = points.join(" ");
+
+                    return (
+                      <svg
+                        className="pointer-events-none absolute inset-0 h-full w-full"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                      >
+                        <path d={path} fill="none" stroke="#1e40af" strokeWidth="1.4" />
+                      </svg>
+                    );
+                  })()}
                   </div>
                 </div>
               </div>
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keyword movements
               </p>
               <p className="mt-1 text-xs text-slate-500">
@@ -1599,137 +1608,662 @@ export default function Home() {
               </p>
               <div className="mt-4 space-y-3 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-700">Brand cameras</span>
-                  <span className="text-emerald-400">+6 positions</span>
+                  <span className="text-slate-700">broadcast camera systems</span>
+                  <span className="text-emerald-400">+8 positions</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-700">Mirrorless comparison</span>
+                  <span className="text-slate-700">4k studio cameras</span>
+                  <span className="text-emerald-400">+5 positions</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-700">ptz camera remote control</span>
                   <span className="text-emerald-400">+3 positions</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-700">4K vlog camera</span>
+                  <span className="text-slate-700">live production switcher</span>
+                  <span className="text-emerald-400">+2 positions</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-700">professional video monitor</span>
+                  <span className="text-amber-300">-1 position</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-700">ip live production workflow</span>
                   <span className="text-amber-300">-2 positions</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-700">Best camera for travel</span>
-                  <span className="text-red-400">-4 positions</span>
+                  <span className="text-slate-700">xdcam recorder</span>
+                  <span className="text-amber-300">-3 positions</span>
                 </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-700">hdr reference monitor</span>
+                  <span className="text-red-400">-5 positions</span>
+                </div>
+              </div>
+            </article>
+
+            {/* Keyword Performance Table */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                    Keyword Performance Overview
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Top performing keywords with position, volume, and landing pages.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full text-left text-[11px]">
+                  <thead className="border-b border-slate-200 bg-slate-50">
+                    <tr>
+                      <th className="px-3 py-2 font-medium text-slate-500">Keyword</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">Position</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">Volume</th>
+                      <th className="px-3 py-2 font-medium text-slate-500">URL</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700">sony broadcast cameras</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">2</span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">12,400</td>
+                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/broadcast-cameras</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700">4k professional camera</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
+                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                          </svg>
+                          PAA
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">8,900</td>
+                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/4k-cameras</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700">sony ptz camera</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">4</span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">6,700</td>
+                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/ptz-cameras</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700">live production switcher</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-red-700 font-medium text-[10px]">
+                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                          </svg>
+                          Video
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">5,200</td>
+                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/live-production</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700">sony system camera</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">3</span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">4,800</td>
+                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/system-cameras</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700">professional video monitor</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">7</span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">3,900</td>
+                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/monitors</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700">sony xdcam camcorder</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">8</span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">3,100</td>
+                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/xdcam</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700">remote production solutions</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
+                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                          </svg>
+                          PAA
+                        </span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">2,500</td>
+                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/solutions/remote-production</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            {/* SERP Features Table */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                    SERP Feature Wins
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Pages winning premium search features.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full text-left text-[11px]">
+                  <thead className="border-b border-slate-200 bg-slate-50">
+                    <tr>
+                      <th className="px-3 py-2 font-medium text-slate-500">Page</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">Volume</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">Feature</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/4k-cameras</td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">8.9k</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                          </svg>
+                          PAA
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/live-production</td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">5.2k</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                          </svg>
+                          Video
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700 truncate">/solutions/remote-production</td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">2.5k</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                          </svg>
+                          PAA
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/broadcast-cameras</td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">12.4k</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                          </svg>
+                          Featured
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/ptz-cameras</td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">6.7k</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-1.5 py-0.5 text-purple-700 text-[9px] font-medium">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                          </svg>
+                          Images
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/monitors</td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">3.9k</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                          </svg>
+                          Video
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/system-cameras</td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">4.8k</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                          </svg>
+                          PAA
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-slate-50">
+                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/xdcam</td>
+                      <td className="px-3 py-2.5 text-center text-slate-600">3.1k</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                          </svg>
+                          Featured
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </article>
           </section>
 
-          {/* AI insights & alerts (also shown on AI insights tab) */}
+          {/* AI Performance graphs (AI tab only) */}
           <section
             className={`grid gap-4 lg:grid-cols-3 ${
-              activeTab === "ai-insights" || activeTab === "executive-summary"
-                ? "opacity-100"
-                : "hidden"
+              activeTab === "ai-insights" ? "opacity-100" : "hidden"
             }`}
           >
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                AI content ideas
+            {/* 3.1 Total AI Traffic Trend */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                Total AI traffic trend
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Static examples of prompts for the future AI engine.
+                Monthly AI-driven sessions and comparison vs. organic sessions.
               </p>
-              <ul className="mt-4 space-y-3 text-xs text-slate-700">
-                <li className="rounded-lg bg-slate-50 px-3 py-2">
-                  Generate an FAQ block for the &ldquo;vlog camera&rdquo; hub
-                  page using language from top 5 SERPs.
-                </li>
-                <li className="rounded-lg bg-slate-50 px-3 py-2">
-                  Suggest 3 meta description variants for ZV-E10 with a max of
-                  150 characters.
-                </li>
-                <li className="rounded-lg bg-slate-50 px-3 py-2">
-                  Rewrite the hero copy for &ldquo;mirrorless for creators&rdquo;
-                  to emphasise low-light performance.
-                </li>
-              </ul>
+              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Last 12 months</span>
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-3 rounded-full bg-[#4aa6c5]" />
+                    AI sessions
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-3 rounded-full bg-slate-300" />
+                    Organic sessions
+                  </span>
+                  <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-600 shadow-sm">
+                    <button
+                      type="button"
+                      onClick={() => setAiTrafficMetric("visits")}
+                      className={`px-2 py-0.5 rounded-full transition-colors ${
+                        aiTrafficMetric === "visits" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
+                      }`}
+                    >
+                      Visits
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAiTrafficMetric("cdcs")}
+                      className={`px-2 py-0.5 rounded-full transition-colors ${
+                        aiTrafficMetric === "cdcs" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
+                      }`}
+                    >
+                      CDCs
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 h-40 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px]">
+                <div className="flex h-full gap-2">
+                  {/* Y-axis labels */}
+                  <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
+                    <span>50k</span>
+                    <span>37k</span>
+                    <span>25k</span>
+                    <span>12k</span>
+                    <span>0</span>
+                  </div>
+
+                  <div className="flex-1 flex h-full items-end gap-2">
+                    {["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"].map((m, idx) => (
+                      <div
+                        key={m}
+                        className="flex flex-1 flex-col justify-end gap-1"
+                      >
+                        <div className="relative flex h-24 items-end gap-[3px]">
+                          {(() => {
+                            const baseHeights =
+                              aiTrafficMetric === "visits"
+                                ? { ai: 30, organic: 55 }
+                                : { ai: 18, organic: 38 };
+
+                            const aiHeight = Math.min(88, baseHeights.ai + idx * 4);
+                            const organicHeight = Math.min(92, baseHeights.organic + idx * 2);
+
+                            return (
+                              <>
+                                {/* AI sessions (left) */}
+                                <div
+                                  className="flex-1 rounded-sm bg-[#4aa6c5]/80"
+                                  style={{ height: `${aiHeight}%` }}
+                                />
+                                {/* organic baseline (right) */}
+                                <div
+                                  className="flex-1 rounded-sm bg-slate-200"
+                                  style={{ height: `${organicHeight}%` }}
+                                />
+                              </>
+                            );
+                          })()}
+                        </div>
+                        <p className="text-[11px] text-slate-500 text-center">
+                          {m}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </article>
 
+            {/* 3.2 Top LLM Traffic Sources */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                Alerts
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                Top LLM traffic sources
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Static list of issues to mimic future monitoring.
+                Share of visits from AI assistants and copilots.
               </p>
-              <ul className="mt-4 space-y-2 text-xs">
-                <li className="flex items-start justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2">
-                  <div>
-                    <p className="font-medium text-amber-300">Indexing drop</p>
-                    <p className="mt-1 text-[11px] text-slate-500">
-                      17 product URLs lost impressions in the last 48 hours.
-                    </p>
-                  </div>
-                  <span className="mt-1 text-[10px] uppercase tracking-[0.16em] text-amber-300">
-                    High
-                  </span>
-                </li>
-                <li className="flex items-start justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2">
-                  <div>
-                    <p className="font-medium text-sky-300">Slow template</p>
-                    <p className="mt-1 text-[11px] text-slate-500">
-                      Category pages above 2.5s LCP in US mobile.
-                    </p>
-                  </div>
-                  <span className="mt-1 text-[10px] uppercase tracking-[0.16em] text-sky-300">
-                    Medium
-                  </span>
-                </li>
-                <li className="flex items-start justify-between gap-2 rounded-lg bg-slate-50 px-3 py-2">
-                  <div>
-                    <p className="font-medium text-slate-200">Schema coverage</p>
-                    <p className="mt-1 text-[11px] text-slate-500">
-                      Review rich results missing on 5 key markets.
-                    </p>
-                  </div>
-                  <span className="mt-1 text-[10px] uppercase tracking-[0.16em] text-slate-300">
-                    Info
-                  </span>
-                </li>
-              </ul>
+              <div className="mt-3 h-64 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
+                <div className="space-y-1.5">
+                  {[
+                    { label: "ChatGPT", value: "32%", width: "w-[32%]", color: "bg-[#4aa6c5]" },
+                    { label: "Perplexity", value: "21%", width: "w-[21%]", color: "bg-[#3551e6]" },
+                    { label: "Bing Copilot", value: "18%", width: "w-[18%]", color: "bg-emerald-400" },
+                    { label: "Google Gemini", value: "14%", width: "w-[14%]", color: "bg-amber-400" },
+                    { label: "Claude", value: "9%", width: "w-[9%]", color: "bg-sky-400" },
+                    { label: "Mistral & others", value: "6%", width: "w-[6%]", color: "bg-slate-400" },
+                  ].map((s) => (
+                    <div key={s.label} className="space-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <span>{s.label}</span>
+                        <span className="text-slate-500">{s.value}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-slate-100">
+                        <div className={`h-full rounded-full ${s.color} ${s.width}`} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </article>
 
+            {/* 3.3 AI product interest from LLM traffic */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
-                Experiments backlog
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                Products viewed from AI tools
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Static roadmap-style list for upcoming tests.
+                LLM-driven visits to key broadcast and production products.
               </p>
-              <ul className="mt-4 space-y-3 text-xs text-slate-700">
-                <li className="flex items-center justify-between">
-                  <span>Product card copy test &mdash; cameras</span>
-                  <span className="rounded-full bg-[#4aa6c5]/10 px-2 py-0.5 text-[10px] font-medium text-[#4aa6c5]">
-                    In design
-                  </span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Title tag pattern for category pages</span>
-                  <span className="rounded-full bg-sky-500/10 px-2 py-0.5 text-[10px] font-medium text-sky-600">
-                    Ready
-                  </span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Internal linking slot in blog</span>
-                  <span className="rounded-full bg-slate-500/10 px-2 py-0.5 text-[10px] font-medium text-slate-600">
-                    Backlog
-                  </span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>AI-generated alt text pilot</span>
-                  <span className="rounded-full bg-[#3551e6]/10 px-2 py-0.5 text-[10px] font-medium text-[#3551e6]">
-                    Idea
-                  </span>
-                </li>
-              </ul>
+              <div className="mt-3 space-y-1.5 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
+                <div className="flex items-center justify-between text-[11px] text-slate-500">
+                  <span>(last 30d)</span>
+                  <span>MoM %</span>
+                </div>
+                {[
+                  { label: "HDC-5500 system camera", visits: "9.6k", mom: "+5.8%", deltaClass: "text-emerald-500" },
+                  { label: "BRC-X400 PTZ", visits: "7.4k", mom: "+3.1%", deltaClass: "text-emerald-500" },
+                  { label: "XVS-G1 switcher", visits: "6.2k", mom: "+2.4%", deltaClass: "text-emerald-500" },
+                  { label: "PVM-X2400 monitor", visits: "4.9k", mom: "-1.8%", deltaClass: "text-amber-500" },
+                  { label: "DWX wireless audio", visits: "3.7k", mom: "+4.2%", deltaClass: "text-emerald-500" },
+                  { label: "Ci Media Cloud workflow", visits: "2.9k", mom: "+0.9%", deltaClass: "text-emerald-500" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
+                    <div>
+                      <p className="font-medium text-slate-900">{item.label}</p>
+                      <p className="text-slate-500">LLM visits: {item.visits}</p>
+                    </div>
+                    <span className={`text-sm font-semibold ${item.deltaClass}`}>{item.mom}</span>
+                  </div>
+                ))}
+              </div>
             </article>
+
+            {/* 3.4 Website areas viewed from AI tools */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                Website areas viewed from AI tools
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Content areas most visited by AI-referred users.
+              </p>
+              <div className="mt-3 space-y-1.5 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
+                <div className="flex items-center justify-between text-[11px] text-slate-500">
+                  <span>(last 30d)</span>
+                  <span>MoM %</span>
+                </div>
+                {[
+                  { label: "Professional Cameras", visits: "12.4k", mom: "+6.2%", deltaClass: "text-emerald-500" },
+                  { label: "Production switchers", visits: "8.1k", mom: "+3.4%", deltaClass: "text-emerald-500" },
+                  { label: "Professional displays", visits: "6.7k", mom: "+1.1%", deltaClass: "text-emerald-500" },
+                  { label: "Cloud production tools", visits: "5.3k", mom: "-2.4%", deltaClass: "text-amber-500" },
+                  { label: "Solutions pages", visits: "4.1k", mom: "+4.6%", deltaClass: "text-emerald-500" },
+                  { label: "Support content", visits: "2.5k", mom: "-1.2%", deltaClass: "text-amber-500" },
+                ].map((area) => (
+                  <div key={area.label} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
+                    <div>
+                      <p className="font-medium text-slate-900">{area.label}</p>
+                    <p className="text-slate-500">LLM visits: {area.visits}</p>
+                    </div>
+                    <span className={`text-sm font-semibold ${area.deltaClass}`}>{area.mom}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            {/* 3.5 AI visits by market */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                AI visits by market
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Share of LLM-driven visits by country (last 30d).
+              </p>
+              <div className="mt-3 space-y-2 text-[11px] text-slate-700">
+                <div className="mt-3 flex items-center gap-4 text-[11px] text-slate-700">
+                  <div className="relative h-32 w-32 rounded-full border border-slate-100 bg-slate-50">
+                    <div
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        backgroundImage:
+                          "conic-gradient(#1f78ff 0 32%, #4aa6c5 32% 56%, #5dcf98 56% 74%, #f2c94c 74% 88%, #94a3b8 88% 100%)",
+                      }}
+                    />
+                    <div className="absolute inset-4 rounded-full bg-white" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <p className="text-[11px] text-slate-500">Top market</p>
+                        <p className="text-sm font-semibold text-slate-900">GB - 32%</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    {[
+                      { code: "GB", label: "United Kingdom", value: "32%", color: "bg-[#1f78ff]" },
+                      { code: "DE", label: "Germany", value: "24%", color: "bg-[#4aa6c5]" },
+                      { code: "FR", label: "France", value: "18%", color: "bg-[#5dcf98]" },
+                      { code: "IT", label: "Italy", value: "14%", color: "bg-[#f2c94c]" },
+                      { code: "ES", label: "Spain", value: "12%", color: "bg-[#94a3b8]" },
+                    ].map((c) => (
+                      <div key={c.code} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className={`h-2.5 w-2.5 rounded-full ${c.color}`} />
+                          <span className="font-medium text-slate-900">{c.label}</span>
+                        </div>
+                        <span className="text-sm font-semibold text-slate-700">{c.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            {/* 3.6 Brand visibility & representation in LLMs */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                Brand visibility in LLMs
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                How often Sony appears vs. competitors in AI answers.
+              </p>
+              <div className="mt-3 space-y-2 text-[11px] text-slate-700">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1 rounded-lg bg-slate-50 px-3 py-2">
+                    <p className="text-[11px] text-slate-500">Sony mention rate</p>
+                    <p className="text-lg font-semibold text-slate-900">64%</p>
+                    <p className="text-[11px] text-emerald-500">+6 pts vs last month</p>
+                  </div>
+                  <div className="space-y-1 rounded-lg bg-slate-50 px-3 py-2">
+                    <p className="text-[11px] text-slate-500">Answers without Sony</p>
+                    <p className="text-lg font-semibold text-slate-900">21%</p>
+                    <p className="text-[11px] text-amber-500">Watch high‑intent queries</p>
+                  </div>
+                </div>
+                {[
+                  { label: "Sony", value: "64%" },
+                  { label: "Competitor A", value: "58%" },
+                  { label: "Competitor B", value: "41%" },
+                ].map((entry) => (
+                  <div key={entry.label} className="flex items-center justify-between">
+                    <span>{entry.label}</span>
+                    <span className="text-slate-700 font-medium">{entry.value}</span>
+                  </div>
+                ))}
+                <div className="mt-2 space-y-1">
+                  <p className="text-[11px] text-slate-500">Example AI answers mentioning Sony:</p>
+                  <p className="rounded-md bg-slate-50 px-3 py-1.5 text-[11px] text-slate-700">
+                    “For broadcast‑grade cameras, Sony’s system camera line is frequently recommended
+                    alongside <span className="italic">[Competitor A]</span> for live production workflows.”
+                  </p>
+                  <p className="rounded-md bg-slate-50 px-3 py-1.5 text-[11px] text-slate-700">
+                    “Sony’s PTZ range is often suggested for remote production and houses of worship
+                    thanks to integration with IP‑based control solutions.”
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            {/* 3.7 Brand citations trend */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                Brand citations trend
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                Monthly Sony citation counts across sampled LLM answers.
+              </p>
+                <div className="mt-3 h-56 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
+                {(() => {
+                  const points = [
+                    { month: "Apr", sony: 48, comp: 42 },
+                    { month: "May", sony: 54, comp: 46 },
+                    { month: "Jun", sony: 60, comp: 51 },
+                    { month: "Jul", sony: 67, comp: 55 },
+                    { month: "Aug", sony: 73, comp: 58 },
+                    { month: "Sep", sony: 78, comp: 61 },
+                    { month: "Oct", sony: 84, comp: 64 },
+                  ];
+                  const maxVal = 100;
+                  const padding = 8;
+                  const viewWidth = 100;
+                  const viewHeight = 120;
+                  const step = points.length > 1 ? viewWidth / (points.length - 1) : viewWidth;
+
+                  const toCoord = (val: number, idx: number) => ({
+                    x: idx * step,
+                    y: viewHeight - (val / maxVal) * (viewHeight - padding * 2) - padding,
+                  });
+
+                  const buildPath = (series: "sony" | "comp") =>
+                    points
+                      .map((p, idx) => {
+                        const { x, y } = toCoord(p[series], idx);
+                        return `${idx === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+                      })
+                      .join(" ");
+
+                  const sonyPath = buildPath("sony");
+                  const compPath = buildPath("comp");
+                  const yTicks = [100, 80, 60, 40, 20];
+
+                  return (
+                    <div className="flex h-full flex-col justify-between">
+                      <div className="flex h-full">
+                        <div className="flex w-10 flex-col justify-between pr-1 text-[10px] text-slate-500">
+                          {yTicks.map((tick) => (
+                            <span key={tick}>{tick}</span>
+                          ))}
+                        </div>
+                        <div className="relative flex-1">
+                          <svg
+                            viewBox={`0 0 ${viewWidth} ${viewHeight}`}
+                            className="h-full w-full overflow-hidden"
+                            preserveAspectRatio="none"
+                          >
+                            {yTicks.map((tick) => {
+                              const y = toCoord(tick, 0).y;
+                              return (
+                                <line
+                                  key={tick}
+                                  x1={0}
+                                  x2={viewWidth}
+                                  y1={y}
+                                  y2={y}
+                                  stroke="#e2e8f0"
+                                  strokeWidth="0.5"
+                                />
+                              );
+                            })}
+                            <path d={compPath} fill="none" stroke="#94a3b8" strokeWidth="1.6" />
+                            <path d={sonyPath} fill="none" stroke="#4aa6c5" strokeWidth="2" />
+                          </svg>
+                          <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between text-[11px] text-slate-500">
+                            {points.map((p) => (
+                              <span key={p.month}>{p.month}</span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+                <div className="mt-10 flex items-center gap-4 text-[11px] text-slate-500">
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-1.5 w-4 rounded-full bg-[#4aa6c5]" />
+                    Sony citations
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <span className="h-1.5 w-4 rounded-full bg-[#94a3b8]" />
+                    Competitor avg.
+                  </span>
+                </div>
+              </div>
+            </article>
+
           </section>
         </div>
       </section>
     </main>
   );
 }
+
+
