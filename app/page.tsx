@@ -570,30 +570,62 @@ export default function Home() {
 
                   <div className="flex-1 flex h-24 items-end gap-4 relative">
                     <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-full items-end gap-[3px]">
-                      <div className="h-16 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-8 flex-1 rounded-sm bg-[#3551e6]/70" />
+                    <div className="flex h-full items-end gap-[3px] relative group">
+                      <div className="h-16 flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative">
+                        <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                          13.5k
+                        </span>
+                      </div>
+                      <div className="h-8 flex-1 rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer relative">
+                        <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                          6.8k
+                        </span>
+                      </div>
                     </div>
                     <p className="text-[11px] text-slate-500">Pos. 1–3</p>
                   </div>
                   <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-full items-end gap-[3px]">
-                      <div className="h-11 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-9 flex-1 rounded-sm bg-[#3551e6]/70" />
+                    <div className="flex h-full items-end gap-[3px] relative group">
+                      <div className="h-11 flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative">
+                        <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                          9.2k
+                        </span>
+                      </div>
+                      <div className="h-9 flex-1 rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer relative">
+                        <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                          7.5k
+                        </span>
+                      </div>
                     </div>
                     <p className="text-[11px] text-slate-500">Pos. 4–10</p>
                   </div>
                   <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-full items-end gap-[3px]">
-                      <div className="h-7 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-10 flex-1 rounded-sm bg-[#3551e6]/70" />
+                    <div className="flex h-full items-end gap-[3px] relative group">
+                      <div className="h-7 flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative">
+                        <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                          5.9k
+                        </span>
+                      </div>
+                      <div className="h-10 flex-1 rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer relative">
+                        <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                          8.4k
+                        </span>
+                      </div>
                     </div>
                     <p className="text-[11px] text-slate-500">Pos. 11–20</p>
                   </div>
                   <div className="flex flex-1 flex-col justify-end gap-1">
-                    <div className="flex h-full items-end gap-[3px]">
-                      <div className="h-4 flex-1 rounded-sm bg-[#4aa6c5]/80" />
-                      <div className="h-9 flex-1 rounded-sm bg-[#3551e6]/70" />
+                    <div className="flex h-full items-end gap-[3px] relative group">
+                      <div className="h-4 flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative">
+                        <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                          3.4k
+                        </span>
+                      </div>
+                      <div className="h-9 flex-1 rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer relative">
+                        <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                          7.5k
+                        </span>
+                      </div>
                     </div>
                     <p className="text-[11px] text-slate-500">Pos. 21+</p>
                   </div>
@@ -1192,7 +1224,7 @@ export default function Home() {
                   <span className="w-1/5 text-right">Clicks</span>
                   <span className="w-1/5 text-right">Impr.</span>
                   <span className="w-1/5 text-right">Avg. pos.</span>
-                  <span className="w-1/5 text-right">PoP</span>
+                  <span className="w-1/5 text-right">Avg.pos. MoM</span>
                 </div>
                 <div className="mt-2 space-y-1.5">
                   {keywordCountry === "GB" && (
@@ -1497,7 +1529,7 @@ export default function Home() {
                   )}
                 </div>
                 <p className="mt-2 text-[11px] text-slate-500">
-                  PoP = change vs. previous 7 days (clicks).
+                  Avg.pos. MoM = Average position month-over-month change.
                 </p>
               </div>
             </article>
@@ -1548,7 +1580,7 @@ export default function Home() {
                   <div className="relative flex-1 h-full">
                     <div className="flex h-full items-end gap-2">
                       {(() => {
-                        const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+                        const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"];
                         const organic = [10, 12, 11, 13, 14, 13, 15];
                         const impressions = [7, 8, 9, 10, 11, 10, 12];
                         const clicks = [5, 6, 7, 8, 9, 8, 10];
@@ -1556,19 +1588,27 @@ export default function Home() {
                         const maxVal = Math.max(...organic) + 2;
                         const toHeight = (val: number) => `${(val / maxVal) * 100}%`;
 
-                        return days.map((day, idx) => (
-                          <div key={day} className="flex flex-1 flex-col justify-end gap-1">
-                            <div className="flex h-28 items-end gap-[3px]">
+                        return months.map((month, idx) => (
+                          <div key={month} className="flex flex-1 flex-col justify-end gap-1">
+                            <div className="flex h-28 items-end gap-[3px] relative group">
                               <div
-                                className="flex-1 rounded-sm bg-[#4aa6c5]/80"
+                                className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
                                 style={{ height: toHeight(organic[idx]) }}
-                              />
+                              >
+                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                  {organic[idx]}k
+                                </span>
+                              </div>
                               <div
-                                className="flex-1 rounded-sm bg-[#3551e6]/70"
+                                className="flex-1 rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer relative"
                                 style={{ height: toHeight(clicks[idx]) }}
-                              />
+                              >
+                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                  {clicks[idx]}k
+                                </span>
+                              </div>
                             </div>
-                            <p className="text-[11px] text-slate-500">{day}</p>
+                            <p className="text-[11px] text-slate-500">{month}</p>
                           </div>
                         ));
                       })()}
@@ -1604,7 +1644,7 @@ export default function Home() {
                 Keyword movements
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Static summary of wins, risks, and opportunities.
+                Monthly position changes for tracked keywords.
               </p>
               <div className="mt-4 space-y-3 text-xs">
                 <div className="flex items-center justify-between">
@@ -1939,7 +1979,7 @@ export default function Home() {
                         key={m}
                         className="flex flex-1 flex-col justify-end gap-1"
                       >
-                        <div className="relative flex h-24 items-end gap-[3px]">
+                        <div className="relative flex h-24 items-end gap-[3px] group">
                           {(() => {
                             const baseHeights =
                               aiTrafficMetric === "visits"
@@ -1949,18 +1989,34 @@ export default function Home() {
                             const aiHeight = Math.min(88, baseHeights.ai + idx * 4);
                             const organicHeight = Math.min(92, baseHeights.organic + idx * 2);
 
+                            // Calculate display values based on metric type
+                            const aiValue = aiTrafficMetric === "visits"
+                              ? Math.round(15 + idx * 2.5)
+                              : Math.round(9 + idx * 1.5);
+                            const organicValue = aiTrafficMetric === "visits"
+                              ? Math.round(28 + idx * 1.5)
+                              : Math.round(19 + idx * 1);
+
                             return (
                               <>
                                 {/* AI sessions (left) */}
                                 <div
-                                  className="flex-1 rounded-sm bg-[#4aa6c5]/80"
+                                  className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
                                   style={{ height: `${aiHeight}%` }}
-                                />
+                                >
+                                  <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                    {aiValue}k
+                                  </span>
+                                </div>
                                 {/* organic baseline (right) */}
                                 <div
-                                  className="flex-1 rounded-sm bg-slate-200"
+                                  className="flex-1 rounded-sm bg-slate-200 hover:bg-slate-300 transition-colors cursor-pointer relative"
                                   style={{ height: `${organicHeight}%` }}
-                                />
+                                >
+                                  <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                    {organicValue}k
+                                  </span>
+                                </div>
                               </>
                             );
                           })()}
@@ -2093,7 +2149,7 @@ export default function Home() {
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center">
                         <p className="text-[11px] text-slate-500">Top market</p>
-                        <p className="text-sm font-semibold text-slate-900">GB - 32%</p>
+                        <p className="text-sm text-slate-900">GB - 32%</p>
                       </div>
                     </div>
                   </div>
@@ -2110,7 +2166,7 @@ export default function Home() {
                           <span className={`h-2.5 w-2.5 rounded-full ${c.color}`} />
                           <span className="font-medium text-slate-900">{c.label}</span>
                         </div>
-                        <span className="text-sm font-semibold text-slate-700">{c.value}</span>
+                        <span className="text-sm text-slate-700">{c.value}</span>
                       </div>
                     ))}
                   </div>
