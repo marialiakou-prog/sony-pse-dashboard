@@ -27,7 +27,7 @@ export default function Home() {
   const headerSubtitle = useMemo(() => {
     switch (activeTab) {
       case "seo-health":
-        return "Technical, on-page, and core web vitals signals.";
+        return "Keyword coverage, ranking distribution, and query-level performance across markets.";
       case "ai-insights":
         return "AI-generated opportunities, risks, and experiments.";
       default:
@@ -165,21 +165,6 @@ export default function Home() {
             <span>AI Performance</span>
           </button>
 
-          <p className="mt-4 px-2 text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
-            Operations
-          </p>
-          <button className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2 text-left text-slate-300 hover:bg-slate-800 hover:text-white">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-            <span>Experiments</span>
-          </button>
-          <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-slate-300 hover:bg-slate-800 hover:text-white">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-            <span>Technical issues</span>
-          </button>
-          <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-left text-slate-300 hover:bg-slate-800 hover:text-white">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-            <span>Settings</span>
-          </button>
         </nav>
 
         <div className="mt-auto rounded-2xl border border-slate-800 bg-slate-900 px-3.5 py-3.5 text-xs text-slate-200 shadow-sm">
