@@ -45,27 +45,3 @@ export async function GET(request) {
         }, { status: 500 });
     }
 }
-```
-
----
-
-### Step 5: Save the File
-
-Press `Ctrl + S` (Windows) or `Cmd + S` (Mac) to save the file.
-
-You should see a white dot disappear from the tab at the top (indicating the file is saved).
-
----
-
-## ✅ Your Structure Should Now Look Like This:
-```
-SONY - PSE - DASHBOARD /
-├── app /
-│   ├── api /                    ← You created this
-│   │   └── seo - data /           ← You created this
-│   │       └── route.js        ← You created this
-│   ├── page.js(or page.tsx)
-│   └── ... (other files)
-├── public /
-├── package.json
-└── ...
