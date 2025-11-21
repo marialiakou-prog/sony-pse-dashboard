@@ -16,11 +16,13 @@ export async function GET(request) {
 
         // Query your BigQuery view
         const query = `
-      SELECT * 
-      FROM \`sony-pro-test-310213.SEO_adobe.monthly_seo_adobe\`
-      ORDER BY date DESC
-      LIMIT 100
-    `;
+  SELECT * 
+  FROM \`sony-pro-test-310213.SEO_adobe.monthly_seo_adobe\`
+  WHERE 
+    region = 'PSE'
+    AND month >= '2025-04-01'
+  ORDER BY month DESC
+`;
 
         console.log('Executing BigQuery query...');
         const [rows] = await bigquery.query({ query });
