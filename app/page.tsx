@@ -190,35 +190,37 @@ export default function Home() {
             <button className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-900 shadow-sm hover:bg-slate-100 sm:inline-flex">
               Export snapshot
             </button>
-            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
-              <span>Country</span>
-              <select
-                value={keywordCountry}
-                onChange={(e) => setKeywordCountry(e.target.value as CountryCode)}
-                className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100 border-none outline-none cursor-pointer"
-              >
-                <option value="GB">GB</option>
-                <option value="DE">DE</option>
-                <option value="FR">FR</option>
-                <option value="IT">IT</option>
-                <option value="ES">ES</option>
-                <option value="NL">NL</option>
-                <option value="BE">BE</option>
-                <option value="AT">AT</option>
-                <option value="SE">SE</option>
-                <option value="NO">NO</option>
-                <option value="DK">DK</option>
-                <option value="FI">FI</option>
-                <option value="PL">PL</option>
-                <option value="PT">PT</option>
-                <option value="IE">IE</option>
-                <option value="GR">GR</option>
-                <option value="CZ">CZ</option>
-                <option value="RO">RO</option>
-                <option value="HU">HU</option>
-                <option value="CH">CH</option>
-              </select>
-            </div>
+            {activeTab === "seo-health" && (
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
+                <span>Country</span>
+                <select
+                  value={keywordCountry}
+                  onChange={(e) => setKeywordCountry(e.target.value as CountryCode)}
+                  className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100 border-none outline-none cursor-pointer"
+                >
+                  <option value="GB">GB</option>
+                  <option value="DE">DE</option>
+                  <option value="FR">FR</option>
+                  <option value="IT">IT</option>
+                  <option value="ES">ES</option>
+                  <option value="NL">NL</option>
+                  <option value="BE">BE</option>
+                  <option value="AT">AT</option>
+                  <option value="SE">SE</option>
+                  <option value="NO">NO</option>
+                  <option value="DK">DK</option>
+                  <option value="FI">FI</option>
+                  <option value="PL">PL</option>
+                  <option value="PT">PT</option>
+                  <option value="IE">IE</option>
+                  <option value="GR">GR</option>
+                  <option value="CZ">CZ</option>
+                  <option value="RO">RO</option>
+                  <option value="HU">HU</option>
+                  <option value="CH">CH</option>
+                </select>
+              </div>
+            )}
             <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
               <span>Period</span>
               <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100">
