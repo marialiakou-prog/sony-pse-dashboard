@@ -226,7 +226,7 @@ export default function Home() {
               </p>
               <div className="mt-3 flex items-baseline gap-2">
                 <p className="text-2xl font-semibold text-slate-900">182k</p>
-                <span className="text-xs text-[#4aa6c5]">+6.8%</span>
+                <span className="text-xs text-[#4aa6c5]">+6.8% vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
                 Sessions from organic search across all markets.
