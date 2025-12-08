@@ -235,11 +235,11 @@ export default function Home() {
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                CTR on key SERPs
+                CTR
               </p>
               <div className="mt-3 flex items-baseline gap-2">
                 <p className="text-2xl font-semibold text-slate-900">4.9%</p>
-                <span className="text-xs text-emerald-400">+0.4 pts</span>
+                <span className="text-xs text-emerald-400">+0.4 pts vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
                 Blended click-through rate for product and category pages.
