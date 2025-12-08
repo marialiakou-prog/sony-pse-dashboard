@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 
 type MainTab = "executive-summary" | "seo-health" | "ai-insights";
-type CountryCode = "GB" | "DE" | "FR" | "IT" | "ES";
+type CountryCode = "GB" | "DE" | "FR" | "IT" | "ES" | "NL" | "BE" | "AT" | "SE" | "NO" | "DK" | "FI" | "PL" | "PT" | "IE" | "GR" | "CZ" | "RO" | "HU" | "CH";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<MainTab>("executive-summary");
@@ -190,6 +190,35 @@ export default function Home() {
             <button className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-900 shadow-sm hover:bg-slate-100 sm:inline-flex">
               Export snapshot
             </button>
+            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
+              <span>Country</span>
+              <select
+                value={keywordCountry}
+                onChange={(e) => setKeywordCountry(e.target.value as CountryCode)}
+                className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100 border-none outline-none cursor-pointer"
+              >
+                <option value="GB">GB</option>
+                <option value="DE">DE</option>
+                <option value="FR">FR</option>
+                <option value="IT">IT</option>
+                <option value="ES">ES</option>
+                <option value="NL">NL</option>
+                <option value="BE">BE</option>
+                <option value="AT">AT</option>
+                <option value="SE">SE</option>
+                <option value="NO">NO</option>
+                <option value="DK">DK</option>
+                <option value="FI">FI</option>
+                <option value="PL">PL</option>
+                <option value="PT">PT</option>
+                <option value="IE">IE</option>
+                <option value="GR">GR</option>
+                <option value="CZ">CZ</option>
+                <option value="RO">RO</option>
+                <option value="HU">HU</option>
+                <option value="CH">CH</option>
+              </select>
+            </div>
             <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
               <span>Period</span>
               <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100">
@@ -1200,8 +1229,8 @@ export default function Home() {
                     Last month • Top queries for key European markets.
                   </p>
                 </div>
-                <div className="flex gap-1 rounded-full bg-slate-100 p-0.5 text-[11px] text-slate-600">
-                  {(["GB", "DE", "FR", "IT", "ES"] as CountryCode[]).map((country) => (
+                <div className="flex flex-wrap gap-1 rounded-lg bg-slate-100 p-2 text-[11px] text-slate-600">
+                  {(["GB", "DE", "FR", "IT", "ES", "NL", "BE", "AT", "SE", "NO", "DK", "FI", "PL", "PT", "IE", "GR", "CZ", "RO", "HU", "CH"] as CountryCode[]).map((country) => (
                     <button
                       key={country}
                       type="button"
@@ -1526,6 +1555,12 @@ export default function Home() {
                         <span className="w-1/5 text-right text-red-400 font-medium">-2%</span>
                       </div>
                     </>
+                  )}
+                  {!["GB", "DE", "FR", "IT", "ES"].includes(keywordCountry) && (
+                    <div className="py-8 text-center text-slate-500">
+                      <p className="text-sm">Data for {keywordCountry} coming soon.</p>
+                      <p className="mt-1 text-xs">This country is being tracked and data will be available in the next update.</p>
+                    </div>
                   )}
                 </div>
                 <p className="mt-2 text-[11px] text-slate-500">
