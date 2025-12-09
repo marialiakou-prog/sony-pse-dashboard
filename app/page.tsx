@@ -1673,7 +1673,7 @@ export default function Home() {
 
                         return months.map((month, idx) => (
                           <div key={month} className="flex flex-1 flex-col justify-end gap-1">
-                            <div className="flex h-28 items-end gap-[3px] relative group">
+                            <div className="flex h-32 items-end gap-[3px] relative group">
                               <div
                                 className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
                                 style={{ height: toHeight(organic[idx]) }}
