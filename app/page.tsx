@@ -337,7 +337,7 @@ export default function Home() {
 
           {/* Keywords / SEO health content */}
           <section
-            className={`grid gap-4 lg:grid-cols-3 ${
+            className={`grid gap-4 lg:grid-cols-5 ${
               activeTab === "seo-health" ? "opacity-100" : "hidden"
             }`}
           >
@@ -419,7 +419,7 @@ export default function Home() {
             </article>
             )}
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keywords Ranking
               </p>
@@ -540,7 +540,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between lg:col-span-2">
               <div>
                 <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                   Ranking KPIs
@@ -621,7 +621,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <article className="lg:col-span-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keyword visibility & traffic
               </p>
@@ -940,7 +940,7 @@ export default function Home() {
             </article>
             )}
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
               <div className="mb-3">
                 <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500 whitespace-nowrap">
                   Landing pages by keyword
@@ -968,7 +968,7 @@ export default function Home() {
                 <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                   <span className="w-2/5">Landing page</span>
                   <span className="w-1/5 text-right">Keywords</span>
-                  <span className="w-1/5 text-right">Impressions</span>
+                  <span className="w-1/5 text-right">Impr.</span>
                   <span className="w-1/5 text-right">Clicks</span>
                   <span className="w-1/5 text-right">Avg. pos.</span>
                 </div>
@@ -1126,7 +1126,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-5">
               <div className="flex items-center justify-between">
                 <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                   Brand Split & Keywords Performance
@@ -1261,7 +1261,7 @@ export default function Home() {
             </article>
 
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
