@@ -1649,7 +1649,7 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-              <div className="mt-4 h-52 rounded-lg border border-slate-200 bg-white px-3 py-3 pb-1">
+              <div className="mt-4 h-56 rounded-lg border border-slate-200 bg-white px-3 py-3 pb-1">
                 <div className="relative h-full flex gap-2">
                   {/* Y-axis labels */}
                   <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-2">
