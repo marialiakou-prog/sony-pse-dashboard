@@ -321,7 +321,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
                   </svg>
                   <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
-                    Contact Dealer and Contact request conversions from organic search traffic
+                    Form submissions from organic search sessions
                   </div>
                 </div>
               </div>
