@@ -102,7 +102,7 @@ export default function Home() {
   return (
     <main className="min-h-screen flex bg-transparent text-slate-900">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-slate-900 bg-[#333333] px-6 py-6 flex flex-col gap-8">
+      <aside className="sticky top-0 h-screen w-64 border-r border-slate-900 bg-[#333333] px-6 py-6 flex flex-col gap-8">
         <div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center">
@@ -125,7 +125,7 @@ export default function Home() {
           </div>
         </div>
 
-        <nav className="flex flex-col gap-1.5 text-sm text-slate-200">
+        <nav className="flex flex-col gap-1.5 text-sm text-slate-200 overflow-y-auto">
           <p className="px-2 text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
             SEO Overview
           </p>
