@@ -1727,7 +1727,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
                   </svg>
                   <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
-                    Position = where you appear on Google search results (position 1 is the top result).Positive numbers MoM  mean you're moving up and becoming more visible.
+                    Position = where your page appears in Google when users search for that term. Position 1 is the top result on page 1. Moving up means better visibility.
                   </div>
                 </div>
               </div>
