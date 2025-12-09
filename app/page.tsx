@@ -101,6 +101,16 @@ export default function Home() {
   }, []);
 
   return (
+    <>
+      <style jsx global>{`
+        @media print {
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+        }
+      `}</style>
     <main className="min-h-screen flex bg-transparent text-slate-900">
       {/* Sidebar */}
       <aside className="sticky top-0 h-screen w-64 border-r border-slate-900 bg-[#333333] px-6 py-6 flex flex-col gap-8">
@@ -2635,6 +2645,7 @@ export default function Home() {
         </div>
       </section>
     </main>
+    </>
   );
 }
 
