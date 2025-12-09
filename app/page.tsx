@@ -282,7 +282,7 @@ export default function Home() {
                 <span className="text-xs text-[#4aa6c5]">+6.8% vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Entries from organic search across all markets.
+                Entries from organic search across all markets
               </p>
             </article>
 
@@ -306,7 +306,7 @@ export default function Home() {
                 <span className="text-xs text-emerald-400">+0.4 pts vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Blended click-through rate for product and category pages.
+                Blended click-through rate for product and category pages
               </p>
             </article>
 
