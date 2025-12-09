@@ -1717,9 +1717,20 @@ export default function Home() {
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Keyword movements
-              </p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Keyword movements
+                </p>
+                <div className="group relative">
+                  <svg className="h-3.5 w-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
+                  </svg>
+                  <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
+                    Position = where you appear on Google search results (position 1 is the top result).Positive numbers MoM  mean you're moving up and becoming more visible.
+                  </div>
+                </div>
+              </div>
               <p className="mt-1 text-xs text-slate-500">
                 Monthly position changes for tracked keywords.
               </p>
