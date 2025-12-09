@@ -33,7 +33,7 @@ export default function Home() {
       case "ai-insights":
         return "AI-generated opportunities, risks, and experiments.";
       default:
-        return "SEO & AI performance at a glance.";
+        return "SEO performance at a glance.";
     }
   }, [activeTab]);
 
