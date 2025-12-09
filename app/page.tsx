@@ -167,6 +167,9 @@ export default function Home() {
             <span>AI Performance</span>
           </button>
 
+          <p className="mt-4 px-3 text-xs italic text-slate-400">
+            📊 Sample data for demo purposes
+          </p>
         </nav>
       </aside>
 
