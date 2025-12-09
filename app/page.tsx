@@ -166,11 +166,13 @@ export default function Home() {
             <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
             <span>AI Performance</span>
           </button>
+        </nav>
 
-          <p className="mt-4 px-3 text-xs italic text-slate-400">
+        <div className="mt-auto px-3 pb-6">
+          <p className="text-xs italic text-slate-400">
             📊 Sample data for demo purposes
           </p>
-        </nav>
+        </div>
       </aside>
 
       {/* Main content */}
