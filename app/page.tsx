@@ -273,7 +273,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
                   </svg>
                   <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
-                    Total number of entries from organic search across all markets
+                    Total number of Adobe entries from Natural Search across all markets
                   </div>
                 </div>
               </div>
