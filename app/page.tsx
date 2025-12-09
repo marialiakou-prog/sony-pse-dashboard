@@ -247,7 +247,7 @@ export default function Home() {
                 <span className="text-xs text-[#4aa6c5]">+1.2 vs. last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Top 3 positions for 29 high-intent keywords.
+                Primary markets: GB, FR, ES
               </p>
             </article>
 
