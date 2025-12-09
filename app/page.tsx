@@ -55,15 +55,15 @@ export default function Home() {
   // Fetch organic sessions with SWR - caches data and shows instantly on refresh
   const { data: seoData } = useSWR('/api/seo-data', fetcher, {
     revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 300000, // 5 minutes - don't re-fetch within this window
+    revalidateOnReconnect: true,
+    dedupingInterval: 60000, // 1 minute - don't re-fetch within this window
   });
 
   // Fetch search console data for clicks and impressions (filtered by content = '___')
   const { data: searchConsoleData } = useSWR('/api/search-console?content=___', fetcher, {
     revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 300000,
+    revalidateOnReconnect: true,
+    dedupingInterval: 60000,
   });
 
   // Process SEO data to get organic sessions with MoM comparison
@@ -439,7 +439,7 @@ export default function Home() {
                 <span className="text-xs text-[#4aa6c5]">+1.2 vs. last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Top 3 positions for 29 high-intent keywords.
+                Primary markets: GB, FR, ES
               </p>
             </article>
 
