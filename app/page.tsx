@@ -1625,13 +1625,13 @@ export default function Home() {
                     SEO performance
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
-                    Organic visits, impressions, and clicks trends.
+                    Organic entries, impressions, and clicks trends.
                   </p>
                 </div>
                 <div className="hidden gap-2 text-[11px] text-slate-400 md:flex">
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-4 rounded-full bg-[#4aa6c5]" />
-                    Organic visits
+                    Organic Entries
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-4 rounded-full bg-[#3551e6]" />
