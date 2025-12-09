@@ -128,7 +128,7 @@ export default function Home() {
 
         <nav className="flex flex-col gap-1.5 text-sm text-slate-200 overflow-y-auto">
           <p className="px-2 text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
-            SEO Overview
+            Tabs
           </p>
           <button
             type="button"
