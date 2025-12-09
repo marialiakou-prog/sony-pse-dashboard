@@ -306,7 +306,7 @@ export default function Home() {
                 <span className="text-xs text-emerald-400">+0.4 pts vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Regional click-through rate across all market
+                Click-through rate across all market
               </p>
             </article>
 
