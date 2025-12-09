@@ -897,9 +897,9 @@ export default function Home() {
             )}
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1">
-                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500 line-clamp-2">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                     Landing pages by keyword
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
