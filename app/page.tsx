@@ -9,6 +9,7 @@ type CountryCode = "GB" | "DE" | "FR" | "IT" | "ES" | "NL" | "BE" | "AT" | "SE" 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<MainTab>("executive-summary");
   const [keywordCountry, setKeywordCountry] = useState<CountryCode>("GB");
+  const [keywordMovementCountry, setKeywordMovementCountry] = useState<CountryCode>("GB");
   const [landingPageFilter, setLandingPageFilter] = useState<string>("all");
   const [queryPositionFilter, setQueryPositionFilter] = useState<string>("all");
   const [brandQueryFilter, setBrandQueryFilter] = useState<string>("brand");
@@ -1734,39 +1735,239 @@ export default function Home() {
               <p className="mt-1 text-xs text-slate-500">
                 Monthly position changes for tracked keywords.
               </p>
+              <div className="mt-3 flex flex-wrap gap-1 rounded-lg bg-slate-100 p-2 text-[11px] text-slate-600">
+                {(["GB", "ES", "FR", "DE", "IT", "NL"] as CountryCode[]).map((country) => (
+                  <button
+                    key={country}
+                    type="button"
+                    onClick={() => setKeywordMovementCountry(country)}
+                    className={`px-2 py-0.5 rounded-full border text-xs ${
+                      keywordMovementCountry === country
+                        ? "border-slate-900 bg-white font-semibold text-slate-900 shadow-sm"
+                        : "border-transparent hover:border-slate-300 hover:bg-white/60"
+                    }`}
+                  >
+                    {country}
+                  </button>
+                ))}
+              </div>
               <div className="mt-4 space-y-3 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">broadcast camera systems</span>
-                  <span className="text-emerald-400">+8 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">4k studio cameras</span>
-                  <span className="text-emerald-400">+5 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">ptz camera remote control</span>
-                  <span className="text-emerald-400">+3 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">live production switcher</span>
-                  <span className="text-emerald-400">+2 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">professional video monitor</span>
-                  <span className="text-amber-300">-1 position</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">ip live production workflow</span>
-                  <span className="text-amber-300">-2 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">xdcam recorder</span>
-                  <span className="text-amber-300">-3 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">hdr reference monitor</span>
-                  <span className="text-red-400">-5 positions</span>
-                </div>
+                {keywordMovementCountry === "GB" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">broadcast camera systems</span>
+                      <span className="text-emerald-400">+8 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">4k studio cameras</span>
+                      <span className="text-emerald-400">+5 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ptz camera remote control</span>
+                      <span className="text-emerald-400">+3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">live production switcher</span>
+                      <span className="text-emerald-400">+2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professional video monitor</span>
+                      <span className="text-amber-300">-1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ip live production workflow</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">xdcam recorder</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">hdr reference monitor</span>
+                      <span className="text-red-400">-5 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "ES" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">cámaras de estudio profesionales</span>
+                      <span className="text-emerald-400">+7 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">sistemas de producción en vivo</span>
+                      <span className="text-emerald-400">+4 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">cámaras broadcast sony</span>
+                      <span className="text-emerald-400">+3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">monitores de video profesionales</span>
+                      <span className="text-emerald-400">+2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">control remoto ptz</span>
+                      <span className="text-slate-400">0 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">grabadoras xdcam</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">flujo de trabajo ip</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">monitores hdr</span>
+                      <span className="text-red-400">-4 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "FR" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">caméras de diffusion professionnelles</span>
+                      <span className="text-emerald-400">+9 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">systèmes de studio 4k</span>
+                      <span className="text-emerald-400">+6 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">production en direct sony</span>
+                      <span className="text-emerald-400">+4 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">commande à distance ptz</span>
+                      <span className="text-emerald-400">+1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">moniteurs vidéo professionnels</span>
+                      <span className="text-slate-400">0 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">enregistreurs xdcam</span>
+                      <span className="text-amber-300">-1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">flux de travail ip</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">moniteurs de référence hdr</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "DE" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professionelle broadcast kameras</span>
+                      <span className="text-emerald-400">+10 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">4k studiokameras</span>
+                      <span className="text-emerald-400">+6 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">live produktion systeme</span>
+                      <span className="text-emerald-400">+5 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ptz kamera fernsteuerung</span>
+                      <span className="text-emerald-400">+2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professionelle videomonitore</span>
+                      <span className="text-slate-400">0 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ip produktions workflow</span>
+                      <span className="text-amber-300">-1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">xdcam rekorder</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">hdr referenzmonitore</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "IT" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">telecamere broadcast professionali</span>
+                      <span className="text-emerald-400">+8 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">telecamere da studio 4k</span>
+                      <span className="text-emerald-400">+5 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">sistemi di produzione live</span>
+                      <span className="text-emerald-400">+4 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">controllo remoto ptz</span>
+                      <span className="text-emerald-400">+2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">monitor video professionali</span>
+                      <span className="text-emerald-400">+1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">flusso di lavoro ip</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">registratori xdcam</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">monitor di riferimento hdr</span>
+                      <span className="text-red-400">-4 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "NL" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professionele broadcast camera's</span>
+                      <span className="text-emerald-400">+7 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">4k studiocamera's</span>
+                      <span className="text-emerald-400">+5 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">live productie systemen</span>
+                      <span className="text-emerald-400">+4 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ptz camera bediening</span>
+                      <span className="text-emerald-400">+3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professionele videomonitoren</span>
+                      <span className="text-slate-400">0 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ip productie workflow</span>
+                      <span className="text-amber-300">-1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">xdcam recorders</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">hdr referentie monitoren</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                  </>
+                )}
               </div>
             </article>
 
