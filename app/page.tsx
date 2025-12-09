@@ -337,7 +337,7 @@ export default function Home() {
 
           {/* Keywords / SEO health content */}
           <section
-            className={`grid gap-4 lg:grid-cols-5 ${
+            className={`grid gap-4 lg:grid-cols-3 ${
               activeTab === "seo-health" ? "opacity-100" : "hidden"
             }`}
           >
@@ -540,7 +540,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between lg:col-span-3">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
               <div>
                 <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                   Ranking KPIs
@@ -940,7 +940,7 @@ export default function Home() {
             </article>
             )}
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="mb-3">
                 <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500 whitespace-nowrap">
                   Landing pages by keyword
