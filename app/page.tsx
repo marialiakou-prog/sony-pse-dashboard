@@ -1736,6 +1736,9 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+              <p className="mt-2 text-xs italic text-slate-500">
+                Note: Data reflects PSE region totals
+              </p>
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
