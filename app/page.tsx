@@ -2,10 +2,9 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import useSWR from "swr";
 
 type MainTab = "executive-summary" | "seo-health" | "ai-insights";
-type CountryCode = "GB" | "DE" | "FR" | "IT" | "ES";
+type CountryCode = "GB" | "DE" | "FR" | "IT" | "ES" | "NL" | "BE" | "AT" | "SE" | "NO" | "DK" | "FI" | "PL" | "PT" | "IE" | "GR" | "CZ" | "RO" | "HU" | "CH";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<MainTab>("executive-summary");
@@ -14,228 +13,6 @@ export default function Home() {
   const [queryPositionFilter, setQueryPositionFilter] = useState<string>("all");
   const [brandQueryFilter, setBrandQueryFilter] = useState<string>("brand");
   const [aiTrafficMetric, setAiTrafficMetric] = useState<"visits" | "cdcs">("visits");
-  const formatWithKSuffix = (value: number) => {
-    if (value >= 10000) {
-      return `${Math.round(value / 1000)}k`;
-    }
-
-    if (value >= 1000) {
-      const rounded = Math.round((value / 1000) * 10) / 10;
-      return `${rounded.toLocaleString("en-GB", { maximumFractionDigits: 1 })}k`;
-    }
-
-    return value.toLocaleString("en-GB");
-  };
-
-  // Calculate nice Y-axis ticks (e.g., 0, 50, 100, 150, 200)
-  const getNiceAxisTicks = (maxValue: number, tickCount: number = 5): number[] => {
-    if (maxValue <= 0) return [0];
-
-    // Nice intervals to choose from
-    const niceIntervals = [10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000];
-
-    // Find the best interval that gives us around tickCount ticks
-    const rawInterval = maxValue / (tickCount - 1);
-    const niceInterval = niceIntervals.find(i => i >= rawInterval) || Math.ceil(rawInterval / 1000) * 1000;
-
-    // Generate ticks from 0 to a nice max that covers the data
-    const niceMax = Math.ceil(maxValue / niceInterval) * niceInterval;
-    const ticks: number[] = [];
-    for (let i = 0; i <= niceMax; i += niceInterval) {
-      ticks.push(i);
-      if (ticks.length >= tickCount) break;
-    }
-
-    return ticks.reverse(); // Reverse for top-to-bottom display
-  };
-
-  // SWR fetcher function
-  const fetcher = (url: string) => fetch(url).then(res => res.json());
-
-  // Fetch organic sessions with SWR - caches data and shows instantly on refresh
-  const { data: seoData } = useSWR('/api/seo-data', fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: true,
-    dedupingInterval: 60000, // 1 minute - don't re-fetch within this window
-  });
-
-  // Fetch search console data for clicks and impressions (filtered by content = '___')
-  const { data: searchConsoleData } = useSWR('/api/search-console?content=___', fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: true,
-    dedupingInterval: 60000,
-  });
-
-  // Process SEO data to get organic sessions with MoM comparison
-  const organicSessions = useMemo(() => {
-    if (!seoData?.success || !seoData?.data?.length) return null;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getMonthValue = (row: any): string => {
-      const month = row?.month;
-      return (month && typeof month === "object" ? month.value : month) ?? "";
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getEntriesValue = (row: any): number => {
-      const value = Number(row?.entries ?? 0);
-      return Number.isFinite(value) ? value : 0;
-    };
-
-    // Get unique months sorted descending
-    const uniqueMonths = [...new Set(seoData.data.map(getMonthValue))]
-      .filter((m): m is string => Boolean(m))
-      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-
-    if (uniqueMonths.length === 0) return null;
-
-    const latestMonth = uniqueMonths[0];
-    const previousMonth = uniqueMonths[1];
-
-    // Sum all entries from the latest month
-    const latestMonthData = seoData.data.filter(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (row: any) => getMonthValue(row) === latestMonth
-    );
-    const totalEntries = latestMonthData.reduce(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (sum: number, row: any) => sum + getEntriesValue(row),
-      0
-    );
-
-    // Calculate MoM comparison if previous month exists
-    let momChange: number | null = null;
-    if (previousMonth) {
-      const previousMonthData = seoData.data.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (row: any) => getMonthValue(row) === previousMonth
-      );
-      const previousTotal = previousMonthData.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sum: number, row: any) => sum + getEntriesValue(row),
-        0
-      );
-      if (previousTotal > 0) {
-        momChange = ((totalEntries - previousTotal) / previousTotal) * 100;
-      }
-    }
-
-    // Format with 'k' suffix
-    const formatted = formatWithKSuffix(totalEntries);
-
-    // Format month for display
-    const monthDate = new Date(latestMonth);
-    const monthLabel = Number.isNaN(monthDate.getTime())
-      ? latestMonth
-      : monthDate.toLocaleString("en-GB", { month: "long", year: "numeric" });
-
-    return { total: formatted, month: monthLabel, momChange };
-  }, [seoData]);
-
-  // Process SEO data for the performance chart (monthly visits)
-  const seoChartData = useMemo(() => {
-    if (!seoData?.success || !seoData?.data?.length) return null;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getMonthValue = (row: any): string => {
-      const month = row?.month;
-      return (month && typeof month === "object" ? month.value : month) ?? "";
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getEntriesValue = (row: any): number => {
-      const value = Number(row?.entries ?? 0);
-      return Number.isFinite(value) ? value : 0;
-    };
-
-    // Get unique months sorted ascending (oldest to newest for chart)
-    const uniqueMonths = [...new Set(seoData.data.map(getMonthValue))]
-      .filter((m): m is string => Boolean(m))
-      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-
-    if (uniqueMonths.length === 0) return null;
-
-    // Aggregate entries by month
-    const monthlyData = uniqueMonths.map(month => {
-      const monthData = seoData.data.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (row: any) => getMonthValue(row) === month
-      );
-      const totalEntries = monthData.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sum: number, row: any) => sum + getEntriesValue(row),
-        0
-      );
-
-      // Format month label (e.g., "Apr", "May")
-      const monthDate = new Date(month);
-      const label = Number.isNaN(monthDate.getTime())
-        ? month
-        : monthDate.toLocaleString("en-GB", { month: "short" });
-
-      return {
-        month: label,
-        entries: totalEntries,
-        entriesK: Math.round(totalEntries / 1000), // Value in thousands
-      };
-    });
-
-    return monthlyData;
-  }, [seoData]);
-
-  // Process search console data for clicks and impressions chart
-  const searchConsoleChartData = useMemo(() => {
-    if (!searchConsoleData?.success || !searchConsoleData?.data?.length) return null;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getMonthValue = (row: any): string => {
-      const month = row?.month;
-      return (month && typeof month === "object" ? month.value : month) ?? "";
-    };
-
-    // Get unique months sorted ascending (oldest to newest for chart)
-    const uniqueMonths = [...new Set(searchConsoleData.data.map(getMonthValue))]
-      .filter((m): m is string => Boolean(m))
-      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-
-    if (uniqueMonths.length === 0) return null;
-
-    // Aggregate clicks and impressions by month
-    const monthlyData = uniqueMonths.map(month => {
-      const monthData = searchConsoleData.data.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (row: any) => getMonthValue(row) === month
-      );
-
-      const totalClicks = monthData.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sum: number, row: any) => sum + (Number(row?.clicks) || 0),
-        0
-      );
-
-      const totalImpressions = monthData.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sum: number, row: any) => sum + (Number(row?.impressions) || 0),
-        0
-      );
-
-      // Format month label (e.g., "Apr", "May")
-      const monthDate = new Date(month);
-      const label = Number.isNaN(monthDate.getTime())
-        ? month
-        : monthDate.toLocaleString("en-GB", { month: "short" });
-
-      return {
-        month: label,
-        clicks: totalClicks,
-        clicksK: Math.round(totalClicks / 1000),
-        impressions: totalImpressions,
-        impressionsK: Math.round(totalImpressions / 1000),
-      };
-    });
-
-    return monthlyData;
-  }, [searchConsoleData]);
 
   const headerTitle = useMemo(() => {
     switch (activeTab) {
@@ -413,6 +190,37 @@ export default function Home() {
             <button className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-900 shadow-sm hover:bg-slate-100 sm:inline-flex">
               Export snapshot
             </button>
+            {activeTab === "seo-health" && (
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
+                <span>Country</span>
+                <select
+                  value={keywordCountry}
+                  onChange={(e) => setKeywordCountry(e.target.value as CountryCode)}
+                  className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100 border-none outline-none cursor-pointer"
+                >
+                  <option value="GB">GB</option>
+                  <option value="DE">DE</option>
+                  <option value="FR">FR</option>
+                  <option value="IT">IT</option>
+                  <option value="ES">ES</option>
+                  <option value="NL">NL</option>
+                  <option value="BE">BE</option>
+                  <option value="AT">AT</option>
+                  <option value="SE">SE</option>
+                  <option value="NO">NO</option>
+                  <option value="DK">DK</option>
+                  <option value="FI">FI</option>
+                  <option value="PL">PL</option>
+                  <option value="PT">PT</option>
+                  <option value="IE">IE</option>
+                  <option value="GR">GR</option>
+                  <option value="CZ">CZ</option>
+                  <option value="RO">RO</option>
+                  <option value="HU">HU</option>
+                  <option value="CH">CH</option>
+                </select>
+              </div>
+            )}
             <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
               <span>Period</span>
               <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100">
@@ -439,38 +247,30 @@ export default function Home() {
                 <span className="text-xs text-[#4aa6c5]">+1.2 vs. last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Primary markets: GB, FR, ES
+                Top 3 positions for 29 high-intent keywords.
               </p>
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Organic entries
+                Organic sessions
               </p>
               <div className="mt-3 flex items-baseline gap-2">
-                <p className="text-2xl font-semibold text-slate-900">
-                  {organicSessions?.total || '—'}
-                </p>
-                {organicSessions?.momChange !== null && organicSessions?.momChange !== undefined && (
-                  <span className={`text-xs ${organicSessions.momChange >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-                    {organicSessions.momChange >= 0 ? '+' : ''}{Math.round(organicSessions.momChange)}% vs last month
-                  </span>
-                )}
+                <p className="text-2xl font-semibold text-slate-900">182k</p>
+                <span className="text-xs text-[#4aa6c5]">+6.8% vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                {organicSessions
-                  ? 'Sessions from organic search across all markets.'
-                  : 'Loading...'}
+                Sessions from organic search across all markets.
               </p>
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                CTR on key SERPs
+                CTR
               </p>
               <div className="mt-3 flex items-baseline gap-2">
                 <p className="text-2xl font-semibold text-slate-900">4.9%</p>
-                <span className="text-xs text-emerald-400">+0.4 pts</span>
+                <span className="text-xs text-emerald-400">+0.4 pts vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
                 Blended click-through rate for product and category pages.
@@ -1431,8 +1231,8 @@ export default function Home() {
                     Last month • Top queries for key European markets.
                   </p>
                 </div>
-                <div className="flex gap-1 rounded-full bg-slate-100 p-0.5 text-[11px] text-slate-600">
-                  {(["GB", "DE", "FR", "IT", "ES"] as CountryCode[]).map((country) => (
+                <div className="flex flex-wrap gap-1 rounded-lg bg-slate-100 p-2 text-[11px] text-slate-600">
+                  {(["GB", "DE", "FR", "IT", "ES", "NL", "BE", "AT", "SE", "NO", "DK", "FI", "PL", "PT", "IE", "GR", "CZ", "RO", "HU", "CH"] as CountryCode[]).map((country) => (
                     <button
                       key={country}
                       type="button"
@@ -1758,6 +1558,12 @@ export default function Home() {
                       </div>
                     </>
                   )}
+                  {!["GB", "DE", "FR", "IT", "ES"].includes(keywordCountry) && (
+                    <div className="py-8 text-center text-slate-500">
+                      <p className="text-sm">Data for {keywordCountry} coming soon.</p>
+                      <p className="mt-1 text-xs">This country is being tracked and data will be available in the next update.</p>
+                    </div>
+                  )}
                 </div>
                 <p className="mt-2 text-[11px] text-slate-500">
                   Avg.pos. MoM = Average position month-over-month change.
@@ -1785,7 +1591,7 @@ export default function Home() {
                 <div className="hidden gap-2 text-[11px] text-slate-400 md:flex">
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-4 rounded-full bg-[#4aa6c5]" />
-                    Organic Entries
+                    Organic visits
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <span className="h-1.5 w-4 rounded-full bg-[#3551e6]" />
@@ -1798,61 +1604,44 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-4 h-48 rounded-lg border border-slate-200 bg-white px-3 py-3">
-                {seoChartData ? (
                 <div className="relative h-full flex gap-2">
-                  {/* Left Y-axis labels - for Organic Entries and Clicks */}
-                  {(() => {
-                    const maxEntriesK = Math.max(...seoChartData.map(d => d.entriesK));
-                    const maxClicksK = searchConsoleChartData ? Math.max(...searchConsoleChartData.map(d => d.clicksK)) : 0;
-                    const maxDataValue = Math.max(maxEntriesK, maxClicksK);
-                    const ticks = getNiceAxisTicks(maxDataValue, 5);
-                    return (
-                      <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6 min-w-[32px]">
-                        {ticks.map((tick, idx) => (
-                          <span key={idx}>{tick}k</span>
-                        ))}
-                      </div>
-                    );
-                  })()}
+                  {/* Y-axis labels */}
+                  <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
+                    <span>17k</span>
+                    <span>12k</span>
+                    <span>8k</span>
+                    <span>4k</span>
+                    <span>0</span>
+                  </div>
 
                   <div className="relative flex-1 h-full">
                     <div className="flex h-full items-end gap-2">
                       {(() => {
-                        // Use real entries data from BigQuery
-                        const entriesK = seoChartData.map(d => d.entriesK);
-                        const months = seoChartData.map(d => d.month);
+                        const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"];
+                        const organic = [10, 12, 11, 13, 14, 13, 15];
+                        const impressions = [7, 8, 9, 10, 11, 10, 12];
+                        const clicks = [5, 6, 7, 8, 9, 8, 10];
 
-                        // Get real clicks data from search console, matched by month
-                        const clicksK = months.map(month => {
-                          const scData = searchConsoleChartData?.find(d => d.month === month);
-                          return scData?.clicksK ?? 0;
-                        });
-
-                        const maxEntriesK = Math.max(...entriesK);
-                        const maxClicksK = Math.max(...clicksK);
-                        const leftTicks = getNiceAxisTicks(Math.max(maxEntriesK, maxClicksK), 5);
-                        const maxYLeft = leftTicks[0]; // First tick is the max (reversed array)
-                        const toHeight = (val: number) => `${(val / maxYLeft) * 100}%`;
+                        const maxVal = Math.max(...organic) + 2;
+                        const toHeight = (val: number) => `${(val / maxVal) * 100}%`;
 
                         return months.map((month, idx) => (
                           <div key={month} className="flex flex-1 flex-col justify-end gap-1">
-                            <div className="flex h-28 items-end gap-[3px] relative">
+                            <div className="flex h-28 items-end gap-[3px] relative group">
                               <div
-                                className="group flex-1 relative flex flex-col justify-end"
-                                style={{ height: toHeight(entriesK[idx]) }}
+                                className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
+                                style={{ height: toHeight(organic[idx]) }}
                               >
-                                <div className="w-full h-full rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer" />
-                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-30">
-                                  {entriesK[idx]}k
+                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                  {organic[idx]}k
                                 </span>
                               </div>
                               <div
-                                className="group flex-1 relative flex flex-col justify-end"
-                                style={{ height: toHeight(clicksK[idx]) }}
+                                className="flex-1 rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer relative"
+                                style={{ height: toHeight(clicks[idx]) }}
                               >
-                                <div className="w-full h-full rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer" />
-                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-30">
-                                  {clicksK[idx]}k
+                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                  {clicks[idx]}k
                                 </span>
                               </div>
                             </div>
@@ -1862,88 +1651,28 @@ export default function Home() {
                       })()}
                     </div>
                   {(() => {
-                    // Use real impressions data from search console - scaled to RIGHT Y-axis
-                    const months = seoChartData.map(d => d.month);
-                    const impressionsK = months.map(month => {
-                      const scData = searchConsoleChartData?.find(d => d.month === month);
-                      return scData?.impressionsK ?? 0;
+                    const impressions = [7, 8, 9, 10, 11, 10, 12];
+                    const maxVal = Math.max(15, ...impressions) + 2;
+                    const xStep = 100 / 6;
+                    const points = impressions.map((val, idx) => {
+                      const x = idx * xStep;
+                      const y = 100 - (val / maxVal) * 100;
+                      return `${idx === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
                     });
-
-                    // Impressions use their own scale (right Y-axis) with nice ticks
-                    const maxImpressionsK = Math.max(...impressionsK);
-                    const rightTicks = getNiceAxisTicks(maxImpressionsK, 5);
-                    const maxYRight = rightTicks[0]; // First tick is the max (reversed array)
-                    const numMonths = seoChartData.length;
-
-                    // Calculate point coordinates for line and hover points
-                    // Position each dot at the center of its month column
-                    const pointCoords = impressionsK.map((val, idx) => ({
-                      x: (100 * (2 * idx + 1)) / (2 * numMonths),
-                      y: 100 - (val / maxYRight) * 100,
-                      value: val,
-                    }));
-
-                    const pathD = pointCoords.map((p, idx) =>
-                      `${idx === 0 ? "M" : "L"} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`
-                    ).join(" ");
+                    const path = points.join(" ");
 
                     return (
-                      <>
-                        {/* Line path */}
-                        <svg
-                          className="pointer-events-none absolute inset-0 h-full w-full"
-                          viewBox="0 0 100 100"
-                          preserveAspectRatio="none"
-                        >
-                          <path d={pathD} fill="none" stroke="#1e40af" strokeWidth="1.4" />
-                        </svg>
-                        {/* Hoverable data points - pointer-events-none on container so bars can be hovered */}
-                        <div className="absolute inset-0 h-full w-full pointer-events-none" style={{ marginBottom: '24px' }}>
-                          {pointCoords.map((point, idx) => (
-                            <div
-                              key={idx}
-                              className="absolute group pointer-events-auto"
-                              style={{
-                                left: `${point.x}%`,
-                                top: `${point.y}%`,
-                                transform: 'translate(-50%, -50%)',
-                              }}
-                            >
-                              <div className="w-3 h-3 rounded-full bg-[#1e40af] border-2 border-white shadow-sm cursor-pointer hover:scale-125 transition-transform" />
-                              <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-20">
-                                {(point.value / 1000).toFixed(point.value >= 1000 ? 1 : 2)}M
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </>
+                      <svg
+                        className="pointer-events-none absolute inset-0 h-full w-full"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                      >
+                        <path d={path} fill="none" stroke="#1e40af" strokeWidth="1.4" />
+                      </svg>
                     );
                   })()}
                   </div>
-
-                  {/* Right Y-axis labels - for Impressions (in Millions) */}
-                  {(() => {
-                    const months = seoChartData.map(d => d.month);
-                    const impressionsK = months.map(month => {
-                      const scData = searchConsoleChartData?.find(d => d.month === month);
-                      return scData?.impressionsK ?? 0;
-                    });
-                    const maxImpressionsK = Math.max(...impressionsK);
-                    const ticks = getNiceAxisTicks(maxImpressionsK, 5);
-                    return (
-                      <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6 min-w-[32px] text-right">
-                        {ticks.map((tick, idx) => (
-                          <span key={idx}>{(tick / 1000).toFixed(tick >= 1000 ? 0 : 1)}M</span>
-                        ))}
-                      </div>
-                    );
-                  })()}
                 </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center text-slate-400 text-sm">
-                    Loading chart data...
-                  </div>
-                )}
               </div>
             </article>
 
@@ -2629,4 +2358,5 @@ export default function Home() {
     </main>
   );
 }
+
 
