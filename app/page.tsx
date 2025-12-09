@@ -897,17 +897,17 @@ export default function Home() {
             )}
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+              <div className="flex items-start justify-between gap-4 mb-3">
+                <div className="flex-1 max-w-full">
+                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500 whitespace-nowrap">
                     Landing pages by keyword
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
                     Explore how key queries map to core landing pages.
                   </p>
                 </div>
-                <div className="flex flex-col items-end gap-1">
-                  <div className="flex items-center gap-1 text-[11px] text-slate-500">
+                <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                  <div className="flex items-center gap-1 text-[11px] text-slate-500 whitespace-nowrap">
                     <span>Filter</span>
                     <select
                       className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px]"
