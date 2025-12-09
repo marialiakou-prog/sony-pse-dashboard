@@ -168,7 +168,7 @@ export default function Home() {
           </button>
         </nav>
 
-        <div className="mt-auto px-3 pb-6">
+        <div className="mt-auto px-3 pb-10">
           <p className="text-xs italic text-slate-400">
             📊 Sample data for demo purposes
           </p>
