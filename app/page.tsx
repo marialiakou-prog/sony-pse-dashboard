@@ -249,7 +249,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
                   </svg>
                   <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
-                    Average position of your tracked keywords in Google search results
+                    The average position of Domains in search results, based on their highest position whenever they appeared in a search
                   </div>
                 </div>
               </div>
