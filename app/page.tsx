@@ -1647,9 +1647,9 @@ export default function Home() {
                 <div className="relative h-full flex gap-2">
                   {/* Y-axis labels */}
                   <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
-                    <span>17k</span>
-                    <span>12k</span>
-                    <span>8k</span>
+                    <span>18k</span>
+                    <span>13k</span>
+                    <span>9k</span>
                     <span>4k</span>
                     <span>0</span>
                   </div>
@@ -1657,10 +1657,10 @@ export default function Home() {
                   <div className="relative flex-1 h-full">
                     <div className="flex h-full items-end gap-2">
                       {(() => {
-                        const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"];
-                        const organic = [10, 12, 11, 13, 14, 13, 15];
-                        const impressions = [7, 8, 9, 10, 11, 10, 12];
-                        const clicks = [5, 6, 7, 8, 9, 8, 10];
+                        const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+                        const organic = [10, 12, 11, 13, 14, 13, 15, 16];
+                        const impressions = [7, 8, 9, 10, 11, 10, 12, 13];
+                        const clicks = [5, 6, 7, 8, 9, 8, 10, 11];
 
                         const maxVal = Math.max(...organic) + 2;
                         const toHeight = (val: number) => `${(val / maxVal) * 100}%`;
@@ -1691,9 +1691,9 @@ export default function Home() {
                       })()}
                     </div>
                   {(() => {
-                    const impressions = [7, 8, 9, 10, 11, 10, 12];
-                    const maxVal = Math.max(15, ...impressions) + 2;
-                    const xStep = 100 / 6;
+                    const impressions = [7, 8, 9, 10, 11, 10, 12, 13];
+                    const maxVal = Math.max(16, ...impressions) + 2;
+                    const xStep = 100 / 7;
                     const points = impressions.map((val, idx) => {
                       const x = idx * xStep;
                       const y = 100 - (val / maxVal) * 100;
