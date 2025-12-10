@@ -301,7 +301,7 @@ export default function Home() {
                 <span className="text-xs text-emerald-400">+0.4 pts vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Click-through rate across all market
+                Click-through rate across all markets
               </p>
             </article>
 
@@ -316,7 +316,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
                   </svg>
                   <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
-                    Total number of Adobe entries from Natural Search across all markets
+                    Total number of Adobe entries from Natural Search
                   </div>
                 </div>
               </div>
@@ -325,7 +325,7 @@ export default function Home() {
                 <span className="text-xs text-[#4aa6c5]">+6.8% vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Entries from Organic Sessions
+                Entries from Organic Sessions across all markets
               </p>
             </article>
 
@@ -340,7 +340,7 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
                   </svg>
                   <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
-                    Total Form Submissions from Natural Search across all markets
+                    Total Adobe CDC from Natural Search
                   </div>
                 </div>
               </div>
@@ -349,7 +349,7 @@ export default function Home() {
                 <span className="text-xs text-[#4aa6c5]">+12% vs. last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                CDC Conversions from Organic Sessions
+                Submitted Forms from Organic Sessions across all markets
               </p>
             </article>
           </section>
