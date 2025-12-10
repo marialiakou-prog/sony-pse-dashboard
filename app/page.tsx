@@ -33,7 +33,7 @@ export default function Home() {
       case "seo-health":
         return (
           <>
-            Deep dive into keyword performance for the selected market.
+            Deep dive into keyword performance <strong>for the selected market</strong>.
             <br />
             Track ranking distribution, identify top-performing search terms, and analyze how keywords drive traffic and visibility.
           </>
