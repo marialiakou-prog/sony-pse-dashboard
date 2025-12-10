@@ -2030,7 +2030,7 @@ export default function Home() {
               </div>
 
               <div className="mt-3 flex flex-wrap gap-1 rounded-lg bg-slate-100 p-2 text-[11px] text-slate-600">
-                {(["GB", "ES", "FR", "DE", "IT", "NL"] as CountryCode[]).map((country) => (
+                {(["GB", "ES", "FR", "DE", "IT", "NL", "BE", "AT", "SE"] as CountryCode[]).map((country) => (
                   <button
                     key={country}
                     type="button"
@@ -2057,85 +2057,226 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">sony broadcast cameras</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">2</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">12,400</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/broadcast-cameras</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">4k professional camera</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
-                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">8,900</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/4k-cameras</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">sony ptz camera</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">4</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">6,700</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/ptz-cameras</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">live production switcher</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-red-700 font-medium text-[10px]">
-                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                          </svg>
-                          Video
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">5,200</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/live-production</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">sony system camera</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">3</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">4,800</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/system-cameras</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">professional video monitor</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">7</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">3,900</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/monitors</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">sony xdcam camcorder</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">8</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">3,100</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/xdcam</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">remote production solutions</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
-                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">2,500</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/solutions/remote-production</td>
-                    </tr>
+                    {keywordPerformanceCountry === "GB" && (
+                      <>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">sony broadcast cameras</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">2</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">12,400</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/broadcast-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">4k professional camera</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
+                              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">8,900</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/4k-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">sony ptz camera</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">4</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">6,700</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/ptz-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">live production switcher</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-red-700 font-medium text-[10px]">
+                              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                              </svg>
+                              Video
+                            </span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">5,200</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/live-production</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">sony system camera</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">3</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">4,800</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/system-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">professional video monitor</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">7</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3,900</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/monitors</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">sony xdcam camcorder</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">8</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3,100</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/xdcam</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">remote production solutions</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
+                              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">2,500</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/solutions/remote-production</td>
+                        </tr>
+                      </>
+                    )}
+                    {keywordPerformanceCountry === "ES" && (
+                      <>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">cámaras profesionales sony</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">1</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">8,200</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/es/productos/camaras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">cámara 4k profesional</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">3</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">5,600</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/es/productos/4k-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">producción en vivo</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">5</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">4,100</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/es/productos/produccion-vivo</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">cámaras ptz</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">2</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3,800</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/es/productos/ptz-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">monitores profesionales</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">6</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">2,900</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/es/productos/monitores</td>
+                        </tr>
+                      </>
+                    )}
+                    {keywordPerformanceCountry === "FR" && (
+                      <>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">caméras professionnelles sony</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">1</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">7,800</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/fr/produits/cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">caméra 4k broadcast</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
+                              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">6,200</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/fr/produits/4k-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">production vidéo en direct</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">4</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">4,500</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/fr/produits/production-live</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">caméra ptz sony</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">3</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3,400</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/fr/produits/ptz-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">moniteur professionnel</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">7</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3,100</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/fr/produits/moniteurs</td>
+                        </tr>
+                      </>
+                    )}
+                    {(keywordPerformanceCountry === "DE" || keywordPerformanceCountry === "IT" || keywordPerformanceCountry === "NL" || keywordPerformanceCountry === "BE" || keywordPerformanceCountry === "AT" || keywordPerformanceCountry === "SE") && (
+                      <>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">professional broadcast camera</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">2</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">9,500</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/broadcast-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">4k video camera</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">3</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">7,200</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/4k-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">ptz camera system</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">4</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">5,800</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/ptz-cameras</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">live production equipment</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">6</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">4,300</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/live-production</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700">professional video monitor</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">5</span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3,600</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/monitors</td>
+                        </tr>
+                      </>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -2181,102 +2322,134 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/4k-cameras</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">8.9k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/live-production</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">5.2k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                          </svg>
-                          Video
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/solutions/remote-production</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">2.5k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/broadcast-cameras</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">12.4k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
-                          </svg>
-                          Featured
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/ptz-cameras</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">6.7k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-1.5 py-0.5 text-purple-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                          </svg>
-                          Images
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/monitors</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">3.9k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                          </svg>
-                          Video
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/system-cameras</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">4.8k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/xdcam</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">3.1k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
-                          </svg>
-                          Featured
-                        </span>
-                      </td>
-                    </tr>
+                    {serpFeatureCountry === "GB" && (
+                      <>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/broadcast-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">12.4k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                              </svg>
+                              Featured
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/4k-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">8.9k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/ptz-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">6.7k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-1.5 py-0.5 text-purple-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                              </svg>
+                              Images
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/live-production</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">5.2k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                              </svg>
+                              Video
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/system-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">4.8k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                        </tr>
+                      </>
+                    )}
+                    {(serpFeatureCountry === "ES" || serpFeatureCountry === "FR" || serpFeatureCountry === "DE" || serpFeatureCountry === "IT" || serpFeatureCountry === "NL") && (
+                      <>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/4k-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">7.2k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                              </svg>
+                              Featured
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/broadcast-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">6.8k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/ptz-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">5.4k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-1.5 py-0.5 text-purple-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                              </svg>
+                              Images
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/live-production</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">4.6k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                              </svg>
+                              Video
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/monitors</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3.2k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                              </svg>
+                              Video
+                            </span>
+                          </td>
+                        </tr>
+                      </>
+                    )}
                   </tbody>
                 </table>
               </div>
