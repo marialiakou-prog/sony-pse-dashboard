@@ -2317,7 +2317,7 @@ export default function Home() {
               </p>
               <div className="mt-3 space-y-1.5 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
-                  <span>(last 30d)</span>
+                  <span>(Last Month)</span>
                   <span>MoM %</span>
                 </div>
                 {[
@@ -2349,7 +2349,7 @@ export default function Home() {
               </p>
               <div className="mt-3 space-y-1.5 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
-                  <span>(last 30d)</span>
+                  <span>(Last Month)</span>
                   <span>MoM %</span>
                 </div>
                 {[
@@ -2377,7 +2377,7 @@ export default function Home() {
                 AI visits by market
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Share of LLM-driven visits by country (last 30d).
+                Share of LLM-driven visits by country (Last Month).
               </p>
               <div className="mt-3 space-y-2 text-[11px] text-slate-700">
                 <div className="mt-3 flex items-center gap-4 text-[11px] text-slate-700">
