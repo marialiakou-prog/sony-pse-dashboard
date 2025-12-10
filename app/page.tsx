@@ -293,7 +293,7 @@ export default function Home() {
             }`}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
-            <span>AI Performance</span>
+            <span>GEO Performance</span>
           </button>
         </nav>
 
