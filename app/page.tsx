@@ -1311,7 +1311,7 @@ export default function Home() {
                   <span className="w-2/5">Query</span>
                   <span className="w-1/5 text-right">Clicks</span>
                   <span className="w-1/5 text-right">Impressions</span>
-                  <span className="w-1/5 text-right">Average Position</span>
+                  <span className="w-1/5 text-right">Avg. Position</span>
                   <span className="w-1/5 text-right">Avg. Position MoM</span>
                 </div>
                 <div className="mt-2 space-y-1.5">
