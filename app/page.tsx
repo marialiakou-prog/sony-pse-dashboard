@@ -10,6 +10,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<MainTab>("executive-summary");
   const [keywordCountry, setKeywordCountry] = useState<CountryCode>("GB");
   const [keywordMovementCountry, setKeywordMovementCountry] = useState<CountryCode>("GB");
+  const [keywordPerformanceCountry, setKeywordPerformanceCountry] = useState<CountryCode>("GB");
+  const [serpFeatureCountry, setSerpFeatureCountry] = useState<CountryCode>("GB");
   const [landingPageFilter, setLandingPageFilter] = useState<string>("all");
   const [queryPositionFilter, setQueryPositionFilter] = useState<string>("all");
   const [brandQueryFilter, setBrandQueryFilter] = useState<string>("brand");
@@ -2027,6 +2029,23 @@ export default function Home() {
                 </div>
               </div>
 
+              <div className="mt-3 flex flex-wrap gap-1 rounded-lg bg-slate-100 p-2 text-[11px] text-slate-600">
+                {(["GB", "ES", "FR", "DE", "IT", "NL"] as CountryCode[]).map((country) => (
+                  <button
+                    key={country}
+                    type="button"
+                    onClick={() => setKeywordPerformanceCountry(country)}
+                    className={`px-2 py-0.5 rounded-full border text-xs ${
+                      keywordPerformanceCountry === country
+                        ? "border-slate-900 bg-white font-semibold text-slate-900 shadow-sm"
+                        : "border-transparent hover:border-slate-300 hover:bg-white/60"
+                    }`}
+                  >
+                    {country}
+                  </button>
+                ))}
+              </div>
+
               <div className="mt-4 overflow-x-auto">
                 <table className="w-full text-left text-[11px]">
                   <thead className="border-b border-slate-200 bg-slate-50">
@@ -2133,6 +2152,23 @@ export default function Home() {
                     Pages winning premium search features.
                   </p>
                 </div>
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-1 rounded-lg bg-slate-100 p-2 text-[11px] text-slate-600">
+                {(["GB", "ES", "FR", "DE", "IT", "NL"] as CountryCode[]).map((country) => (
+                  <button
+                    key={country}
+                    type="button"
+                    onClick={() => setSerpFeatureCountry(country)}
+                    className={`px-2 py-0.5 rounded-full border text-xs ${
+                      serpFeatureCountry === country
+                        ? "border-slate-900 bg-white font-semibold text-slate-900 shadow-sm"
+                        : "border-transparent hover:border-slate-300 hover:bg-white/60"
+                    }`}
+                  >
+                    {country}
+                  </button>
+                ))}
               </div>
 
               <div className="mt-4 overflow-x-auto">
