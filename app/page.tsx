@@ -29,7 +29,7 @@ export default function Home() {
   const headerSubtitle = useMemo(() => {
     switch (activeTab) {
       case "seo-health":
-        return "Keyword coverage, ranking distribution, and query-level performance across markets.";
+        return "Sony Professional's organic search performance across the PSE region. Monitor monthly trends in traffic and lead conversions, see which search terms perform best, track keyword ranking movements, and identify pages winning premium search features.";
       case "ai-insights":
         return "AI-generated opportunities, risks, and experiments.";
       default:
