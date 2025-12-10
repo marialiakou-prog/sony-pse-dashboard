@@ -202,7 +202,9 @@ export default function Home() {
       {/* Main content */}
       <section className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="flex items-center justify-between border-b border-slate-200 bg-[#f8fafc] px-8 py-5">
+        <header className={`flex items-center justify-between border-b border-slate-200 bg-[#f8fafc] px-8 py-5 ${
+          activeTab === "seo-health" ? "sticky top-0 z-20 shadow-sm" : ""
+        }`}>
           <div>
             <h1 className="text-[1.4rem] font-semibold tracking-tight text-slate-900">
               {headerTitle}
