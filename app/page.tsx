@@ -1209,8 +1209,8 @@ export default function Home() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                     <span className="w-2/5">Query</span>
-                    <span className="w-1/5 text-right">Impr.</span>
-                    <span className="w-1/5 text-right">CTR</span>
+                    <span className="w-1/5 text-right">Impressions</span>
+                    <span className="w-1/5 text-right">Click-Through Rate</span>
                   </div>
                   <div className="mt-1 max-h-24 space-y-1.5 overflow-y-auto pr-1">
                     {[
@@ -1326,9 +1326,9 @@ export default function Home() {
                 <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                   <span className="w-2/5">Query</span>
                   <span className="w-1/5 text-right">Clicks</span>
-                  <span className="w-1/5 text-right">Impr.</span>
-                  <span className="w-1/5 text-right">Avg. pos.</span>
-                  <span className="w-1/5 text-right">Avg.pos. MoM</span>
+                  <span className="w-1/5 text-right">Impressions</span>
+                  <span className="w-1/5 text-right">Average Position</span>
+                  <span className="w-1/5 text-right">Avg. Position MoM</span>
                 </div>
                 <div className="mt-2 space-y-1.5">
                   {keywordCountry === "GB" && (
