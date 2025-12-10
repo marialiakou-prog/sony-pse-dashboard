@@ -31,7 +31,13 @@ export default function Home() {
   const headerSubtitle = useMemo(() => {
     switch (activeTab) {
       case "seo-health":
-        return "Keyword coverage, ranking distribution, and query-level performance across markets.";
+        return (
+          <>
+            Deep dive into keyword performance for the selected market.
+            <br />
+            Track ranking distribution, identify top-performing search terms, and analyze how keywords drive traffic and visibility.
+          </>
+        );
       case "ai-insights":
         return "AI-generated opportunities, risks, and experiments.";
       default:
