@@ -2384,6 +2384,78 @@ export default function Home() {
                             </span>
                           </td>
                         </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/monitors</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3.9k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                              </svg>
+                              Video
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/xdcam</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">3.1k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                              </svg>
+                              Featured
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/solutions/remote-production</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">2.5k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/studio-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">2.2k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-1.5 py-0.5 text-purple-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                              </svg>
+                              Images
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/solutions/ip-live-production</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">1.8k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/camcorders</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">1.4k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                              </svg>
+                              Featured
+                            </span>
+                          </td>
+                        </tr>
                       </>
                     )}
                     {(serpFeatureCountry === "ES" || serpFeatureCountry === "FR" || serpFeatureCountry === "DE" || serpFeatureCountry === "IT" || serpFeatureCountry === "NL") && (
@@ -2445,6 +2517,78 @@ export default function Home() {
                                 <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
                               </svg>
                               Video
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/system-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">2.9k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/solutions/remote-production</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">2.1k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                              </svg>
+                              Featured
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/xdcam</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">1.7k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-1.5 py-0.5 text-purple-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                              </svg>
+                              Images
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/studio-cameras</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">1.5k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                              </svg>
+                              Video
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/solutions/ip-live-production</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">1.2k</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+                              </svg>
+                              PAA
+                            </span>
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50">
+                          <td className="px-3 py-2.5 text-slate-700 truncate">/products/camcorders</td>
+                          <td className="px-3 py-2.5 text-center text-slate-600">980</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
+                              <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
+                              </svg>
+                              Featured
                             </span>
                           </td>
                         </tr>
