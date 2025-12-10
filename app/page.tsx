@@ -33,7 +33,13 @@ export default function Home() {
       case "ai-insights":
         return "AI-generated opportunities, risks, and experiments.";
       default:
-        return "Sony Professional's organic search performance across the PSE region. Monitor monthly trends in traffic and lead conversions, see which search terms perform best, track keyword ranking movements, and identify pages winning premium search features.";
+        return (
+          <>
+            Sony Professional's organic search performance across the PSE region.
+            <br />
+            Monitor monthly trends in traffic and lead conversions, see which search terms perform best, track keyword ranking movements, and identify pages winning premium search features.
+          </>
+        );
     }
   }, [activeTab]);
 
