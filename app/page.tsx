@@ -1297,31 +1297,13 @@ export default function Home() {
 
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                    Top keywords by country
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Last month • Top queries for key European markets.
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-1 rounded-lg bg-slate-100 p-2 text-[11px] text-slate-600">
-                  {(["GB", "DE", "FR", "IT", "ES", "NL", "BE", "AT", "SE", "NO", "DK", "FI", "PL", "PT", "IE", "GR", "CZ", "RO", "HU", "CH"] as CountryCode[]).map((country) => (
-                    <button
-                      key={country}
-                      type="button"
-                      onClick={() => setKeywordCountry(country)}
-                      className={`px-2 py-0.5 rounded-full border text-xs ${
-                        keywordCountry === country
-                          ? "border-slate-900 bg-white font-semibold text-slate-900 shadow-sm"
-                          : "border-transparent hover:border-slate-300 hover:bg-white/60"
-                      }`}
-                    >
-                      {country}
-                    </button>
-                  ))}
-                </div>
+              <div>
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Top keywords by country
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Last month • Top queries for key European markets.
+                </p>
               </div>
 
               <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
