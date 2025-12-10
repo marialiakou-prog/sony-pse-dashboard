@@ -1299,10 +1299,10 @@ export default function Home() {
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-5">
               <div>
                 <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                  Top keywords by country
+                  Top Keywords by Clicks
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
-                  Last month • Top queries for key European markets.
+                  Last month • Top queries for the selected Country
                 </p>
               </div>
 
