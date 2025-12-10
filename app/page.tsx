@@ -21,7 +21,7 @@ export default function Home() {
       case "seo-health":
         return "Keywords";
       case "ai-insights":
-        return "AI Performance";
+        return "GEO Performance";
       default:
         return "SEO Overview";
     }
@@ -38,7 +38,12 @@ export default function Home() {
           </>
         );
       case "ai-insights":
-        return "AI-generated opportunities, risks, and experiments.";
+        return (<>
+      GEO: Generative Engine Optimization.
+      <br />
+      Discover how LLMs drive visits to Sony Professional and how the brand appears in AI answers.
+    </>
+  );
       default:
         return (
           <>
