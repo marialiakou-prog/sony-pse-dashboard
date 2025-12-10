@@ -1308,7 +1308,7 @@ export default function Home() {
                     </div>
                   </div>
                   <p className="mt-2 text-[11px] text-slate-500">
-                    Aim to grow non-brand discovery without losing share on core brand queries.
+                   Branded queries include google searches containing 'Sony'.
                   </p>
                 </div>
 
