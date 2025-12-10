@@ -39,7 +39,7 @@ export default function Home() {
           </>
         );
       case "ai-insights":
-        return "GEO: Generative Engine Optimization. Discover how LLMs drive visits to Sony Professional and how the brand appears in AI answers.";
+        return "GEO: Generative Engine Optimization. <br /> Discover how LLMs drive visits to Sony Professional and how the brand appears in AI answers. </>";
       default:
         return (
           <>
