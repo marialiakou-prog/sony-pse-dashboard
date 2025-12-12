@@ -2,247 +2,26 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import useSWR from "swr";
 
 type MainTab = "executive-summary" | "seo-health" | "ai-insights";
-type CountryCode = "GB" | "DE" | "FR" | "IT" | "ES";
+type CountryCode = "GB" | "DE" | "FR" | "IT" | "ES" | "NL" | "BE" | "AT" | "SE" | "NO" | "DK" | "FI" | "PL" | "PT" | "IE" | "GR" | "CZ" | "RO" | "HU" | "CH";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<MainTab>("executive-summary");
   const [keywordCountry, setKeywordCountry] = useState<CountryCode>("GB");
+  const [keywordMovementCountry, setKeywordMovementCountry] = useState<CountryCode>("GB");
+  const [serpFeatureCountry, setSerpFeatureCountry] = useState<CountryCode>("GB");
   const [landingPageFilter, setLandingPageFilter] = useState<string>("all");
   const [queryPositionFilter, setQueryPositionFilter] = useState<string>("all");
   const [brandQueryFilter, setBrandQueryFilter] = useState<string>("brand");
   const [aiTrafficMetric, setAiTrafficMetric] = useState<"visits" | "cdcs">("visits");
-  const formatWithKSuffix = (value: number) => {
-    if (value >= 10000) {
-      return `${Math.round(value / 1000)}k`;
-    }
-
-    if (value >= 1000) {
-      const rounded = Math.round((value / 1000) * 10) / 10;
-      return `${rounded.toLocaleString("en-GB", { maximumFractionDigits: 1 })}k`;
-    }
-
-    return value.toLocaleString("en-GB");
-  };
-
-  // Calculate nice Y-axis ticks (e.g., 0, 50, 100, 150, 200)
-  const getNiceAxisTicks = (maxValue: number, tickCount: number = 5): number[] => {
-    if (maxValue <= 0) return [0];
-
-    // Nice intervals to choose from
-    const niceIntervals = [10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000];
-
-    // Find the best interval that gives us around tickCount ticks
-    const rawInterval = maxValue / (tickCount - 1);
-    const niceInterval = niceIntervals.find(i => i >= rawInterval) || Math.ceil(rawInterval / 1000) * 1000;
-
-    // Generate ticks from 0 to a nice max that covers the data
-    const niceMax = Math.ceil(maxValue / niceInterval) * niceInterval;
-    const ticks: number[] = [];
-    for (let i = 0; i <= niceMax; i += niceInterval) {
-      ticks.push(i);
-      if (ticks.length >= tickCount) break;
-    }
-
-    return ticks.reverse(); // Reverse for top-to-bottom display
-  };
-
-  // SWR fetcher function
-  const fetcher = (url: string) => fetch(url).then(res => res.json());
-
-  // Fetch organic sessions with SWR - caches data and shows instantly on refresh
-  const { data: seoData } = useSWR('/api/seo-data', fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: true,
-    dedupingInterval: 60000, // 1 minute - don't re-fetch within this window
-  });
-
-  // Fetch search console data for clicks and impressions (filtered by content = '___')
-  const { data: searchConsoleData } = useSWR('/api/search-console?content=___', fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: true,
-    dedupingInterval: 60000,
-  });
-
-  // Process SEO data to get organic sessions with MoM comparison
-  const organicSessions = useMemo(() => {
-    if (!seoData?.success || !seoData?.data?.length) return null;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getMonthValue = (row: any): string => {
-      const month = row?.month;
-      return (month && typeof month === "object" ? month.value : month) ?? "";
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getEntriesValue = (row: any): number => {
-      const value = Number(row?.entries ?? 0);
-      return Number.isFinite(value) ? value : 0;
-    };
-
-    // Get unique months sorted descending
-    const uniqueMonths = [...new Set(seoData.data.map(getMonthValue))]
-      .filter((m): m is string => Boolean(m))
-      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-
-    if (uniqueMonths.length === 0) return null;
-
-    const latestMonth = uniqueMonths[0];
-    const previousMonth = uniqueMonths[1];
-
-    // Sum all entries from the latest month
-    const latestMonthData = seoData.data.filter(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (row: any) => getMonthValue(row) === latestMonth
-    );
-    const totalEntries = latestMonthData.reduce(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (sum: number, row: any) => sum + getEntriesValue(row),
-      0
-    );
-
-    // Calculate MoM comparison if previous month exists
-    let momChange: number | null = null;
-    if (previousMonth) {
-      const previousMonthData = seoData.data.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (row: any) => getMonthValue(row) === previousMonth
-      );
-      const previousTotal = previousMonthData.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sum: number, row: any) => sum + getEntriesValue(row),
-        0
-      );
-      if (previousTotal > 0) {
-        momChange = ((totalEntries - previousTotal) / previousTotal) * 100;
-      }
-    }
-
-    // Format with 'k' suffix
-    const formatted = formatWithKSuffix(totalEntries);
-
-    // Format month for display
-    const monthDate = new Date(latestMonth);
-    const monthLabel = Number.isNaN(monthDate.getTime())
-      ? latestMonth
-      : monthDate.toLocaleString("en-GB", { month: "long", year: "numeric" });
-
-    return { total: formatted, month: monthLabel, momChange };
-  }, [seoData]);
-
-  // Process SEO data for the performance chart (monthly visits)
-  const seoChartData = useMemo(() => {
-    if (!seoData?.success || !seoData?.data?.length) return null;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getMonthValue = (row: any): string => {
-      const month = row?.month;
-      return (month && typeof month === "object" ? month.value : month) ?? "";
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getEntriesValue = (row: any): number => {
-      const value = Number(row?.entries ?? 0);
-      return Number.isFinite(value) ? value : 0;
-    };
-
-    // Get unique months sorted ascending (oldest to newest for chart)
-    const uniqueMonths = [...new Set(seoData.data.map(getMonthValue))]
-      .filter((m): m is string => Boolean(m))
-      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-
-    if (uniqueMonths.length === 0) return null;
-
-    // Aggregate entries by month
-    const monthlyData = uniqueMonths.map(month => {
-      const monthData = seoData.data.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (row: any) => getMonthValue(row) === month
-      );
-      const totalEntries = monthData.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sum: number, row: any) => sum + getEntriesValue(row),
-        0
-      );
-
-      // Format month label (e.g., "Apr", "May")
-      const monthDate = new Date(month);
-      const label = Number.isNaN(monthDate.getTime())
-        ? month
-        : monthDate.toLocaleString("en-GB", { month: "short" });
-
-      return {
-        month: label,
-        entries: totalEntries,
-        entriesK: Math.round(totalEntries / 1000), // Value in thousands
-      };
-    });
-
-    return monthlyData;
-  }, [seoData]);
-
-  // Process search console data for clicks and impressions chart
-  const searchConsoleChartData = useMemo(() => {
-    if (!searchConsoleData?.success || !searchConsoleData?.data?.length) return null;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getMonthValue = (row: any): string => {
-      const month = row?.month;
-      return (month && typeof month === "object" ? month.value : month) ?? "";
-    };
-
-    // Get unique months sorted ascending (oldest to newest for chart)
-    const uniqueMonths = [...new Set(searchConsoleData.data.map(getMonthValue))]
-      .filter((m): m is string => Boolean(m))
-      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-
-    if (uniqueMonths.length === 0) return null;
-
-    // Aggregate clicks and impressions by month
-    const monthlyData = uniqueMonths.map(month => {
-      const monthData = searchConsoleData.data.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (row: any) => getMonthValue(row) === month
-      );
-
-      const totalClicks = monthData.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sum: number, row: any) => sum + (Number(row?.clicks) || 0),
-        0
-      );
-
-      const totalImpressions = monthData.reduce(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sum: number, row: any) => sum + (Number(row?.impressions) || 0),
-        0
-      );
-
-      // Format month label (e.g., "Apr", "May")
-      const monthDate = new Date(month);
-      const label = Number.isNaN(monthDate.getTime())
-        ? month
-        : monthDate.toLocaleString("en-GB", { month: "short" });
-
-      return {
-        month: label,
-        clicks: totalClicks,
-        clicksK: Math.round(totalClicks / 1000),
-        impressions: totalImpressions,
-        impressionsK: Math.round(totalImpressions / 1000),
-      };
-    });
-
-    return monthlyData;
-  }, [searchConsoleData]);
 
   const headerTitle = useMemo(() => {
     switch (activeTab) {
       case "seo-health":
         return "Keywords";
       case "ai-insights":
-        return "AI Performance";
+        return "GEO Performance";
       default:
         return "SEO Overview";
     }
@@ -251,11 +30,28 @@ export default function Home() {
   const headerSubtitle = useMemo(() => {
     switch (activeTab) {
       case "seo-health":
-        return "Keyword coverage, ranking distribution, and query-level performance across markets.";
+        return (
+          <>
+            Deep dive into keyword performance <strong>for the selected market</strong>.
+            <br />
+            Track ranking distribution, identify top-performing search terms, and analyze how keywords drive traffic and visibility.
+          </>
+        );
       case "ai-insights":
-        return "AI-generated opportunities, risks, and experiments.";
+        return (<>
+      GEO: Generative Engine Optimization.
+      <br />
+      Discover how LLMs drive visits to Sony Professional and how the brand appears in AI answers.
+    </>
+  );
       default:
-        return "SEO & AI performance at a glance.";
+        return (
+          <>
+            Sony Professional's organic search performance across the PSE region.
+            <br />
+            Monitor monthly trends in traffic and lead conversions, see which search terms perform best, track keyword ranking movements, and identify pages winning premium search features.
+          </>
+        );
     }
   }, [activeTab]);
 
@@ -322,10 +118,121 @@ export default function Home() {
     return months;
   }, []);
 
+  const landingPagesOverview = [
+    {
+      landingPage: "/products/broadcast-cameras",
+      keyword: "sony broadcast cameras",
+      position: { type: "badge", label: "2", className: "bg-emerald-100 text-emerald-700" },
+      impressions: "12,400",
+      clicks: "42",
+      ctr: "5.1%",
+      ctrMom: "+0.4 pts",
+    },
+    {
+      landingPage: "/products/4k-cameras",
+      keyword: "4k professional camera",
+      position: { type: "badge", label: "3", className: "bg-emerald-100 text-emerald-700" },
+      impressions: "8,900",
+      clicks: "31",
+      ctr: "4.6%",
+      ctrMom: "+0.3 pts",
+    },
+    {
+      landingPage: "/products/ptz-cameras",
+      keyword: "sony ptz camera",
+      position: { type: "badge", label: "4", className: "bg-emerald-100 text-emerald-700" },
+      impressions: "6,700",
+      clicks: "24",
+      ctr: "4.2%",
+      ctrMom: "+0.2 pts",
+    },
+    {
+      landingPage: "/products/live-production",
+      keyword: "live production switcher",
+      position: { type: "badge", label: "5", className: "bg-amber-100 text-amber-700" },
+      impressions: "5,200",
+      clicks: "19",
+      ctr: "3.8%",
+      ctrMom: "+0.1 pts",
+    },
+    {
+      landingPage: "/products/system-cameras",
+      keyword: "sony system camera",
+      position: { type: "badge", label: "3", className: "bg-emerald-100 text-emerald-700" },
+      impressions: "4,800",
+      clicks: "17",
+      ctr: "4.0%",
+      ctrMom: "+0.3 pts",
+    },
+    {
+      landingPage: "/products/monitors",
+      keyword: "professional video monitor",
+      position: { type: "badge", label: "7", className: "bg-amber-100 text-amber-700" },
+      impressions: "3,900",
+      clicks: "11",
+      ctr: "3.1%",
+      ctrMom: "-0.1 pts",
+    },
+    {
+      landingPage: "/products/xdcam",
+      keyword: "sony xdcam camcorder",
+      position: { type: "badge", label: "8", className: "bg-amber-100 text-amber-700" },
+      impressions: "3,100",
+      clicks: "9",
+      ctr: "2.9%",
+      ctrMom: "+0.2 pts",
+    },
+    {
+      landingPage: "/solutions/remote-production",
+      keyword: "remote production solutions",
+      position: { type: "badge", label: "6", className: "bg-amber-100 text-amber-700" },
+      impressions: "2,500",
+      clicks: "7",
+      ctr: "3.4%",
+      ctrMom: "+0.2 pts",
+    },
+  ] as const;
+
+  const renderPositionBadge = (position: { type: "badge" | "tag"; label: string; className: string; icon?: "paa" | "video" }) => {
+    if (position.type === "badge") {
+      return (
+        <span className={`inline-flex items-center rounded-full px-2 py-0.5 font-medium ${position.className}`}>
+          {position.label}
+        </span>
+      );
+    }
+
+    return (
+      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${position.className}`}>
+        {position.icon === "paa" && (
+          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+          </svg>
+        )}
+        {position.icon === "video" && (
+          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+          </svg>
+        )}
+        {position.label}
+      </span>
+    );
+  };
+
   return (
+    <>
+      <style jsx global>{`
+        @media print {
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+        }
+      `}</style>
     <main className="min-h-screen flex bg-transparent text-slate-900">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-slate-900 bg-[#333333] px-6 py-6 flex flex-col gap-8">
+      <aside className="sticky top-0 h-screen w-64 border-r border-slate-900 bg-[#333333] px-6 py-6 flex flex-col gap-8">
         <div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center">
@@ -348,9 +255,9 @@ export default function Home() {
           </div>
         </div>
 
-        <nav className="flex flex-col gap-1.5 text-sm text-slate-200">
+        <nav className="flex flex-col gap-1.5 text-sm text-slate-200 overflow-y-auto">
           <p className="px-2 text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">
-            SEO Overview
+            Tabs
           </p>
           <button
             type="button"
@@ -388,14 +295,21 @@ export default function Home() {
             <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
             <span>AI Performance</span>
           </button>
-
         </nav>
+
+        <div className="mt-auto px-3 pb-10">
+          <p className="text-xs italic text-slate-400">
+            📊 Sample data for demo purposes
+          </p>
+        </div>
       </aside>
 
       {/* Main content */}
       <section className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="flex items-center justify-between border-b border-slate-200 bg-[#f8fafc] px-8 py-5">
+        <header className={`flex items-center justify-between border-b border-slate-200 bg-[#f8fafc] px-8 py-5 ${
+          activeTab === "seo-health" ? "sticky top-0 z-20 shadow-sm" : ""
+        }`}>
           <div>
             <h1 className="text-[1.4rem] font-semibold tracking-tight text-slate-900">
               {headerTitle}
@@ -410,9 +324,43 @@ export default function Home() {
               </span>
               <span>Last sync: 3 min ago</span>
             </div>
-            <button className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-900 shadow-sm hover:bg-slate-100 sm:inline-flex">
+            <button
+              onClick={() => window.print()}
+              className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-900 shadow-sm hover:bg-slate-100 sm:inline-flex"
+            >
               Export snapshot
             </button>
+            {activeTab === "seo-health" && (
+              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
+                <span>Country</span>
+                <select
+                  value={keywordCountry}
+                  onChange={(e) => setKeywordCountry(e.target.value as CountryCode)}
+                  className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100 border-none outline-none cursor-pointer"
+                >
+                  <option value="GB">GB</option>
+                  <option value="DE">DE</option>
+                  <option value="FR">FR</option>
+                  <option value="IT">IT</option>
+                  <option value="ES">ES</option>
+                  <option value="NL">NL</option>
+                  <option value="BE">BE</option>
+                  <option value="AT">AT</option>
+                  <option value="SE">SE</option>
+                  <option value="NO">NO</option>
+                  <option value="DK">DK</option>
+                  <option value="FI">FI</option>
+                  <option value="PL">PL</option>
+                  <option value="PT">PT</option>
+                  <option value="IE">IE</option>
+                  <option value="GR">GR</option>
+                  <option value="CZ">CZ</option>
+                  <option value="RO">RO</option>
+                  <option value="HU">HU</option>
+                  <option value="CH">CH</option>
+                </select>
+              </div>
+            )}
             <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
               <span>Period</span>
               <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100">
@@ -431,69 +379,105 @@ export default function Home() {
             }`}
           >
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Avg. Google rank
-              </p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Avg. Google rank
+                </p>
+                <div className="group relative">
+                  <svg className="h-3.5 w-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
+                  </svg>
+                  <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
+                    The average position of Domains in search results, based on their highest position whenever they appeared in a search
+                  </div>
+                </div>
+              </div>
               <div className="mt-3 flex items-baseline gap-2">
                 <p className="text-2xl font-semibold text-slate-900">7.4</p>
                 <span className="text-xs text-[#4aa6c5]">+1.2 vs. last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Primary markets: GB, FR, ES
+                For the 3 Primary markets: GB, FR, ES
               </p>
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Organic entries
-              </p>
-              <div className="mt-3 flex items-baseline gap-2">
-                <p className="text-2xl font-semibold text-slate-900">
-                  {organicSessions?.total || '—'}
+              <div className="flex items-center gap-1.5">
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  CTR
                 </p>
-                {organicSessions?.momChange !== null && organicSessions?.momChange !== undefined && (
-                  <span className={`text-xs ${organicSessions.momChange >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-                    {organicSessions.momChange >= 0 ? '+' : ''}{Math.round(organicSessions.momChange)}% vs last month
-                  </span>
-                )}
+                <div className="group relative">
+                  <svg className="h-3.5 w-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
+                  </svg>
+                  <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
+                    Click-through rate: percentage of impressions that result in clicks
+                  </div>
+                </div>
               </div>
-              <p className="mt-2 text-xs text-slate-500">
-                {organicSessions
-                  ? 'Sessions from organic search across all markets.'
-                  : 'Loading...'}
-              </p>
-            </article>
-
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                CTR on key SERPs
-              </p>
               <div className="mt-3 flex items-baseline gap-2">
                 <p className="text-2xl font-semibold text-slate-900">4.9%</p>
-                <span className="text-xs text-emerald-400">+0.4 pts</span>
+                <span className="text-xs text-emerald-400">+0.4 pts vs last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                Blended click-through rate for product and category pages.
+                Click-through rate across all markets
               </p>
             </article>
 
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Organic CDC
+              <div className="flex items-center gap-1.5">
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Organic Entries
+                </p>
+                <div className="group relative">
+                  <svg className="h-3.5 w-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
+                  </svg>
+                  <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
+                    Total number of Adobe entries from Natural Search
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 flex items-baseline gap-2">
+                <p className="text-2xl font-semibold text-slate-900">182k</p>
+                <span className="text-xs text-[#4aa6c5]">+6.8% vs last month</span>
+              </div>
+              <p className="mt-2 text-xs text-slate-500">
+                Entries from Organic Sessions across all markets
               </p>
+            </article>
+
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center gap-1.5">
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Organic CDC
+                </p>
+                <div className="group relative">
+                  <svg className="h-3.5 w-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
+                  </svg>
+                  <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
+                    Total Adobe CDC from Natural Search
+                  </div>
+                </div>
+              </div>
               <div className="mt-3 flex items-baseline gap-2">
                 <p className="text-2xl font-semibold text-slate-900">150</p>
                 <span className="text-xs text-[#4aa6c5]">+12% vs. last month</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">
-                CDC Conversions from Organic Sessions
+                Submitted Forms from Organic Sessions across all markets
               </p>
             </article>
           </section>
 
           {/* Keywords / SEO health content */}
           <section
-            className={`grid gap-4 lg:grid-cols-3 ${
+            className={`grid gap-4 lg:grid-cols-5 ${
               activeTab === "seo-health" ? "opacity-100" : "hidden"
             }`}
           >
@@ -575,7 +559,7 @@ export default function Home() {
             </article>
             )}
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keywords Ranking
               </p>
@@ -696,7 +680,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between lg:col-span-2">
               <div>
                 <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                   Ranking KPIs
@@ -777,7 +761,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <article className="lg:col-span-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Keyword visibility & traffic
               </p>
@@ -1096,31 +1080,27 @@ export default function Home() {
             </article>
             )}
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                    Landing pages by keyword
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Explore how key queries map to core landing pages.
-                  </p>
-                </div>
-                <div className="flex flex-col items-end gap-1">
-                  <div className="flex items-center gap-1 text-[11px] text-slate-500">
-                    <span>Filter</span>
-                    <select
-                      className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px]"
-                      value={landingPageFilter}
-                      onChange={(e) => setLandingPageFilter(e.target.value)}
-                    >
-                      <option value="all">All queries</option>
-                      <option value="sony-broadcast-cameras">sony broadcast cameras</option>
-                      <option value="sony-ptz-camera">sony ptz camera</option>
-                      <option value="sony-live-production-switcher">sony live production switcher</option>
-                      <option value="sony-bravia-broadcast-monitor">sony bravia broadcast monitor</option>
-                    </select>
-                  </div>
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+              <div className="mb-3">
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500 whitespace-nowrap">
+                  Landing pages by keyword
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Explore how key queries map to core landing pages.
+                </p>
+                <div className="mt-2 flex items-center gap-1 text-[11px] text-slate-500">
+                  <span>Filter</span>
+                  <select
+                    className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px]"
+                    value={landingPageFilter}
+                    onChange={(e) => setLandingPageFilter(e.target.value)}
+                  >
+                    <option value="all">All queries</option>
+                    <option value="sony-broadcast-cameras">sony broadcast cameras</option>
+                    <option value="sony-ptz-camera">sony ptz camera</option>
+                    <option value="sony-live-production-switcher">sony live production switcher</option>
+                    <option value="sony-bravia-broadcast-monitor">sony bravia broadcast monitor</option>
+                  </select>
                 </div>
               </div>
 
@@ -1128,7 +1108,7 @@ export default function Home() {
                 <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                   <span className="w-2/5">Landing page</span>
                   <span className="w-1/5 text-right">Keywords</span>
-                  <span className="w-1/5 text-right">Impressions</span>
+                  <span className="w-1/5 text-right">Impr.</span>
                   <span className="w-1/5 text-right">Clicks</span>
                   <span className="w-1/5 text-right">Avg. pos.</span>
                 </div>
@@ -1286,7 +1266,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-5">
               <div className="flex items-center justify-between">
                 <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
                   Brand Split & Keywords Performance
@@ -1336,8 +1316,8 @@ export default function Home() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                     <span className="w-2/5">Query</span>
-                    <span className="w-1/5 text-right">Impr.</span>
-                    <span className="w-1/5 text-right">CTR</span>
+                    <span className="w-1/5 text-right">Impressions</span>
+                    <span className="w-1/5 text-right">Click-Through Rate</span>
                   </div>
                   <div className="mt-1 max-h-24 space-y-1.5 overflow-y-auto pr-1">
                     {[
@@ -1421,41 +1401,23 @@ export default function Home() {
             </article>
 
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                    Top keywords by country
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Last month • Top queries for key European markets.
-                  </p>
-                </div>
-                <div className="flex gap-1 rounded-full bg-slate-100 p-0.5 text-[11px] text-slate-600">
-                  {(["GB", "DE", "FR", "IT", "ES"] as CountryCode[]).map((country) => (
-                    <button
-                      key={country}
-                      type="button"
-                      onClick={() => setKeywordCountry(country)}
-                      className={`px-2 py-0.5 rounded-full border text-xs ${
-                        keywordCountry === country
-                          ? "border-slate-900 bg-white font-semibold text-slate-900 shadow-sm"
-                          : "border-transparent hover:border-slate-300 hover:bg-white/60"
-                      }`}
-                    >
-                      {country}
-                    </button>
-                  ))}
-                </div>
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-5">
+              <div>
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Top Keywords by Clicks
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Last month • Top queries for the selected Country
+                </p>
               </div>
 
               <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
                 <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
                   <span className="w-2/5">Query</span>
                   <span className="w-1/5 text-right">Clicks</span>
-                  <span className="w-1/5 text-right">Impr.</span>
-                  <span className="w-1/5 text-right">Avg. pos.</span>
-                  <span className="w-1/5 text-right">Avg.pos. MoM</span>
+                  <span className="w-1/5 text-right">Impressions</span>
+                  <span className="w-1/5 text-right">Avg. Position</span>
+                  <span className="w-1/5 text-right">Avg. Position MoM</span>
                 </div>
                 <div className="mt-2 space-y-1.5">
                   {keywordCountry === "GB" && (
@@ -1758,6 +1720,12 @@ export default function Home() {
                       </div>
                     </>
                   )}
+                  {!["GB", "DE", "FR", "IT", "ES"].includes(keywordCountry) && (
+                    <div className="py-8 text-center text-slate-500">
+                      <p className="text-sm">Data for {keywordCountry} coming soon.</p>
+                      <p className="mt-1 text-xs">This country is being tracked and data will be available in the next update.</p>
+                    </div>
+                  )}
                 </div>
                 <p className="mt-2 text-[11px] text-slate-500">
                   Avg.pos. MoM = Average position month-over-month change.
@@ -1775,11 +1743,27 @@ export default function Home() {
             <article className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                    SEO performance
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                      SEO performance
+                    </p>
+                    <div className="group relative">
+                      <svg className="h-3.5 w-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
+                      </svg>
+                      <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-64 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
+                        <p className="font-semibold">Organic Entries:</p>
+                        <p className="mb-2">Total number of Adobe entries from Natural Search</p>
+                        <p className="font-semibold">Clicks:</p>
+                        <p className="mb-2">Times users clicked Sony Professional pages in Google search results (source: Search Console)</p>
+                        <p className="font-semibold">Impressions:</p>
+                        <p>Times Sony Professional pages appeared in Google search results (source: Search Console)</p>
+                      </div>
+                    </div>
+                  </div>
                   <p className="mt-1 text-xs text-slate-500">
-                    Organic visits, impressions, and clicks trends.
+                    Organic entries, impressions, and clicks trends.
                   </p>
                 </div>
                 <div className="hidden gap-2 text-[11px] text-slate-400 md:flex">
@@ -1797,62 +1781,45 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-              <div className="mt-4 h-48 rounded-lg border border-slate-200 bg-white px-3 py-3">
-                {seoChartData ? (
+              <div className="mt-4 h-56 rounded-lg border border-slate-200 bg-white px-3 py-3 pb-1">
                 <div className="relative h-full flex gap-2">
-                  {/* Left Y-axis labels - for Organic Entries and Clicks */}
-                  {(() => {
-                    const maxEntriesK = Math.max(...seoChartData.map(d => d.entriesK));
-                    const maxClicksK = searchConsoleChartData ? Math.max(...searchConsoleChartData.map(d => d.clicksK)) : 0;
-                    const maxDataValue = Math.max(maxEntriesK, maxClicksK);
-                    const ticks = getNiceAxisTicks(maxDataValue, 5);
-                    return (
-                      <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6 min-w-[32px]">
-                        {ticks.map((tick, idx) => (
-                          <span key={idx}>{tick}k</span>
-                        ))}
-                      </div>
-                    );
-                  })()}
+                  {/* Y-axis labels */}
+                  <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-2">
+                    <span>18k</span>
+                    <span>13k</span>
+                    <span>9k</span>
+                    <span>4k</span>
+                    <span>0</span>
+                  </div>
 
                   <div className="relative flex-1 h-full">
                     <div className="flex h-full items-end gap-2">
                       {(() => {
-                        // Use real entries data from BigQuery
-                        const entriesK = seoChartData.map(d => d.entriesK);
-                        const months = seoChartData.map(d => d.month);
+                        const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+                        const organic = [10, 12, 11, 13, 14, 13, 15, 16];
+                        const impressions = [7, 8, 9, 10, 11, 10, 12, 13];
+                        const clicks = [5, 6, 7, 8, 9, 8, 10, 11];
 
-                        // Get real clicks data from search console, matched by month
-                        const clicksK = months.map(month => {
-                          const scData = searchConsoleChartData?.find(d => d.month === month);
-                          return scData?.clicksK ?? 0;
-                        });
-
-                        const maxEntriesK = Math.max(...entriesK);
-                        const maxClicksK = Math.max(...clicksK);
-                        const leftTicks = getNiceAxisTicks(Math.max(maxEntriesK, maxClicksK), 5);
-                        const maxYLeft = leftTicks[0]; // First tick is the max (reversed array)
-                        const toHeight = (val: number) => `${(val / maxYLeft) * 100}%`;
+                        const maxVal = Math.max(...organic) + 2;
+                        const toHeight = (val: number) => `${(val / maxVal) * 100}%`;
 
                         return months.map((month, idx) => (
                           <div key={month} className="flex flex-1 flex-col justify-end gap-1">
-                            <div className="flex h-28 items-end gap-[3px] relative">
+                            <div className="flex h-36 items-end gap-[3px] relative group">
                               <div
-                                className="group flex-1 relative flex flex-col justify-end"
-                                style={{ height: toHeight(entriesK[idx]) }}
+                                className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
+                                style={{ height: toHeight(organic[idx]) }}
                               >
-                                <div className="w-full h-full rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer" />
-                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-30">
-                                  {entriesK[idx]}k
+                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                  {organic[idx]}k
                                 </span>
                               </div>
                               <div
-                                className="group flex-1 relative flex flex-col justify-end"
-                                style={{ height: toHeight(clicksK[idx]) }}
+                                className="flex-1 rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer relative"
+                                style={{ height: toHeight(clicks[idx]) }}
                               >
-                                <div className="w-full h-full rounded-sm bg-[#3551e6]/70 hover:bg-[#3551e6] transition-colors cursor-pointer" />
-                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-30">
-                                  {clicksK[idx]}k
+                                <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                  {clicks[idx]}k
                                 </span>
                               </div>
                             </div>
@@ -1862,143 +1829,297 @@ export default function Home() {
                       })()}
                     </div>
                   {(() => {
-                    // Use real impressions data from search console - scaled to RIGHT Y-axis
-                    const months = seoChartData.map(d => d.month);
-                    const impressionsK = months.map(month => {
-                      const scData = searchConsoleChartData?.find(d => d.month === month);
-                      return scData?.impressionsK ?? 0;
+                    const impressions = [7, 8, 9, 10, 11, 10, 12, 13];
+                    const maxVal = Math.max(16, ...impressions) + 2;
+                    const xStep = 100 / 7;
+                    const points = impressions.map((val, idx) => {
+                      const x = idx * xStep;
+                      const y = 100 - (val / maxVal) * 100;
+                      return `${idx === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
                     });
-
-                    // Impressions use their own scale (right Y-axis) with nice ticks
-                    const maxImpressionsK = Math.max(...impressionsK);
-                    const rightTicks = getNiceAxisTicks(maxImpressionsK, 5);
-                    const maxYRight = rightTicks[0]; // First tick is the max (reversed array)
-                    const numMonths = seoChartData.length;
-
-                    // Calculate point coordinates for line and hover points
-                    // Position each dot at the center of its month column
-                    const pointCoords = impressionsK.map((val, idx) => ({
-                      x: (100 * (2 * idx + 1)) / (2 * numMonths),
-                      y: 100 - (val / maxYRight) * 100,
-                      value: val,
-                    }));
-
-                    const pathD = pointCoords.map((p, idx) =>
-                      `${idx === 0 ? "M" : "L"} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`
-                    ).join(" ");
+                    const path = points.join(" ");
 
                     return (
-                      <>
-                        {/* Line path */}
-                        <svg
-                          className="pointer-events-none absolute inset-0 h-full w-full"
-                          viewBox="0 0 100 100"
-                          preserveAspectRatio="none"
-                        >
-                          <path d={pathD} fill="none" stroke="#1e40af" strokeWidth="1.4" />
-                        </svg>
-                        {/* Hoverable data points - pointer-events-none on container so bars can be hovered */}
-                        <div className="absolute inset-0 h-full w-full pointer-events-none" style={{ marginBottom: '24px' }}>
-                          {pointCoords.map((point, idx) => (
-                            <div
-                              key={idx}
-                              className="absolute group pointer-events-auto"
-                              style={{
-                                left: `${point.x}%`,
-                                top: `${point.y}%`,
-                                transform: 'translate(-50%, -50%)',
-                              }}
-                            >
-                              <div className="w-3 h-3 rounded-full bg-[#1e40af] border-2 border-white shadow-sm cursor-pointer hover:scale-125 transition-transform" />
-                              <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-20">
-                                {(point.value / 1000).toFixed(point.value >= 1000 ? 1 : 2)}M
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </>
+                      <svg
+                        className="pointer-events-none absolute inset-0 h-full w-full"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                      >
+                        <path d={path} fill="none" stroke="#1e40af" strokeWidth="1.4" />
+                      </svg>
                     );
                   })()}
                   </div>
-
-                  {/* Right Y-axis labels - for Impressions (in Millions) */}
-                  {(() => {
-                    const months = seoChartData.map(d => d.month);
-                    const impressionsK = months.map(month => {
-                      const scData = searchConsoleChartData?.find(d => d.month === month);
-                      return scData?.impressionsK ?? 0;
-                    });
-                    const maxImpressionsK = Math.max(...impressionsK);
-                    const ticks = getNiceAxisTicks(maxImpressionsK, 5);
-                    return (
-                      <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6 min-w-[32px] text-right">
-                        {ticks.map((tick, idx) => (
-                          <span key={idx}>{(tick / 1000).toFixed(tick >= 1000 ? 0 : 1)}M</span>
-                        ))}
-                      </div>
-                    );
-                  })()}
                 </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center text-slate-400 text-sm">
-                    Loading chart data...
+              </div>
+              <p className="mt-2 text-xs italic text-slate-500">
+                Note: Data reflects PSE region totals
+              </p>
+            </article>
+
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center gap-1.5">
+                <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                  Keyword movements
+                </p>
+                <div className="group relative">
+                  <svg className="h-3.5 w-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16v-4m0-4h.01" />
+                  </svg>
+                  <div className="invisible group-hover:visible absolute left-0 top-5 z-10 w-48 rounded-lg bg-slate-800 px-3 py-2 text-xs text-white shadow-lg">
+                    Position = where your page appears in Google when users search for that term. Position 1 is the top result on page 1. Moving up means better visibility.
                   </div>
+                </div>
+              </div>
+              <p className="mt-1 text-xs text-slate-500">
+                Monthly position changes for tracked keywords.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-1 rounded-lg bg-slate-100 p-2 text-[11px] text-slate-600">
+                {(["GB", "ES", "FR", "DE", "IT", "NL"] as CountryCode[]).map((country) => (
+                  <button
+                    key={country}
+                    type="button"
+                    onClick={() => setKeywordMovementCountry(country)}
+                    className={`px-2 py-0.5 rounded-full border text-xs ${
+                      keywordMovementCountry === country
+                        ? "border-slate-900 bg-white font-semibold text-slate-900 shadow-sm"
+                        : "border-transparent hover:border-slate-300 hover:bg-white/60"
+                    }`}
+                  >
+                    {country}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-4 space-y-3 text-xs">
+                {keywordMovementCountry === "GB" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">broadcast camera systems</span>
+                      <span className="text-emerald-400">+8 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">4k studio cameras</span>
+                      <span className="text-emerald-400">+5 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ptz camera remote control</span>
+                      <span className="text-emerald-400">+3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">live production switcher</span>
+                      <span className="text-emerald-400">+2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professional video monitor</span>
+                      <span className="text-amber-300">-1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ip live production workflow</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">xdcam recorder</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">hdr reference monitor</span>
+                      <span className="text-red-400">-5 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "ES" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">cámaras de estudio profesionales</span>
+                      <span className="text-emerald-400">+7 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">sistemas de producción en vivo</span>
+                      <span className="text-emerald-400">+4 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">cámaras broadcast sony</span>
+                      <span className="text-emerald-400">+3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">monitores de video profesionales</span>
+                      <span className="text-emerald-400">+2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">control remoto ptz</span>
+                      <span className="text-slate-400">0 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">grabadoras xdcam</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">flujo de trabajo ip</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">monitores hdr</span>
+                      <span className="text-red-400">-4 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "FR" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">caméras de diffusion professionnelles</span>
+                      <span className="text-emerald-400">+9 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">systèmes de studio 4k</span>
+                      <span className="text-emerald-400">+6 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">production en direct sony</span>
+                      <span className="text-emerald-400">+4 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">commande à distance ptz</span>
+                      <span className="text-emerald-400">+1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">moniteurs vidéo professionnels</span>
+                      <span className="text-slate-400">0 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">enregistreurs xdcam</span>
+                      <span className="text-amber-300">-1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">flux de travail ip</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">moniteurs de référence hdr</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "DE" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professionelle broadcast kameras</span>
+                      <span className="text-emerald-400">+10 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">4k studiokameras</span>
+                      <span className="text-emerald-400">+6 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">live produktion systeme</span>
+                      <span className="text-emerald-400">+5 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ptz kamera fernsteuerung</span>
+                      <span className="text-emerald-400">+2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professionelle videomonitore</span>
+                      <span className="text-slate-400">0 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ip produktions workflow</span>
+                      <span className="text-amber-300">-1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">xdcam rekorder</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">hdr referenzmonitore</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "IT" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">telecamere broadcast professionali</span>
+                      <span className="text-emerald-400">+8 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">telecamere da studio 4k</span>
+                      <span className="text-emerald-400">+5 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">sistemi di produzione live</span>
+                      <span className="text-emerald-400">+4 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">controllo remoto ptz</span>
+                      <span className="text-emerald-400">+2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">monitor video professionali</span>
+                      <span className="text-emerald-400">+1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">flusso di lavoro ip</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">registratori xdcam</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">monitor di riferimento hdr</span>
+                      <span className="text-red-400">-4 positions</span>
+                    </div>
+                  </>
+                )}
+                {keywordMovementCountry === "NL" && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professionele broadcast camera's</span>
+                      <span className="text-emerald-400">+7 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">4k studiocamera's</span>
+                      <span className="text-emerald-400">+5 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">live productie systemen</span>
+                      <span className="text-emerald-400">+4 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ptz camera bediening</span>
+                      <span className="text-emerald-400">+3 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">professionele videomonitoren</span>
+                      <span className="text-slate-400">0 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">ip productie workflow</span>
+                      <span className="text-amber-300">-1 position</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">xdcam recorders</span>
+                      <span className="text-amber-300">-2 positions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-700">hdr referentie monitoren</span>
+                      <span className="text-amber-300">-3 positions</span>
+                    </div>
+                  </>
                 )}
               </div>
             </article>
 
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Keyword movements
-              </p>
-              <p className="mt-1 text-xs text-slate-500">
-                Monthly position changes for tracked keywords.
-              </p>
-              <div className="mt-4 space-y-3 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">broadcast camera systems</span>
-                  <span className="text-emerald-400">+8 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">4k studio cameras</span>
-                  <span className="text-emerald-400">+5 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">ptz camera remote control</span>
-                  <span className="text-emerald-400">+3 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">live production switcher</span>
-                  <span className="text-emerald-400">+2 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">professional video monitor</span>
-                  <span className="text-amber-300">-1 position</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">ip live production workflow</span>
-                  <span className="text-amber-300">-2 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">xdcam recorder</span>
-                  <span className="text-amber-300">-3 positions</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-700">hdr reference monitor</span>
-                  <span className="text-red-400">-5 positions</span>
-                </div>
-              </div>
-            </article>
-
-            {/* Keyword Performance Table */}
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
+            {/* Landing Pages Overview Table */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-3">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                    Keyword Performance Overview
+                    Landing Pages Overview
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
-                    Top performing keywords with position, volume, and landing pages.
+                    Top performing Entry Pages.
                   </p>
                 </div>
               </div>
@@ -2007,216 +2128,31 @@ export default function Home() {
                 <table className="w-full text-left text-[11px]">
                   <thead className="border-b border-slate-200 bg-slate-50">
                     <tr>
-                      <th className="px-3 py-2 font-medium text-slate-500">Keyword</th>
-                      <th className="px-3 py-2 text-center font-medium text-slate-500">Position</th>
-                      <th className="px-3 py-2 text-center font-medium text-slate-500">Volume</th>
-                      <th className="px-3 py-2 font-medium text-slate-500">URL</th>
+                      <th className="px-3 py-2 font-medium text-slate-500">Landing Pages</th>
+                      <th className="px-3 py-2 font-medium text-slate-500">Keywords</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">Avg. Position</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">Impressions</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">Clicks</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">CTR</th>
+                      <th className="px-3 py-2 text-center font-medium text-slate-500">CTR MoM</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">sony broadcast cameras</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">2</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">12,400</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/broadcast-cameras</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">4k professional camera</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
-                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">8,900</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/4k-cameras</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">sony ptz camera</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">4</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">6,700</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/ptz-cameras</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">live production switcher</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-red-700 font-medium text-[10px]">
-                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                          </svg>
-                          Video
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">5,200</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/live-production</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">sony system camera</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 font-medium">3</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">4,800</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/system-cameras</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">professional video monitor</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">7</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">3,900</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/monitors</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">sony xdcam camcorder</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-amber-700 font-medium">8</span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">3,100</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/products/xdcam</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700">remote production solutions</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 font-medium text-[10px]">
-                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">2,500</td>
-                      <td className="px-3 py-2.5 text-slate-500 truncate max-w-xs">/solutions/remote-production</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </article>
-
-            {/* SERP Features Table */}
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                    SERP Feature Wins
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Pages winning premium search features.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 overflow-x-auto">
-                <table className="w-full text-left text-[11px]">
-                  <thead className="border-b border-slate-200 bg-slate-50">
-                    <tr>
-                      <th className="px-3 py-2 font-medium text-slate-500">Page</th>
-                      <th className="px-3 py-2 text-center font-medium text-slate-500">Volume</th>
-                      <th className="px-3 py-2 text-center font-medium text-slate-500">Feature</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/4k-cameras</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">8.9k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/live-production</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">5.2k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                          </svg>
-                          Video
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/solutions/remote-production</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">2.5k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/broadcast-cameras</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">12.4k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
-                          </svg>
-                          Featured
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/ptz-cameras</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">6.7k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-1.5 py-0.5 text-purple-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                          </svg>
-                          Images
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/monitors</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">3.9k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-1.5 py-0.5 text-red-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                          </svg>
-                          Video
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/system-cameras</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">4.8k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-blue-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
-                          </svg>
-                          PAA
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-slate-50">
-                      <td className="px-3 py-2.5 text-slate-700 truncate">/products/xdcam</td>
-                      <td className="px-3 py-2.5 text-center text-slate-600">3.1k</td>
-                      <td className="px-3 py-2.5 text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-1.5 py-0.5 text-indigo-700 text-[9px] font-medium">
-                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
-                          </svg>
-                          Featured
-                        </span>
-                      </td>
-                    </tr>
+                    {landingPagesOverview.map((row) => (
+                      <tr key={row.landingPage} className="hover:bg-slate-50">
+                        <td className="px-3 py-2.5 text-slate-700">{row.landingPage}</td>
+                        <td className="px-3 py-2.5 text-slate-700">{row.keyword}</td>
+                        <td className="px-3 py-2.5 text-center">
+                          {renderPositionBadge(row.position)}
+                        </td>
+                        <td className="px-3 py-2.5 text-center text-slate-600">{row.impressions}</td>
+                        <td className="px-3 py-2.5 text-center text-slate-600">{row.clicks}</td>
+                        <td className="px-3 py-2.5 text-center text-slate-600">{row.ctr}</td>
+                        <td className={`px-3 py-2.5 text-center font-medium ${row.ctrMom.startsWith('-') ? 'text-amber-500' : 'text-emerald-500'}`}>
+                          {row.ctrMom}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -2246,7 +2182,7 @@ export default function Home() {
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="h-1.5 w-3 rounded-full bg-slate-300" />
-                    Organic sessions
+                    Organic Entries
                   </span>
                   <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-600 shadow-sm">
                     <button
@@ -2627,6 +2563,6 @@ export default function Home() {
         </div>
       </section>
     </main>
+    </>
   );
 }
-
