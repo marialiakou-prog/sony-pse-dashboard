@@ -15,7 +15,7 @@ export default function Home() {
   const [landingPageFilter, setLandingPageFilter] = useState<string>("all");
   const [queryPositionFilter, setQueryPositionFilter] = useState<string>("all");
   const [brandQueryFilter, setBrandQueryFilter] = useState<string>("brand");
-  const [aiTrafficMetric, setAiTrafficMetric] = useState<"visits" | "cdcs">("visits");
+  const [aiTrafficMetric, setAiTrafficMetric] = useState<"entries" | "cdcs">("entries");
 
   const formatWithKSuffix = (value: number) => {
     if (value >= 10000) {
@@ -64,6 +64,13 @@ export default function Home() {
 
   // Fetch search console data for clicks and impressions (filtered by content = '___')
   const { data: searchConsoleData } = useSWR('/api/search-console?content=___', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+    dedupingInterval: 60000,
+  });
+
+  // Fetch Adobe reporting data for GEO Performance / AI traffic trend
+  const { data: adobeData } = useSWR('/api/adobe-reporting', fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
     dedupingInterval: 60000,
@@ -239,6 +246,78 @@ export default function Home() {
 
     return monthlyData;
   }, [searchConsoleData]);
+
+  // Process Adobe reporting data for AI traffic trend chart
+  const aiTrafficChartData = useMemo(() => {
+    if (!adobeData?.success || !adobeData?.data?.length) return null;
+
+    // Filter data: region = 'PSE' and page_uri = 'Total'
+    const filteredData = adobeData.data.filter(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (row: any) => {
+        const region = row?.region;
+        const pageUri = row?.page_uri;
+        return region === 'PSE' && pageUri === 'Total';
+      }
+    );
+
+    if (filteredData.length === 0) return null;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const getMonthValue = (row: any): string => {
+      const month = row?.month;
+      return (month && typeof month === "object" ? month.value : month) ?? "";
+    };
+
+    // Get unique months sorted ascending (oldest to newest for chart)
+    // Filter to only include months from April 2025 onwards
+    const april2025 = new Date('2025-04-01');
+    const uniqueMonths = [...new Set(filteredData.map(getMonthValue))]
+      .filter((m): m is string => Boolean(m))
+      .filter(m => new Date(m) >= april2025)
+      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+    if (uniqueMonths.length === 0) return null;
+
+    // Aggregate data by month
+    const monthlyData = uniqueMonths.map(month => {
+      const monthData = filteredData.filter(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (row: any) => getMonthValue(row) === month
+      );
+
+      // Sum entries for the month
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const totalEntries = monthData.reduce((sum: number, row: any) => {
+        const entries = Number(row?.entries ?? 0);
+        return sum + (Number.isFinite(entries) ? entries : 0);
+      }, 0);
+
+      // Calculate CDC as sum of rfi_complete + form_submissions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const totalCDC = monthData.reduce((sum: number, row: any) => {
+        const rfi = Number(row?.rfi_complete ?? 0);
+        const forms = Number(row?.form_submissions ?? 0);
+        return sum + (Number.isFinite(rfi) ? rfi : 0) + (Number.isFinite(forms) ? forms : 0);
+      }, 0);
+
+      // Format month label (e.g., "Apr", "May")
+      const monthDate = new Date(month);
+      const label = Number.isNaN(monthDate.getTime())
+        ? month
+        : monthDate.toLocaleString("en-GB", { month: "short" });
+
+      return {
+        month: label,
+        entries: totalEntries,
+        entriesK: Math.round(totalEntries / 1000),
+        cdc: totalCDC,
+        cdcK: Math.round(totalCDC / 1000),
+      };
+    });
+
+    return monthlyData;
+  }, [adobeData]);
 
   const headerTitle = useMemo(() => {
     switch (activeTab) {
@@ -2496,12 +2575,12 @@ export default function Home() {
                   <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-600 shadow-sm">
                     <button
                       type="button"
-                      onClick={() => setAiTrafficMetric("visits")}
+                      onClick={() => setAiTrafficMetric("entries")}
                       className={`px-2 py-0.5 rounded-full transition-colors ${
-                        aiTrafficMetric === "visits" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
+                        aiTrafficMetric === "entries" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
                       }`}
                     >
-                      Visits
+                      Entries
                     </button>
                     <button
                       type="button"
@@ -2516,71 +2595,87 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-3 h-40 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px]">
-                <div className="flex h-full gap-2">
-                  {/* Y-axis labels */}
-                  <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
-                    <span>50k</span>
-                    <span>37k</span>
-                    <span>25k</span>
-                    <span>12k</span>
-                    <span>0</span>
-                  </div>
-
-                  <div className="flex-1 flex h-full items-end gap-2">
-                    {["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"].map((m, idx) => (
-                      <div
-                        key={m}
-                        className="flex flex-1 flex-col justify-end gap-1"
-                      >
-                        <div className="relative flex h-24 items-end gap-[3px] group">
-                          {(() => {
-                            const baseHeights =
-                              aiTrafficMetric === "visits"
-                                ? { ai: 30, organic: 55 }
-                                : { ai: 18, organic: 38 };
-
-                            const aiHeight = Math.min(88, baseHeights.ai + idx * 4);
-                            const organicHeight = Math.min(92, baseHeights.organic + idx * 2);
-
-                            // Calculate display values based on metric type
-                            const aiValue = aiTrafficMetric === "visits"
-                              ? Math.round(15 + idx * 2.5)
-                              : Math.round(9 + idx * 1.5);
-                            const organicValue = aiTrafficMetric === "visits"
-                              ? Math.round(28 + idx * 1.5)
-                              : Math.round(19 + idx * 1);
-
-                            return (
-                              <>
-                                {/* AI sessions (left) */}
-                                <div
-                                  className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
-                                  style={{ height: `${aiHeight}%` }}
-                                >
-                                  <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
-                                    {aiValue}k
-                                  </span>
-                                </div>
-                                {/* organic baseline (right) */}
-                                <div
-                                  className="flex-1 rounded-sm bg-slate-200 hover:bg-slate-300 transition-colors cursor-pointer relative"
-                                  style={{ height: `${organicHeight}%` }}
-                                >
-                                  <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
-                                    {organicValue}k
-                                  </span>
-                                </div>
-                              </>
-                            );
-                          })()}
-                        </div>
-                        <p className="text-[11px] text-slate-500 text-center">
-                          {m}
-                        </p>
+                {!aiTrafficChartData || !seoChartData ? (
+                  <div className="flex h-full items-center justify-center text-slate-400">
+                    {adobeData?.success === false ? (
+                      <div className="text-center">
+                        <div className="text-red-500 font-medium">Error loading AI traffic data</div>
+                        <div className="text-[10px] mt-1">{adobeData?.error || 'Unknown error'}</div>
                       </div>
-                    ))}
+                    ) : (
+                      <div>Loading data...</div>
+                    )}
                   </div>
-                </div>
+                ) : (
+                  <div className="flex h-full gap-2">
+                    {(() => {
+                      // Get max value for Y-axis scaling
+                      const aiValues = aiTrafficMetric === "entries"
+                        ? aiTrafficChartData.map(d => d.entries)
+                        : aiTrafficChartData.map(d => d.cdc);
+                      const organicValues = seoChartData.map(d => d.entries);
+                      const maxValue = Math.max(...aiValues, ...organicValues);
+                      const yAxisTicks = getNiceAxisTicks(maxValue, 5);
+
+                      return (
+                        <>
+                          {/* Y-axis labels */}
+                          <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
+                            {yAxisTicks.map(tick => (
+                              <span key={tick}>{formatWithKSuffix(tick)}</span>
+                            ))}
+                          </div>
+
+                          <div className="flex-1 flex h-full items-end gap-2">
+                            {aiTrafficChartData.map((monthData, idx) => {
+                              // Get AI value based on selected metric
+                              const aiValue = aiTrafficMetric === "entries" ? monthData.entries : monthData.cdc;
+
+                              // Get corresponding organic value for this month
+                              const organicMonth = seoChartData.find(d => d.month === monthData.month);
+                              const organicValue = organicMonth?.entries ?? 0;
+
+                              // Calculate bar heights as percentage of max value
+                              const aiHeight = maxValue > 0 ? (aiValue / maxValue) * 100 : 0;
+                              const organicHeight = maxValue > 0 ? (organicValue / maxValue) * 100 : 0;
+
+                              return (
+                                <div
+                                  key={monthData.month}
+                                  className="flex flex-1 flex-col justify-end gap-1"
+                                >
+                                  <div className="relative flex h-24 items-end gap-[3px] group">
+                                    {/* AI sessions (left) */}
+                                    <div
+                                      className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
+                                      style={{ height: `${Math.max(2, aiHeight)}%` }}
+                                    >
+                                      <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                        {formatWithKSuffix(aiValue)}
+                                      </span>
+                                    </div>
+                                    {/* organic baseline (right) */}
+                                    <div
+                                      className="flex-1 rounded-sm bg-slate-200 hover:bg-slate-300 transition-colors cursor-pointer relative"
+                                      style={{ height: `${Math.max(2, organicHeight)}%` }}
+                                    >
+                                      <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
+                                        {formatWithKSuffix(organicValue)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <p className="text-[11px] text-slate-500 text-center">
+                                    {monthData.month}
+                                  </p>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
               </div>
             </article>
 
