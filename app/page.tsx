@@ -2608,14 +2608,22 @@ export default function Home() {
                     )}
                   </div>
                 ) : (
-                  <div className="flex h-full gap-2">
+  <div className="flex h-full gap-2">
                     {(() => {
-                      // Get max value for Y-axis scaling
-                      const aiValues = aiTrafficMetric === "entries"
-                        ? aiTrafficChartData.map(d => d.entries)
-                        : aiTrafficChartData.map(d => d.cdc);
-                      const organicValues = seoChartData.map(d => d.entries);
-                      const maxValue = Math.max(...aiValues, ...organicValues);
+                      // Get data based on selected session type
+                      let leftBarValues, rightBarValues;
+
+                      if (trafficSessionType === "llms") {
+                        // LLMs sessions: left = entries, right = CDCs (form_submissions + rfis)
+                        leftBarValues = aiTrafficChartData.map(d => d.entries);
+                        rightBarValues = aiTrafficChartData.map(d => d.cdc);
+                      } else {
+                        // Organic: keep as is for now (both showing organic entries)
+                        leftBarValues = seoChartData.map(d => d.entries);
+                        rightBarValues = seoChartData.map(d => d.entries);
+                      }
+
+                      const maxValue = Math.max(...leftBarValues, ...rightBarValues);
                       const yAxisTicks = getNiceAxisTicks(maxValue, 5);
 
                       return (
@@ -2628,17 +2636,23 @@ export default function Home() {
                           </div>
 
                           <div className="flex-1 flex h-full items-end gap-2">
-                            {aiTrafficChartData.map((monthData, idx) => {
-                              // Get AI value based on selected metric
-                              const aiValue = aiTrafficMetric === "entries" ? monthData.entries : monthData.cdc;
+                            {(trafficSessionType === "llms" ? aiTrafficChartData : seoChartData).map((monthData, idx) => {
+                              // Get values based on session type
+                              let leftValue, rightValue;
 
-                              // Get corresponding organic value for this month
-                              const organicMonth = seoChartData.find(d => d.month === monthData.month);
-                              const organicValue = organicMonth?.entries ?? 0;
+                              if (trafficSessionType === "llms") {
+                                // LLMs: left = entries, right = CDCs
+                                leftValue = monthData.entries;
+                                rightValue = monthData.cdc;
+                              } else {
+                                // Organic: both showing entries for now
+                                leftValue = monthData.entries;
+                                rightValue = monthData.entries;
+                              }
 
                               // Calculate bar heights as percentage of max value
-                              const aiHeight = maxValue > 0 ? (aiValue / maxValue) * 100 : 0;
-                              const organicHeight = maxValue > 0 ? (organicValue / maxValue) * 100 : 0;
+                              const leftHeight = maxValue > 0 ? (leftValue / maxValue) * 100 : 0;
+                              const rightHeight = maxValue > 0 ? (rightValue / maxValue) * 100 : 0;
 
                               return (
                                 <div
@@ -2646,22 +2660,22 @@ export default function Home() {
                                   className="flex flex-1 flex-col justify-end gap-1"
                                 >
                                   <div className="relative flex h-24 items-end gap-[3px] group">
-                                    {/* AI sessions (left) */}
+                                    {/* Left bar - Entries */}
                                     <div
                                       className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
-                                      style={{ height: `${Math.max(2, aiHeight)}%` }}
+                                      style={{ height: `${Math.max(2, leftHeight)}%` }}
                                     >
                                       <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
-                                        {formatWithKSuffix(aiValue)}
+                                        {formatWithKSuffix(leftValue)}
                                       </span>
                                     </div>
-                                    {/* organic baseline (right) */}
+                                    {/* Right bar - CDCs */}
                                     <div
                                       className="flex-1 rounded-sm bg-slate-200 hover:bg-slate-300 transition-colors cursor-pointer relative"
-                                      style={{ height: `${Math.max(2, organicHeight)}%` }}
+                                      style={{ height: `${Math.max(2, rightHeight)}%` }}
                                     >
                                       <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
-                                        {formatWithKSuffix(organicValue)}
+                                        {formatWithKSuffix(rightValue)}
                                       </span>
                                     </div>
                                   </div>
