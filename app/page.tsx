@@ -252,14 +252,8 @@ export default function Home() {
   const aiTrafficChartData = useMemo(() => {
     if (!adobeData?.success || !adobeData?.data?.length) return null;
 
-    // Filter data: business_unit = 'MS_total'
-    const filteredData = adobeData.data.filter(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (row: any) => {
-        const businessUnit = row?.business_unit;
-        return businessUnit === 'MS_total';
-      }
-    );
+    // Use all data from the table (already filtered in BigQuery if needed)
+    const filteredData = adobeData.data;
 
     if (filteredData.length === 0) return null;
 
