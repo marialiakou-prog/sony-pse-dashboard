@@ -2646,13 +2646,13 @@ export default function Home() {
                       return (
                         <>
                           {/* Y-axis labels */}
-                          <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
+                          <div className="flex flex-col justify-between text-[10px] text-slate-400 h-24 pb-6">
                             {yAxisTicks.map(tick => (
                               <span key={tick}>{formatWithKSuffix(tick)}</span>
                             ))}
                           </div>
 
-                          <div className="flex-1 flex h-full items-end gap-2">
+                          <div className="flex-1 flex items-end gap-2" style={{ height: '96px' }}>
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {chartData.map((monthData: any, idx: number) => {
                               // Get entries and CDC values based on session type
