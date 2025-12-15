@@ -2640,6 +2640,8 @@ export default function Home() {
 
                       const maxValue = Math.max(...entriesValues, ...cdcValues);
                       const yAxisTicks = getNiceAxisTicks(maxValue, 5);
+                      // Use the maximum Y-axis tick value for proper scaling
+                      const yAxisMax = yAxisTicks[yAxisTicks.length - 1];
 
                       return (
                         <>
@@ -2666,9 +2668,9 @@ export default function Home() {
                                 cdcValue = 5000 + idx * 500;
                               }
 
-                              // Calculate bar heights as percentage of max value
-                              const entriesHeight = maxValue > 0 ? (entriesValue / maxValue) * 100 : 0;
-                              const cdcHeight = maxValue > 0 ? (cdcValue / maxValue) * 100 : 0;
+                              // Calculate bar heights as percentage of Y-axis max (not data max)
+                              const entriesHeight = yAxisMax > 0 ? (entriesValue / yAxisMax) * 100 : 0;
+                              const cdcHeight = yAxisMax > 0 ? (cdcValue / yAxisMax) * 100 : 0;
 
                               return (
                                 <div
