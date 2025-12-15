@@ -2700,7 +2700,8 @@ export default function Home() {
                                     {/* Line connecting to next point */}
                                     {idx < chartData.length - 1 && (() => {
                                       // Calculate next CDC value and height
-                                      const nextMonthData = chartData[idx + 1];
+                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                      const nextMonthData = chartData[idx + 1] as any;
                                       let nextCdcValue;
                                       if (trafficSessionType === "llms") {
                                         nextCdcValue = nextMonthData.cdc ?? 0;
