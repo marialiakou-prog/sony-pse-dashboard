@@ -2589,7 +2589,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 h-40 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px]">
+              <div className="mt-3 h-52 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px]">
                 {!aiTrafficChartData || !seoChartData ? (
                   <div className="flex h-full items-center justify-center text-slate-400">
                     {adobeData?.success === false ? (
