@@ -2624,7 +2624,8 @@ export default function Home() {
                       // Extract values for scaling
                       // For LLMs: use llm_entries and llm_cdc (fallback to entries/cdc for now)
                       // For Organic: use organic_entries and organic_cdc (fallback to entries for now)
-                      const entriesValues = chartData.map(d => {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      const entriesValues = chartData.map((d: any) => {
                         if (trafficSessionType === "llms") {
                           return d.llm_entries ?? d.entries ?? 0;
                         } else {
@@ -2632,7 +2633,8 @@ export default function Home() {
                         }
                       });
 
-                      const cdcValues = chartData.map(d => {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      const cdcValues = chartData.map((d: any) => {
                         if (trafficSessionType === "llms") {
                           return d.llm_cdc ?? d.cdc ?? 0;
                         } else {
@@ -2653,7 +2655,8 @@ export default function Home() {
                           </div>
 
                           <div className="flex-1 flex h-full items-end gap-2">
-                            {chartData.map((monthData, idx) => {
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            {chartData.map((monthData: any, idx) => {
                               // Get entries and CDC values based on session type
                               let entriesValue, cdcValue;
 
