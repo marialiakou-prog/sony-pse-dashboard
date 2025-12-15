@@ -2676,24 +2676,30 @@ export default function Home() {
                                   className="flex flex-1 flex-col justify-end gap-1"
                                 >
                                   <div className="relative flex h-24 items-end gap-[3px] group">
+                                    {/* Combined tooltip for both metrics */}
+                                    <div className="hidden group-hover:block absolute -top-16 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
+                                      <div className="text-[9px] font-medium text-slate-700 whitespace-nowrap">
+                                        <div className="flex items-center gap-1">
+                                          <span className="w-2 h-2 rounded-full bg-[#4aa6c5]"></span>
+                                          <span>{trafficSessionType === "llms" ? "LLM" : "Organic"} Entries: {formatWithKSuffix(entriesValue)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 mt-0.5">
+                                          <span className="w-2 h-2 rounded-full bg-slate-300"></span>
+                                          <span>{trafficSessionType === "llms" ? "LLM" : "Organic"} CDCs: {formatWithKSuffix(cdcValue)}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+
                                     {/* Blue bar - Entries */}
                                     <div
                                       className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
                                       style={{ height: `${Math.max(2, entriesHeight)}%` }}
-                                    >
-                                      <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
-                                        {formatWithKSuffix(entriesValue)}
-                                      </span>
-                                    </div>
+                                    />
                                     {/* Gray bar - CDCs */}
                                     <div
                                       className="flex-1 rounded-sm bg-slate-200 hover:bg-slate-300 transition-colors cursor-pointer relative"
                                       style={{ height: `${Math.max(2, cdcHeight)}%` }}
-                                    >
-                                      <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
-                                        {formatWithKSuffix(cdcValue)}
-                                      </span>
-                                    </div>
+                                    />
                                   </div>
                                   <p className="text-[11px] text-slate-500 text-center">
                                     {monthData.month}
