@@ -2608,22 +2608,39 @@ export default function Home() {
                     )}
                   </div>
                 ) : (
-  <div className="flex h-full gap-2">
+<div className="flex h-full gap-2">
                     {(() => {
-                      // Get data based on selected session type
-                      let leftBarValues, rightBarValues;
+                      // Determine which dataset to use based on filter selection
+                      const chartData = trafficSessionType === "llms" ? aiTrafficChartData : seoChartData;
 
-                      if (trafficSessionType === "llms") {
-                        // LLMs sessions: left = entries, right = CDCs (form_submissions + rfis)
-                        leftBarValues = aiTrafficChartData.map(d => d.entries);
-                        rightBarValues = aiTrafficChartData.map(d => d.cdc);
-                      } else {
-                        // Organic: keep as is for now (both showing organic entries)
-                        leftBarValues = seoChartData.map(d => d.entries);
-                        rightBarValues = seoChartData.map(d => d.entries);
+                      if (!chartData || chartData.length === 0) {
+                        return (
+                          <div className="flex h-full w-full items-center justify-center text-slate-400">
+                            No data available
+                          </div>
+                        );
                       }
 
-                      const maxValue = Math.max(...leftBarValues, ...rightBarValues);
+                      // Extract values for scaling
+                      // For LLMs: use llm_entries and llm_cdc (fallback to entries/cdc for now)
+                      // For Organic: use organic_entries and organic_cdc (fallback to entries for now)
+                      const entriesValues = chartData.map(d => {
+                        if (trafficSessionType === "llms") {
+                          return d.llm_entries ?? d.entries ?? 0;
+                        } else {
+                          return d.organic_entries ?? d.entries ?? 0;
+                        }
+                      });
+
+                      const cdcValues = chartData.map(d => {
+                        if (trafficSessionType === "llms") {
+                          return d.llm_cdc ?? d.cdc ?? 0;
+                        } else {
+                          return d.organic_cdc ?? d.entries ?? 0; // Fallback to entries for now
+                        }
+                      });
+
+                      const maxValue = Math.max(...entriesValues, ...cdcValues);
                       const yAxisTicks = getNiceAxisTicks(maxValue, 5);
 
                       return (
@@ -2636,23 +2653,23 @@ export default function Home() {
                           </div>
 
                           <div className="flex-1 flex h-full items-end gap-2">
-                            {(trafficSessionType === "llms" ? aiTrafficChartData : seoChartData).map((monthData, idx) => {
-                              // Get values based on session type
-                              let leftValue, rightValue;
+                            {chartData.map((monthData, idx) => {
+                              // Get entries and CDC values based on session type
+                              let entriesValue, cdcValue;
 
                               if (trafficSessionType === "llms") {
-                                // LLMs: left = entries, right = CDCs
-                                leftValue = monthData.entries;
-                                rightValue = monthData.cdc;
+                                // LLMs: use llm_entries and llm_cdc (fallback to current fields)
+                                entriesValue = monthData.llm_entries ?? monthData.entries ?? 0;
+                                cdcValue = monthData.llm_cdc ?? monthData.cdc ?? 0;
                               } else {
-                                // Organic: both showing entries for now
-                                leftValue = monthData.entries;
-                                rightValue = monthData.entries;
+                                // Organic: use organic_entries and organic_cdc (fallback to current fields)
+                                entriesValue = monthData.organic_entries ?? monthData.entries ?? 0;
+                                cdcValue = monthData.organic_cdc ?? monthData.entries ?? 0; // Temporary fallback
                               }
 
                               // Calculate bar heights as percentage of max value
-                              const leftHeight = maxValue > 0 ? (leftValue / maxValue) * 100 : 0;
-                              const rightHeight = maxValue > 0 ? (rightValue / maxValue) * 100 : 0;
+                              const entriesHeight = maxValue > 0 ? (entriesValue / maxValue) * 100 : 0;
+                              const cdcHeight = maxValue > 0 ? (cdcValue / maxValue) * 100 : 0;
 
                               return (
                                 <div
@@ -2660,22 +2677,22 @@ export default function Home() {
                                   className="flex flex-1 flex-col justify-end gap-1"
                                 >
                                   <div className="relative flex h-24 items-end gap-[3px] group">
-                                    {/* Left bar - Entries */}
+                                    {/* Blue bar - Entries */}
                                     <div
                                       className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
-                                      style={{ height: `${Math.max(2, leftHeight)}%` }}
+                                      style={{ height: `${Math.max(2, entriesHeight)}%` }}
                                     >
                                       <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
-                                        {formatWithKSuffix(leftValue)}
+                                        {formatWithKSuffix(entriesValue)}
                                       </span>
                                     </div>
-                                    {/* Right bar - CDCs */}
+                                    {/* Gray bar - CDCs */}
                                     <div
                                       className="flex-1 rounded-sm bg-slate-200 hover:bg-slate-300 transition-colors cursor-pointer relative"
-                                      style={{ height: `${Math.max(2, rightHeight)}%` }}
+                                      style={{ height: `${Math.max(2, cdcHeight)}%` }}
                                     >
                                       <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
-                                        {formatWithKSuffix(rightValue)}
+                                        {formatWithKSuffix(cdcValue)}
                                       </span>
                                     </div>
                                   </div>
