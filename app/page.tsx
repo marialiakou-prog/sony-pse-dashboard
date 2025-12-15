@@ -2566,31 +2566,31 @@ export default function Home() {
                 <div className="flex items-center gap-3">
                   <span className="flex items-center gap-1">
                     <span className="h-1.5 w-3 rounded-full bg-[#4aa6c5]" />
-                    LLMs sessions
+                    Entries
                   </span>
-                  <span className="text-slate-400">vs</span>
                   <span className="flex items-center gap-1">
                     <span className="h-1.5 w-3 rounded-full bg-slate-300" />
-                    Organic
+                    CDCs
                   </span>
                   <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-600 shadow-sm">
                     <button
                       type="button"
-                      onClick={() => setAiTrafficMetric("entries")}
+                      onClick={() => setTrafficSessionType("llms")}
                       className={`px-2 py-0.5 rounded-full transition-colors ${
-                        aiTrafficMetric === "entries" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
+                        trafficSessionType === "llms" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
                       }`}
                     >
-                      Entries
+                      LLMs sessions
                     </button>
+                    <span className="text-slate-400 px-1">vs</span>
                     <button
                       type="button"
-                      onClick={() => setAiTrafficMetric("cdcs")}
+                      onClick={() => setTrafficSessionType("organic")}
                       className={`px-2 py-0.5 rounded-full transition-colors ${
-                        aiTrafficMetric === "cdcs" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
+                        trafficSessionType === "organic" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
                       }`}
                     >
-                      CDCs
+                      Organic
                     </button>
                   </div>
                 </div>
