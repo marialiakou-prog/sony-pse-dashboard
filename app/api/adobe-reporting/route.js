@@ -36,13 +36,11 @@ export async function GET(request) {
             credentials: credentials,
         });
 
-        // Query your BigQuery materialized table
+        // Query your BigQuery view
         const query = `
   SELECT *
-  FROM \`sony-pro-test-310213.geo.adobe_monthly_data_reporting_PSE_Dashboard_test\`
-  WHERE
-    region = 'PSE'
-    AND month >= '2025-04-01'
+  FROM \`sony-pro-test-310213.geo.adobe_monthly_data_reporting_pse_ms_view\`
+  WHERE month >= '2025-04-01'
   ORDER BY month DESC
 `;
 

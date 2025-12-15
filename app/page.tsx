@@ -251,13 +251,12 @@ export default function Home() {
   const aiTrafficChartData = useMemo(() => {
     if (!adobeData?.success || !adobeData?.data?.length) return null;
 
-    // Filter data: region = 'PSE' and page_uri = 'Total'
+    // Filter data: business_unit = 'MS_total'
     const filteredData = adobeData.data.filter(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (row: any) => {
-        const region = row?.region;
-        const pageUri = row?.page_uri;
-        return region === 'PSE' && pageUri === 'Total';
+        const businessUnit = row?.business_unit;
+        return businessUnit === 'MS_total';
       }
     );
 
@@ -293,12 +292,12 @@ export default function Home() {
         return sum + (Number.isFinite(entries) ? entries : 0);
       }, 0);
 
-      // Calculate CDC as sum of rfi_complete + form_submissions
+      // Calculate CDC as sum of rfis + form_submissions
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const totalCDC = monthData.reduce((sum: number, row: any) => {
-        const rfi = Number(row?.rfi_complete ?? 0);
+        const rfis = Number(row?.rfis ?? 0);
         const forms = Number(row?.form_submissions ?? 0);
-        return sum + (Number.isFinite(rfi) ? rfi : 0) + (Number.isFinite(forms) ? forms : 0);
+        return sum + (Number.isFinite(rfis) ? rfis : 0) + (Number.isFinite(forms) ? forms : 0);
       }, 0);
 
       // Format month label (e.g., "Apr", "May")
@@ -2556,7 +2555,7 @@ export default function Home() {
             {/* 3.1 Total AI Traffic Trend */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Total AI traffic trend
+                Total AI traffic trend | Media Solutions
               </p>
               <p className="mt-1 text-xs text-slate-500">
                 Monthly AI-driven sessions and comparison vs. organic sessions.
