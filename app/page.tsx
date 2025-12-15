@@ -2640,19 +2640,17 @@ export default function Home() {
 
                       const maxValue = Math.max(...entriesValues, ...cdcValues);
                       const yAxisTicks = getNiceAxisTicks(maxValue, 5);
-                      // Use the maximum Y-axis tick value for proper scaling
-                      const yAxisMax = yAxisTicks[yAxisTicks.length - 1];
 
                       return (
                         <>
                           {/* Y-axis labels */}
-                          <div className="flex flex-col justify-between text-[10px] text-slate-400 pb-6" style={{ height: '120px' }}>
+                          <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
                             {yAxisTicks.map(tick => (
                               <span key={tick}>{formatWithKSuffix(tick)}</span>
                             ))}
                           </div>
 
-                          <div className="flex-1 flex items-end gap-2" style={{ height: '120px', paddingBottom: '24px' }}>
+                          <div className="flex-1 flex h-full items-end gap-2">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {chartData.map((monthData: any, idx: number) => {
                               // Get entries and CDC values based on session type
@@ -2668,16 +2666,16 @@ export default function Home() {
                                 cdcValue = 5000 + idx * 500;
                               }
 
-                              // Calculate bar heights as percentage of Y-axis max (not data max)
-                              const entriesHeight = yAxisMax > 0 ? (entriesValue / yAxisMax) * 100 : 0;
-                              const cdcHeight = yAxisMax > 0 ? (cdcValue / yAxisMax) * 100 : 0;
+                              // Calculate bar heights as percentage of max value
+                              const entriesHeight = maxValue > 0 ? (entriesValue / maxValue) * 100 : 0;
+                              const cdcHeight = maxValue > 0 ? (cdcValue / maxValue) * 100 : 0;
 
                               return (
                                 <div
                                   key={monthData.month}
                                   className="flex flex-1 flex-col justify-end gap-1"
                                 >
-                                  <div className="relative flex items-end gap-[3px] group" style={{ height: '96px' }}>
+                                  <div className="relative flex h-24 items-end gap-[3px] group">
                                     {/* Combined tooltip for both metrics */}
                                     <div className="hidden group-hover:block absolute -top-12 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
                                       <div className="text-[9px] font-medium text-slate-700 whitespace-nowrap">

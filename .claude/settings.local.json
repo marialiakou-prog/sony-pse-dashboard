@@ -5,7 +5,12 @@
       "Bash(git commit:*)",
       "Bash(npm run dev:*)",
       "Bash(git push)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(taskkill:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(git push:*)",
+      "Bash(git revert:*)"
     ],
     "deny": [],
     "ask": []
