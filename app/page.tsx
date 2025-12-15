@@ -2710,18 +2710,25 @@ export default function Home() {
                                       }
                                       const nextCdcHeight = maxValue > 0 ? (nextCdcValue / maxValue) * 100 : 0;
 
-                                      // Calculate line angle and length
-                                      const heightDiff = nextCdcHeight - cdcHeight;
-                                      const angle = Math.atan2(heightDiff, 100);
-                                      const length = Math.sqrt(Math.pow(100, 2) + Math.pow(heightDiff, 2));
+                                      // Calculate line properties to connect this point to the next
+                                      // The bars have gap-2 (0.5rem), so approximate width of one bar + gap
+                                      const barWidth = 100 / chartData.length; // percentage
+                                      const heightDiff = (nextCdcHeight - cdcHeight) * 0.96; // 96px is h-24
+                                      const widthPx = (barWidth / 100) * 100; // relative calculation
+
+                                      // Calculate angle in degrees for better accuracy
+                                      const angleDeg = Math.atan2(heightDiff, widthPx) * (180 / Math.PI);
+
+                                      // Calculate hypotenuse length
+                                      const length = Math.sqrt(Math.pow(widthPx, 2) + Math.pow(heightDiff, 2));
 
                                       return (
                                         <div
-                                          className="absolute left-1/2 h-0.5 bg-[#64748b] origin-left"
+                                          className="absolute left-1/2 h-0.5 bg-[#64748b] origin-left pointer-events-none"
                                           style={{
                                             bottom: `${cdcHeight}%`,
-                                            width: `calc(100% + 0.5rem)`,
-                                            transform: `rotate(${angle}rad)`,
+                                            width: `calc((100% / ${chartData.length}) + 0.5rem)`,
+                                            transform: `rotate(${angleDeg}deg)`,
                                           }}
                                         />
                                       );
