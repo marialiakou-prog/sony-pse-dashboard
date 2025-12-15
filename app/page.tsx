@@ -2622,23 +2622,25 @@ export default function Home() {
                       }
 
                       // Extract values for scaling
-                      // For LLMs: use llm_entries and llm_cdc (fallback to entries/cdc for now)
-                      // For Organic: use organic_entries and organic_cdc (fallback to entries for now)
+                      // For LLMs: use real data (entries and cdc from Adobe)
+                      // For Organic: use mockup data for now
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      const entriesValues = chartData.map((d: any) => {
+                      const entriesValues = chartData.map((d: any, idx: number) => {
                         if (trafficSessionType === "llms") {
-                          return d.llm_entries ?? d.entries ?? 0;
+                          return d.entries ?? 0;
                         } else {
-                          return d.organic_entries ?? d.entries ?? 0;
+                          // Mockup data for Organic entries
+                          return 30000 + idx * 2000;
                         }
                       });
 
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      const cdcValues = chartData.map((d: any) => {
+                      const cdcValues = chartData.map((d: any, idx: number) => {
                         if (trafficSessionType === "llms") {
-                          return d.llm_cdc ?? d.cdc ?? 0;
+                          return d.cdc ?? 0; // Sum of form_submissions + rfis
                         } else {
-                          return d.organic_cdc ?? d.entries ?? 0; // Fallback to entries for now
+                          // Mockup data for Organic CDCs
+                          return 5000 + idx * 500;
                         }
                       });
 
@@ -2656,18 +2658,18 @@ export default function Home() {
 
                           <div className="flex-1 flex h-full items-end gap-2">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                            {chartData.map((monthData: any, idx) => {
+                            {chartData.map((monthData: any, idx: number) => {
                               // Get entries and CDC values based on session type
                               let entriesValue, cdcValue;
 
                               if (trafficSessionType === "llms") {
-                                // LLMs: use llm_entries and llm_cdc (fallback to current fields)
-                                entriesValue = monthData.llm_entries ?? monthData.entries ?? 0;
-                                cdcValue = monthData.llm_cdc ?? monthData.cdc ?? 0;
+                                // LLMs: use real Adobe data
+                                entriesValue = monthData.entries ?? 0;
+                                cdcValue = monthData.cdc ?? 0; // Sum of form_submissions + rfis
                               } else {
-                                // Organic: use organic_entries and organic_cdc (fallback to current fields)
-                                entriesValue = monthData.organic_entries ?? monthData.entries ?? 0;
-                                cdcValue = monthData.organic_cdc ?? monthData.entries ?? 0; // Temporary fallback
+                                // Organic: use mockup data
+                                entriesValue = 30000 + idx * 2000;
+                                cdcValue = 5000 + idx * 500;
                               }
 
                               // Calculate bar heights as percentage of max value
