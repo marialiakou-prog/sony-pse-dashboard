@@ -2677,7 +2677,7 @@ export default function Home() {
                                 >
                                   <div className="relative flex h-24 items-end gap-[3px] group">
                                     {/* Combined tooltip for both metrics */}
-                                    <div className="hidden group-hover:block absolute -top-16 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
+                                    <div className="hidden group-hover:block absolute -top-12 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
                                       <div className="text-[9px] font-medium text-slate-700 whitespace-nowrap">
                                         <div className="flex items-center gap-1">
                                           <span className="w-2 h-2 rounded-full bg-[#4aa6c5]"></span>
