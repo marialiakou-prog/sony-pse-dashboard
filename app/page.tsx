@@ -2695,14 +2695,15 @@ export default function Home() {
 
                             {/* CDC trend line overlay */}
                             <svg
-                              className="absolute inset-0 pointer-events-none"
+                              className="absolute left-0 right-0 pointer-events-none"
                               style={{ height: '96px', bottom: '24px' }}
+                              viewBox="0 0 100 100"
                               preserveAspectRatio="none"
                             >
                               <polyline
                                 fill="none"
                                 stroke="#94a3b8"
-                                strokeWidth="2"
+                                strokeWidth="0.5"
                                 points={chartData.map((monthData: any, idx: number) => {
                                   let cdcValue;
                                   if (trafficSessionType === "llms") {
@@ -2731,11 +2732,12 @@ export default function Home() {
                                 return (
                                   <g key={idx}>
                                     <circle
-                                      cx={`${x}%`}
-                                      cy={`${y}%`}
-                                      r="3"
+                                      cx={x}
+                                      cy={y}
+                                      r="1"
                                       fill="#94a3b8"
-                                      className="pointer-events-auto cursor-pointer hover:r-4"
+                                      className="pointer-events-auto cursor-pointer"
+                                      vectorEffect="non-scaling-stroke"
                                     />
                                     <title>{formatWithKSuffix(cdcValue)}</title>
                                   </g>
