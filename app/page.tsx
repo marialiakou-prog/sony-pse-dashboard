@@ -2566,31 +2566,31 @@ export default function Home() {
                 <div className="flex items-center gap-3">
                   <span className="flex items-center gap-1">
                     <span className="h-1.5 w-3 rounded-full bg-[#4aa6c5]" />
-                    Entries
+                    LLMs sessions
                   </span>
+                  <span className="text-slate-400">vs</span>
                   <span className="flex items-center gap-1">
                     <span className="h-1.5 w-3 rounded-full bg-slate-300" />
-                    CDCs
+                    Organic
                   </span>
                   <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-600 shadow-sm">
                     <button
                       type="button"
-                      onClick={() => setTrafficSessionType("llms")}
+                      onClick={() => setAiTrafficMetric("entries")}
                       className={`px-2 py-0.5 rounded-full transition-colors ${
-                        trafficSessionType === "llms" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
+                        aiTrafficMetric === "entries" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
                       }`}
                     >
-                      LLMs sessions
+                      Entries
                     </button>
-                    <span className="text-slate-400 px-1">vs</span>
                     <button
                       type="button"
-                      onClick={() => setTrafficSessionType("organic")}
+                      onClick={() => setAiTrafficMetric("cdcs")}
                       className={`px-2 py-0.5 rounded-full transition-colors ${
-                        trafficSessionType === "organic" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
+                        aiTrafficMetric === "cdcs" ? "bg-[#4aa6c5]/10 text-slate-900" : ""
                       }`}
                     >
-                      Organic
+                      CDCs
                     </button>
                   </div>
                 </div>
