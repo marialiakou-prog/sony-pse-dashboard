@@ -36,10 +36,10 @@ export async function GET(request) {
             credentials: credentials,
         });
 
-        // Query your BigQuery view
+        // Query your BigQuery table
         const query = `
   SELECT *
-  FROM \`sony-pro-test-310213.geo.adobe_monthly_data_reporting_pse_ms_view\`
+  FROM \`sony-pro-test-310213.geo.adobe_monthly_data_reporting_PSE_Dashboard_test\`
   WHERE month >= '2025-04-01'
   ORDER BY month DESC
 `;
