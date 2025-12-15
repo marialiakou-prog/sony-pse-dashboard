@@ -2650,8 +2650,7 @@ export default function Home() {
                             ))}
                           </div>
 
-                          <div className="flex-1 flex h-full items-end gap-2 relative">
-                            {/* Render bars and CDC line points */}
+                          <div className="flex-1 flex h-full items-end gap-2">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {chartData.map((monthData: any, idx: number) => {
                               // Get entries and CDC values based on session type
@@ -2667,7 +2666,7 @@ export default function Home() {
                                 cdcValue = 5000 + idx * 500;
                               }
 
-                              // Calculate heights as percentage of max value
+                              // Calculate bar heights as percentage of max value
                               const entriesHeight = maxValue > 0 ? (entriesValue / maxValue) * 100 : 0;
                               const cdcHeight = maxValue > 0 ? (cdcValue / maxValue) * 100 : 0;
 
@@ -2676,63 +2675,25 @@ export default function Home() {
                                   key={monthData.month}
                                   className="flex flex-1 flex-col justify-end gap-1"
                                 >
-                                  <div className="relative flex h-24 items-end group">
+                                  <div className="relative flex h-24 items-end gap-[3px] group">
                                     {/* Blue bar - Entries */}
                                     <div
-                                      className="w-full rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
+                                      className="flex-1 rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
                                       style={{ height: `${Math.max(2, entriesHeight)}%` }}
                                     >
                                       <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
                                         {formatWithKSuffix(entriesValue)}
                                       </span>
                                     </div>
-
-                                    {/* CDC data point circle */}
+                                    {/* Gray bar - CDCs */}
                                     <div
-                                      className="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#64748b] border-2 border-white cursor-pointer group z-10"
-                                      style={{ bottom: `${cdcHeight}%` }}
+                                      className="flex-1 rounded-sm bg-slate-200 hover:bg-slate-300 transition-colors cursor-pointer relative"
+                                      style={{ height: `${Math.max(2, cdcHeight)}%` }}
                                     >
-                                      <span className="hidden group-hover:block absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-20">
+                                      <span className="hidden group-hover:block absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-10">
                                         {formatWithKSuffix(cdcValue)}
                                       </span>
                                     </div>
-
-                                    {/* Line connecting to next point */}
-                                    {idx < chartData.length - 1 && (() => {
-                                      // Calculate next CDC value and height
-                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                      const nextMonthData = chartData[idx + 1] as any;
-                                      let nextCdcValue;
-                                      if (trafficSessionType === "llms") {
-                                        nextCdcValue = nextMonthData.cdc ?? 0;
-                                      } else {
-                                        nextCdcValue = 5000 + (idx + 1) * 500;
-                                      }
-                                      const nextCdcHeight = maxValue > 0 ? (nextCdcValue / maxValue) * 100 : 0;
-
-                                      // Calculate line properties to connect this point to the next
-                                      // The bars have gap-2 (0.5rem), so approximate width of one bar + gap
-                                      const barWidth = 100 / chartData.length; // percentage
-                                      const heightDiff = (nextCdcHeight - cdcHeight) * 0.96; // 96px is h-24
-                                      const widthPx = (barWidth / 100) * 100; // relative calculation
-
-                                      // Calculate angle in degrees for better accuracy
-                                      const angleDeg = Math.atan2(heightDiff, widthPx) * (180 / Math.PI);
-
-                                      // Calculate hypotenuse length
-                                      const length = Math.sqrt(Math.pow(widthPx, 2) + Math.pow(heightDiff, 2));
-
-                                      return (
-                                        <div
-                                          className="absolute left-1/2 h-0.5 bg-[#64748b] origin-left pointer-events-none"
-                                          style={{
-                                            bottom: `${cdcHeight}%`,
-                                            width: `calc((100% / ${chartData.length}) + 0.5rem)`,
-                                            transform: `rotate(${angleDeg}deg)`,
-                                          }}
-                                        />
-                                      );
-                                    })()}
                                   </div>
                                   <p className="text-[11px] text-slate-500 text-center">
                                     {monthData.month}
