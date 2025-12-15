@@ -2651,7 +2651,7 @@ export default function Home() {
                           </div>
 
                           <div className="flex-1 flex h-full items-end gap-2 relative">
-                            {/* Render bars */}
+                            {/* Render bars and CDC line points */}
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {chartData.map((monthData: any, idx: number) => {
                               // Get entries and CDC values based on session type
@@ -2667,8 +2667,9 @@ export default function Home() {
                                 cdcValue = 5000 + idx * 500;
                               }
 
-                              // Calculate bar height as percentage of max value
+                              // Calculate heights as percentage of max value
                               const entriesHeight = maxValue > 0 ? (entriesValue / maxValue) * 100 : 0;
+                              const cdcHeight = maxValue > 0 ? (cdcValue / maxValue) * 100 : 0;
 
                               return (
                                 <div
@@ -2676,7 +2677,7 @@ export default function Home() {
                                   className="flex flex-1 flex-col justify-end gap-1"
                                 >
                                   <div className="relative flex h-24 items-end group">
-                                    {/* Blue bar - Entries only */}
+                                    {/* Blue bar - Entries */}
                                     <div
                                       className="w-full rounded-sm bg-[#4aa6c5]/80 hover:bg-[#4aa6c5] transition-colors cursor-pointer relative"
                                       style={{ height: `${Math.max(2, entriesHeight)}%` }}
@@ -2685,6 +2686,45 @@ export default function Home() {
                                         {formatWithKSuffix(entriesValue)}
                                       </span>
                                     </div>
+
+                                    {/* CDC data point circle */}
+                                    <div
+                                      className="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#64748b] border-2 border-white cursor-pointer group z-10"
+                                      style={{ bottom: `${cdcHeight}%` }}
+                                    >
+                                      <span className="hidden group-hover:block absolute -top-8 left-1/2 -translate-x-1/2 text-[9px] font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded shadow-sm border border-slate-200 whitespace-nowrap z-20">
+                                        {formatWithKSuffix(cdcValue)}
+                                      </span>
+                                    </div>
+
+                                    {/* Line connecting to next point */}
+                                    {idx < chartData.length - 1 && (() => {
+                                      // Calculate next CDC value and height
+                                      const nextMonthData = chartData[idx + 1];
+                                      let nextCdcValue;
+                                      if (trafficSessionType === "llms") {
+                                        nextCdcValue = nextMonthData.cdc ?? 0;
+                                      } else {
+                                        nextCdcValue = 5000 + (idx + 1) * 500;
+                                      }
+                                      const nextCdcHeight = maxValue > 0 ? (nextCdcValue / maxValue) * 100 : 0;
+
+                                      // Calculate line angle and length
+                                      const heightDiff = nextCdcHeight - cdcHeight;
+                                      const angle = Math.atan2(heightDiff, 100);
+                                      const length = Math.sqrt(Math.pow(100, 2) + Math.pow(heightDiff, 2));
+
+                                      return (
+                                        <div
+                                          className="absolute left-1/2 h-0.5 bg-[#64748b] origin-left"
+                                          style={{
+                                            bottom: `${cdcHeight}%`,
+                                            width: `calc(100% + 0.5rem)`,
+                                            transform: `rotate(${angle}rad)`,
+                                          }}
+                                        />
+                                      );
+                                    })()}
                                   </div>
                                   <p className="text-[11px] text-slate-500 text-center">
                                     {monthData.month}
@@ -2692,58 +2732,6 @@ export default function Home() {
                                 </div>
                               );
                             })}
-
-                            {/* CDC trend line overlay */}
-                            <svg
-                              className="absolute left-0 right-0 pointer-events-none"
-                              style={{ height: '96px', bottom: '24px' }}
-                              viewBox="0 0 100 100"
-                              preserveAspectRatio="none"
-                            >
-                              <polyline
-                                fill="none"
-                                stroke="#94a3b8"
-                                strokeWidth="0.5"
-                                points={chartData.map((monthData: any, idx: number) => {
-                                  let cdcValue;
-                                  if (trafficSessionType === "llms") {
-                                    cdcValue = monthData.cdc ?? 0;
-                                  } else {
-                                    cdcValue = 5000 + idx * 500;
-                                  }
-                                  const cdcHeight = maxValue > 0 ? (cdcValue / maxValue) * 100 : 0;
-                                  const x = ((idx + 0.5) / chartData.length) * 100;
-                                  const y = 100 - cdcHeight;
-                                  return `${x},${y}`;
-                                }).join(' ')}
-                                vectorEffect="non-scaling-stroke"
-                              />
-                              {/* Data points on the line */}
-                              {chartData.map((monthData: any, idx: number) => {
-                                let cdcValue;
-                                if (trafficSessionType === "llms") {
-                                  cdcValue = monthData.cdc ?? 0;
-                                } else {
-                                  cdcValue = 5000 + idx * 500;
-                                }
-                                const cdcHeight = maxValue > 0 ? (cdcValue / maxValue) * 100 : 0;
-                                const x = ((idx + 0.5) / chartData.length) * 100;
-                                const y = 100 - cdcHeight;
-                                return (
-                                  <g key={idx}>
-                                    <circle
-                                      cx={x}
-                                      cy={y}
-                                      r="1"
-                                      fill="#94a3b8"
-                                      className="pointer-events-auto cursor-pointer"
-                                      vectorEffect="non-scaling-stroke"
-                                    />
-                                    <title>{formatWithKSuffix(cdcValue)}</title>
-                                  </g>
-                                );
-                              })}
-                            </svg>
                           </div>
                         </>
                       );
