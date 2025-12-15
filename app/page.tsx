@@ -2646,13 +2646,13 @@ export default function Home() {
                       return (
                         <>
                           {/* Y-axis labels */}
-                          <div className="flex flex-col justify-between text-[10px] text-slate-400 h-24 pb-6">
+                          <div className="flex flex-col justify-between text-[10px] text-slate-400 pb-6" style={{ height: '120px' }}>
                             {yAxisTicks.map(tick => (
                               <span key={tick}>{formatWithKSuffix(tick)}</span>
                             ))}
                           </div>
 
-                          <div className="flex-1 flex items-end gap-2" style={{ height: '96px' }}>
+                          <div className="flex-1 flex items-end gap-2" style={{ height: '120px', paddingBottom: '24px' }}>
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {chartData.map((monthData: any, idx: number) => {
                               // Get entries and CDC values based on session type
@@ -2677,7 +2677,7 @@ export default function Home() {
                                   key={monthData.month}
                                   className="flex flex-1 flex-col justify-end gap-1"
                                 >
-                                  <div className="relative flex h-24 items-end gap-[3px] group">
+                                  <div className="relative flex items-end gap-[3px] group" style={{ height: '96px' }}>
                                     {/* Combined tooltip for both metrics */}
                                     <div className="hidden group-hover:block absolute -top-12 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
                                       <div className="text-[9px] font-medium text-slate-700 whitespace-nowrap">
