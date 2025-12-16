@@ -73,40 +73,83 @@ export async function GET(request) {
         // Filter for PSE region only
         const pseRows = rows.filter(row => row.Region === 'PSE');
 
-        // Find the last available month
+        // Find the last two available months
         const months = [...new Set(pseRows.map(row => row.Month))].sort();
         const lastMonth = months[months.length - 1];
+        const previousMonth = months[months.length - 2];
 
-        console.log(`Last available month: ${lastMonth}`);
+        console.log(`Last available month: ${lastMonth}, Previous month: ${previousMonth}`);
 
-        // Filter data for the last month only (exclude "Total" country)
+        // Filter data for the last month (exclude "Total" country)
         const lastMonthData = pseRows.filter(row =>
             row.Month === lastMonth &&
             row.Country !== 'Total'
         );
 
-        // Aggregate by Country (sum entries for each country)
-        const countryTotals = {};
-        let grandTotal = 0;
+        // Filter data for the previous month (exclude "Total" country)
+        const previousMonthData = pseRows.filter(row =>
+            row.Month === previousMonth &&
+            row.Country !== 'Total'
+        );
+
+        // Aggregate by Country for last month
+        const lastMonthCountryTotals = {};
+        let lastMonthGrandTotal = 0;
 
         lastMonthData.forEach(row => {
             const country = row.Country;
             const entries = parseInt(row.Entries) || 0;
 
-            if (!countryTotals[country]) {
-                countryTotals[country] = 0;
+            if (!lastMonthCountryTotals[country]) {
+                lastMonthCountryTotals[country] = 0;
             }
-            countryTotals[country] += entries;
-            grandTotal += entries;
+            lastMonthCountryTotals[country] += entries;
+            lastMonthGrandTotal += entries;
         });
 
-        // Calculate percentages and create sorted array
-        const countries = Object.entries(countryTotals)
-            .map(([country, entries]) => ({
-                country,
-                entries,
-                percentage: grandTotal > 0 ? ((entries / grandTotal) * 100).toFixed(1) : 0
-            }))
+        // Aggregate by Country for previous month
+        const previousMonthCountryTotals = {};
+        let previousMonthGrandTotal = 0;
+
+        previousMonthData.forEach(row => {
+            const country = row.Country;
+            const entries = parseInt(row.Entries) || 0;
+
+            if (!previousMonthCountryTotals[country]) {
+                previousMonthCountryTotals[country] = 0;
+            }
+            previousMonthCountryTotals[country] += entries;
+            previousMonthGrandTotal += entries;
+        });
+
+        // Calculate percentages and MoM comparison
+        const countries = Object.entries(lastMonthCountryTotals)
+            .map(([country, entries]) => {
+                // Calculate current month percentage
+                const currentPercentage = lastMonthGrandTotal > 0
+                    ? (entries / lastMonthGrandTotal) * 100
+                    : 0;
+
+                // Calculate previous month percentage
+                const previousEntries = previousMonthCountryTotals[country] || 0;
+                const previousPercentage = previousMonthGrandTotal > 0
+                    ? (previousEntries / previousMonthGrandTotal) * 100
+                    : 0;
+
+                // Calculate MoM difference in percentage points
+                const momPP = currentPercentage - previousPercentage;
+                const momPPString = momPP >= 0
+                    ? `+${momPP.toFixed(1)}p.p`
+                    : `${momPP.toFixed(1)}p.p`;
+
+                return {
+                    country,
+                    entries,
+                    percentage: currentPercentage.toFixed(1),
+                    momPP: momPP,
+                    momPPString: momPPString
+                };
+            })
             .sort((a, b) => b.entries - a.entries); // Sort by entries descending
 
         console.log(`Processed ${countries.length} countries for ${lastMonth}`);
@@ -115,7 +158,7 @@ export async function GET(request) {
         const responseData = {
             success: true,
             lastMonth,
-            grandTotal,
+            grandTotal: lastMonthGrandTotal,
             countries: countries,
             timestamp: new Date().toISOString(),
         };

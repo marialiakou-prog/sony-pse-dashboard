@@ -3255,7 +3255,12 @@ export default function Home() {
                               <span className={`h-2.5 w-2.5 rounded-full ${colors[index] || 'bg-slate-400'}`} />
                               <span className="font-medium text-slate-900">{country.country}</span>
                             </div>
-                            <span className="text-sm text-slate-700">{country.percentage}%</span>
+                            <div className="flex items-center gap-3">
+                              <span className="text-sm text-slate-700">{country.percentage}%</span>
+                              <span className={`text-[10px] font-semibold ${country.momPP >= 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                                {country.momPPString}
+                              </span>
+                            </div>
                           </div>
                         );
                       })}
