@@ -3184,7 +3184,13 @@ export default function Home() {
                 Top Markets based on Users&apos; Location
               </p>
               <div className="mt-3 space-y-2 text-[11px] text-slate-700">
-                <div className="text-[11px] text-slate-500 mb-2">Last Month</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-[11px] text-slate-500">Last Month</div>
+                  <div className="flex items-center gap-3 pr-3">
+                    <span className="text-[10px] text-slate-500 tracking-wider w-12 text-left">Share %</span>
+                    <span className="text-[10px] text-slate-500 tracking-wider w-14 text-left">MoM</span>
+                  </div>
+                </div>
                 {!llmCountriesData || !llmCountriesData.success ? (
                   <div className="flex items-center justify-center text-slate-400 py-4">
                     {llmCountriesData === undefined ? (
@@ -3228,7 +3234,7 @@ export default function Home() {
                             <div className="absolute inset-0 flex items-center justify-center">
                               <div className="text-center">
                                 <p className="text-[11px] text-slate-500">Top market</p>
-                                <p className="text-sm font-semibold text-slate-900">{topCountry?.country}</p>
+                                <p className="text-sm font-semibold text-slate-900">{topCountry?.countryISO}</p>
                                 <p className="text-[11px] text-slate-600">{topCountry?.percentage}%</p>
                               </div>
                             </div>
@@ -3238,32 +3244,34 @@ export default function Home() {
                     </div>
 
                     {/* List of countries */}
-                    <div className="flex-1 max-h-56 overflow-y-auto space-y-1">
-                      {llmCountriesData.countries?.map((country: any, index: number) => {
-                        // Color palette for top 5 countries
-                        const colors = [
-                          "bg-[#1f78ff]",
-                          "bg-[#4aa6c5]",
-                          "bg-[#5dcf98]",
-                          "bg-[#f2c94c]",
-                          "bg-[#94a3b8]"
-                        ];
+                    <div className="flex-1">
+                      <div className="max-h-56 overflow-y-auto space-y-1">
+                        {llmCountriesData.countries?.map((country: any, index: number) => {
+                          // Color palette for top 5 countries
+                          const colors = [
+                            "bg-[#1f78ff]",
+                            "bg-[#4aa6c5]",
+                            "bg-[#5dcf98]",
+                            "bg-[#f2c94c]",
+                            "bg-[#94a3b8]"
+                          ];
 
-                        return (
-                          <div key={country.country} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-1.5">
-                            <div className="flex items-center gap-2">
-                              <span className={`h-2.5 w-2.5 rounded-full ${colors[index] || 'bg-slate-400'}`} />
-                              <span className="font-medium text-slate-900">{country.country}</span>
+                          return (
+                            <div key={country.country} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-1.5">
+                              <div className="flex items-center gap-2">
+                                <span className={`h-2.5 w-2.5 rounded-full ${colors[index] || 'bg-slate-400'}`} />
+                                <span className="font-medium text-slate-900">{country.countryISO}</span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span className="text-sm text-slate-700 w-12 text-right">{country.percentage}%</span>
+                                <span className={`text-[10px] font-semibold w-14 text-right ${country.momPP >= 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                                  {country.momPPString}
+                                </span>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm text-slate-700">{country.percentage}%</span>
-                              <span className={`text-[10px] font-semibold ${country.momPP >= 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
-                                {country.momPPString}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 )}
