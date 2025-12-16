@@ -3238,8 +3238,8 @@ export default function Home() {
                     </div>
 
                     {/* List of countries */}
-                    <div className="flex-1 space-y-1">
-                      {llmCountriesData.countries?.slice(0, 5).map((country: any, index: number) => {
+                    <div className="flex-1 max-h-32 overflow-y-auto space-y-1">
+                      {llmCountriesData.countries?.map((country: any, index: number) => {
                         // Color palette for top 5 countries
                         const colors = [
                           "bg-[#1f78ff]",
