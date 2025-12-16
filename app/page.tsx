@@ -3178,7 +3178,7 @@ export default function Home() {
             {/* 3.5 LLM entries by Market */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                LLM entries by Market
+                LLM entries by Market | PSE
               </p>
               <p className="mt-1 text-xs text-slate-500">
                 Top Markets based on Users&apos; Location
