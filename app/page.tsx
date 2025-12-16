@@ -2788,10 +2788,10 @@ export default function Home() {
                 Total AI traffic trend | Media Solutions
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Monthly AI-driven sessions and comparison vs. organic sessions.
+                Monthly AI-driven entries and comparison vs. organic entries.
               </p>
               <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500">
-                <span>Last 12 months</span>
+                <span>FY25 up to last Month</span>
                 <div className="flex items-center gap-3">
                   <span className="flex items-center gap-1">
                     <span className="h-1.5 w-3 rounded-full bg-[#4aa6c5]" />
