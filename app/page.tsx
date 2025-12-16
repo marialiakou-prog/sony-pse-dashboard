@@ -17,6 +17,7 @@ export default function Home() {
   const [brandQueryFilter, setBrandQueryFilter] = useState<string>("brand");
   const [aiTrafficMetric, setAiTrafficMetric] = useState<"entries" | "cdcs">("entries");
   const [trafficSessionType, setTrafficSessionType] = useState<"llms" | "organic">("llms");
+  const [productPagesMetric, setProductPagesMetric] = useState<"entries" | "visits">("entries");
 
   const formatWithKSuffix = (value: number) => {
     if (value >= 10000) {
@@ -439,6 +440,105 @@ export default function Home() {
       .sort((a, b) => b.entries - a.entries);
 
     return websiteAreasArray;
+  }, [adobeData]);
+
+  // Product pages data - filter by specific website areas and aggregate by page_detail
+  const productPagesData = useMemo(() => {
+    if (!adobeData || !adobeData.success || !adobeData.data) {
+      return null;
+    }
+
+    // Filter for specific website areas
+    const filteredData = adobeData.data.filter((row: any) =>
+      row?.website_area === 'Professional Cameras' ||
+      row?.website_area === 'Audio' ||
+      row?.website_area === 'Broadcast and Production'
+    );
+
+    if (filteredData.length === 0) {
+      return [];
+    }
+
+    // Get unique months and sort them - handle month object with value property
+    const uniqueMonths = [...new Set(filteredData.map((row: any) => {
+      // Handle both string and object formats
+      return typeof row.month === 'string' ? row.month : row.month?.value;
+    }))].filter(Boolean).sort();
+
+    if (uniqueMonths.length === 0) {
+      return [];
+    }
+
+    // Get last two months for MoM comparison
+    const lastMonth = uniqueMonths[uniqueMonths.length - 1];
+    const previousMonth = uniqueMonths[uniqueMonths.length - 2];
+
+    // Aggregate by page_detail for last month - track both entries and visits
+    const lastMonthEntriesMap = new Map<string, number>();
+    const previousMonthEntriesMap = new Map<string, number>();
+    const lastMonthVisitsMap = new Map<string, number>();
+    const previousMonthVisitsMap = new Map<string, number>();
+
+    filteredData.forEach((row: any) => {
+      const pageDetail = row.page_detail;
+      const entries = parseInt(row.entries) || 0;
+      const visits = parseInt(row.visits) || 0;
+      const rowMonth = typeof row.month === 'string' ? row.month : row.month?.value;
+
+      if (!pageDetail || pageDetail.trim() === '') return;
+
+      if (rowMonth === lastMonth) {
+        lastMonthEntriesMap.set(pageDetail, (lastMonthEntriesMap.get(pageDetail) || 0) + entries);
+        lastMonthVisitsMap.set(pageDetail, (lastMonthVisitsMap.get(pageDetail) || 0) + visits);
+      } else if (rowMonth === previousMonth) {
+        previousMonthEntriesMap.set(pageDetail, (previousMonthEntriesMap.get(pageDetail) || 0) + entries);
+        previousMonthVisitsMap.set(pageDetail, (previousMonthVisitsMap.get(pageDetail) || 0) + visits);
+      }
+    });
+
+    // Calculate MoM and create array
+    const productPagesArray = Array.from(lastMonthEntriesMap.entries())
+      .map(([pageDetail, entries]) => {
+        const previousEntries = previousMonthEntriesMap.get(pageDetail) || 0;
+        const visits = lastMonthVisitsMap.get(pageDetail) || 0;
+        const previousVisits = previousMonthVisitsMap.get(pageDetail) || 0;
+
+        let entriesMom = 0;
+        let entriesMomString = "N/A";
+        let visitsMom = 0;
+        let visitsMomString = "N/A";
+
+        // Calculate entries MoM
+        if (previousEntries > 0) {
+          entriesMom = ((entries - previousEntries) / previousEntries) * 100;
+          entriesMomString = entriesMom >= 0 ? `+${entriesMom.toFixed(1)}%` : `${entriesMom.toFixed(1)}%`;
+        } else if (entries > 0) {
+          entriesMomString = "New";
+          entriesMom = 100;
+        }
+
+        // Calculate visits MoM
+        if (previousVisits > 0) {
+          visitsMom = ((visits - previousVisits) / previousVisits) * 100;
+          visitsMomString = visitsMom >= 0 ? `+${visitsMom.toFixed(1)}%` : `${visitsMom.toFixed(1)}%`;
+        } else if (visits > 0) {
+          visitsMomString = "New";
+          visitsMom = 100;
+        }
+
+        return {
+          pageDetail,
+          entries,
+          visits,
+          entriesMom,
+          entriesMomString,
+          visitsMom,
+          visitsMomString
+        };
+      })
+      .sort((a, b) => b.entries - a.entries);
+
+    return productPagesArray;
   }, [adobeData]);
 
   const headerTitle = useMemo(() => {
@@ -2938,51 +3038,20 @@ export default function Home() {
               </div>
             </article>
 
-            {/* 3.3 AI product interest from LLM traffic */}
+            {/* 3.3 Website areas */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Products viewed from AI tools
+                Website areas
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                LLM-driven visits to key broadcast and production products.
+                LLM sessions | Filtered for Media Solutions
               </p>
-              <div className="mt-3 space-y-1.5 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
-                <div className="flex items-center justify-between text-[11px] text-slate-500">
-                  <span>(last 30d)</span>
-                  <span>MoM %</span>
-                </div>
-                {[
-                  { label: "HDC-5500 system camera", visits: "9.6k", mom: "+5.8%", deltaClass: "text-emerald-500" },
-                  { label: "BRC-X400 PTZ", visits: "7.4k", mom: "+3.1%", deltaClass: "text-emerald-500" },
-                  { label: "XVS-G1 switcher", visits: "6.2k", mom: "+2.4%", deltaClass: "text-emerald-500" },
-                  { label: "PVM-X2400 monitor", visits: "4.9k", mom: "-1.8%", deltaClass: "text-amber-500" },
-                  { label: "DWX wireless audio", visits: "3.7k", mom: "+4.2%", deltaClass: "text-emerald-500" },
-                  { label: "Ci Media Cloud workflow", visits: "2.9k", mom: "+0.9%", deltaClass: "text-emerald-500" },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
-                    <div>
-                      <p className="font-medium text-slate-900">{item.label}</p>
-                      <p className="text-slate-500">LLM visits: {item.visits}</p>
-                    </div>
-                    <span className={`text-sm font-semibold ${item.deltaClass}`}>{item.mom}</span>
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            {/* 3.4 Website areas | Entries from LLMs sessions */}
-            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Website areas | Entries from LLMs sessions
-              </p>
-              <p className="mt-1 text-xs text-slate-500">
-                Filtered in Media Solution Areas
-              </p>
-              <div className="mt-3 space-y-1.5 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
-                <div className="flex items-center justify-between text-[11px] text-slate-500">
+              <div className="mt-3 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
+                <div className="sticky top-0 z-10 flex items-center justify-between bg-white pb-1.5 text-[11px] text-slate-500">
                   <span>Last Month</span>
                   <span>MoM %</span>
                 </div>
+                <div className="space-y-1.5">
                 {!websiteAreasData ? (
                   <div className="flex items-center justify-center text-slate-400 py-4">
                     {adobeData?.success === false ? (
@@ -3011,6 +3080,91 @@ export default function Home() {
                     </div>
                   ))
                 )}
+                </div>
+              </div>
+            </article>
+
+            {/* 3.4 Product pages */}
+            <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                Product pages
+              </p>
+              <p className="mt-1 text-xs text-slate-500">
+                LLM sessions | Filtered for Media Solutions
+              </p>
+              <div className="mt-3 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
+                <div className="sticky top-0 z-10 flex items-center justify-between bg-white pb-1.5 text-[11px] text-slate-500">
+                  <div className="flex items-center gap-2">
+                    <span>Last Month</span>
+                    <div className="flex gap-1 rounded-md bg-slate-100 p-0.5">
+                      <button
+                        onClick={() => setProductPagesMetric("entries")}
+                        className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
+                          productPagesMetric === "entries"
+                            ? "bg-white text-slate-900 shadow-sm"
+                            : "text-slate-500 hover:text-slate-700"
+                        }`}
+                      >
+                        Entries
+                      </button>
+                      <button
+                        onClick={() => setProductPagesMetric("visits")}
+                        className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
+                          productPagesMetric === "visits"
+                            ? "bg-white text-slate-900 shadow-sm"
+                            : "text-slate-500 hover:text-slate-700"
+                        }`}
+                      >
+                        Visits
+                      </button>
+                    </div>
+                  </div>
+                  <span>MoM %</span>
+                </div>
+                <div className="space-y-1.5">
+                {!productPagesData ? (
+                  <div className="flex items-center justify-center text-slate-400 py-4">
+                    {adobeData?.success === false ? (
+                      <div className="text-center">
+                        <div className="text-red-500 font-medium">Error loading product pages data</div>
+                        <div className="text-[10px] mt-1">{adobeData?.error || 'Unknown error'}</div>
+                      </div>
+                    ) : (
+                      <div>Loading data...</div>
+                    )}
+                  </div>
+                ) : productPagesData.length === 0 ? (
+                  <div className="flex items-center justify-center text-slate-400 py-4">
+                    No product pages data available
+                  </div>
+                ) : (
+                  productPagesData
+                    .filter((page) => {
+                      // Only show pages that have a non-zero value for the selected metric
+                      const value = productPagesMetric === "entries" ? page.entries : page.visits;
+                      return value > 0;
+                    })
+                    .map((page) => {
+                      const value = productPagesMetric === "entries" ? page.entries : page.visits;
+                      const mom = productPagesMetric === "entries" ? page.entriesMom : page.visitsMom;
+                      const momString = productPagesMetric === "entries" ? page.entriesMomString : page.visitsMomString;
+
+                      return (
+                        <div key={page.pageDetail} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
+                          <div>
+                            <p className="font-medium text-slate-900">{page.pageDetail}</p>
+                            <p className="text-slate-500">
+                              LLM {productPagesMetric}: {formatWithKSuffix(value)}
+                            </p>
+                          </div>
+                          <span className={`text-sm font-semibold ${mom >= 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                            {momString}
+                          </span>
+                        </div>
+                      );
+                    })
+                )}
+                </div>
               </div>
             </article>
 
