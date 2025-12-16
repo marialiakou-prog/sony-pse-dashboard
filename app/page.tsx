@@ -2686,10 +2686,10 @@ export default function Home() {
                           leftAxisTicks.push(i);
                         }
                       } else {
-                        // Organic: round to next 10k (e.g., 18k → 20k), create ticks with 10k increments
-                        leftAxisMax = roundUpToNearest10k(maxEntriesValue);
-                        // Generate ticks: 0, 10k, 20k, 30k... up to leftAxisMax
-                        for (let i = 0; i <= leftAxisMax; i += 10000) {
+                        // Organic: fixed max at 25k with 5k increments
+                        leftAxisMax = 25000;
+                        // Generate ticks: 0, 5k, 10k, 15k, 20k, 25k
+                        for (let i = 0; i <= leftAxisMax; i += 5000) {
                           leftAxisTicks.push(i);
                         }
                       }
