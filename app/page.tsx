@@ -77,6 +77,13 @@ export default function Home() {
     dedupingInterval: 60000,
   });
 
+  // Fetch LLM Traffic Sources data from CSV
+  const { data: llmTrafficSourcesData } = useSWR('/api/llm-traffic-sources', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+    dedupingInterval: 60000,
+  });
+
   // Process SEO data to get organic sessions with MoM comparison
   const organicSessions = useMemo(() => {
     if (!seoData?.success || !seoData?.data?.length) return null;
@@ -346,6 +353,92 @@ export default function Home() {
     });
 
     return monthlyData;
+  }, [adobeData]);
+
+  // Process Adobe reporting data for website areas with MoM comparison
+  const websiteAreasData = useMemo(() => {
+    if (!adobeData?.success || !adobeData?.data?.length) return null;
+
+    // Filter by pse_bu = 'Media Solutions'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filteredData = adobeData.data.filter((row: any) => row?.pse_bu === 'Media Solutions');
+
+    if (filteredData.length === 0) return null;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const getMonthValue = (row: any): string => {
+      const month = row?.month;
+      return (month && typeof month === "object" ? month.value : month) ?? "";
+    };
+
+    // Get unique months and find the last two months
+    const uniqueMonths = [...new Set(filteredData.map(getMonthValue))]
+      .filter((m): m is string => Boolean(m))
+      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+    if (uniqueMonths.length === 0) return null;
+
+    const lastMonth = uniqueMonths[uniqueMonths.length - 1];
+    const previousMonth = uniqueMonths.length > 1 ? uniqueMonths[uniqueMonths.length - 2] : null;
+
+    // Aggregate by website_area for last month
+    const lastMonthData = filteredData.filter(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (row: any) => getMonthValue(row) === lastMonth
+    );
+
+    const lastMonthMap = new Map<string, number>();
+    lastMonthData.forEach((row: any) => {
+      const websiteArea = row?.website_area;
+      const entries = Number(row?.entries ?? 0);
+
+      if (websiteArea && Number.isFinite(entries)) {
+        const currentTotal = lastMonthMap.get(websiteArea) || 0;
+        lastMonthMap.set(websiteArea, currentTotal + entries);
+      }
+    });
+
+    // Aggregate by website_area for previous month (if available)
+    const previousMonthMap = new Map<string, number>();
+    if (previousMonth) {
+      const previousMonthData = filteredData.filter(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (row: any) => getMonthValue(row) === previousMonth
+      );
+
+      previousMonthData.forEach((row: any) => {
+        const websiteArea = row?.website_area;
+        const entries = Number(row?.entries ?? 0);
+
+        if (websiteArea && Number.isFinite(entries)) {
+          const currentTotal = previousMonthMap.get(websiteArea) || 0;
+          previousMonthMap.set(websiteArea, currentTotal + entries);
+        }
+      });
+    }
+
+    // Convert to array with MoM calculation and sort by entries descending
+    const websiteAreasArray = Array.from(lastMonthMap.entries())
+      .map(([area, entries]) => {
+        const previousEntries = previousMonthMap.get(area) || 0;
+        let mom = 0;
+        let momString = "N/A";
+
+        if (previousEntries > 0) {
+          mom = ((entries - previousEntries) / previousEntries) * 100;
+          momString = mom >= 0 ? `+${mom.toFixed(1)}%` : `${mom.toFixed(1)}%`;
+        }
+
+        return {
+          area,
+          entries,
+          mom,
+          momString,
+        };
+      })
+      .sort((a, b) => b.entries - a.entries);
+
+    return websiteAreasArray;
   }, [adobeData]);
 
   const headerTitle = useMemo(() => {
@@ -625,7 +718,7 @@ export default function Home() {
             }`}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
-            <span>AI Performance</span>
+            <span>GEO Performance</span>
           </button>
         </nav>
 
@@ -2787,32 +2880,59 @@ export default function Home() {
             {/* 3.2 Top LLM Traffic Sources */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Top LLM traffic sources
+                Top LLM traffic sources | PSE
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Share of visits from AI assistants and copilots.
+                Share of Entries from AI assistants - Last Month Data
               </p>
               <div className="mt-3 h-64 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
-                <div className="space-y-1.5">
-                  {[
-                    { label: "ChatGPT", value: "32%", width: "w-[32%]", color: "bg-[#4aa6c5]" },
-                    { label: "Perplexity", value: "21%", width: "w-[21%]", color: "bg-[#3551e6]" },
-                    { label: "Bing Copilot", value: "18%", width: "w-[18%]", color: "bg-emerald-400" },
-                    { label: "Google Gemini", value: "14%", width: "w-[14%]", color: "bg-amber-400" },
-                    { label: "Claude", value: "9%", width: "w-[9%]", color: "bg-sky-400" },
-                    { label: "Mistral & others", value: "6%", width: "w-[6%]", color: "bg-slate-400" },
-                  ].map((s) => (
-                    <div key={s.label} className="space-y-0.5">
-                      <div className="flex items-center justify-between">
-                        <span>{s.label}</span>
-                        <span className="text-slate-500">{s.value}</span>
+                {!llmTrafficSourcesData ? (
+                  <div className="flex h-full items-center justify-center text-slate-400">
+                    {llmTrafficSourcesData === undefined ? (
+                      <div>Loading data...</div>
+                    ) : (
+                      <div className="text-center">
+                        <div className="text-red-500 font-medium">Error loading LLM traffic data</div>
+                        <div className="text-[10px] mt-1">{llmTrafficSourcesData?.error || 'Unknown error'}</div>
                       </div>
-                      <div className="h-1.5 rounded-full bg-slate-100">
-                        <div className={`h-full rounded-full ${s.color} ${s.width}`} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    {llmTrafficSourcesData?.sources?.map((source: any) => {
+                      // Color mapping for different LLM sources
+                      const colorMap: { [key: string]: string } = {
+                        'ChatGPT': 'bg-[#4aa6c5]',
+                        'Perplexity': 'bg-[#3551e6]',
+                        'Copilot': 'bg-emerald-400',
+                        'Gemini': 'bg-amber-400',
+                        'Claude': 'bg-sky-400',
+                        'Bing': 'bg-purple-400',
+                        'Mistral': 'bg-rose-400',
+                        'DeepSeek': 'bg-indigo-400',
+                        'Other': 'bg-slate-400',
+                      };
+
+                      const color = colorMap[source.llm] || 'bg-slate-400';
+                      const percentage = parseFloat(source.percentage);
+
+                      return (
+                        <div key={source.llm} className="space-y-0.5">
+                          <div className="flex items-center justify-between">
+                            <span>{source.llm}</span>
+                            <span className="text-slate-500">{source.percentage}%</span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-slate-100">
+                            <div
+                              className={`h-full rounded-full ${color}`}
+                              style={{ width: `${Math.min(100, percentage)}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </article>
 
@@ -2848,35 +2968,47 @@ export default function Home() {
               </div>
             </article>
 
-            {/* 3.4 Website areas viewed from AI tools */}
+            {/* 3.4 Website areas | Entries from LLMs sessions */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Website areas viewed from AI tools
+                Website areas | Entries from LLMs sessions
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Content areas most visited by AI-referred users.
+                Filtered in Media Solution Areas
               </p>
               <div className="mt-3 space-y-1.5 text-[11px] text-slate-700 max-h-60 overflow-y-auto">
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
-                  <span>(last 30d)</span>
+                  <span>Last Month</span>
                   <span>MoM %</span>
                 </div>
-                {[
-                  { label: "Professional Cameras", visits: "12.4k", mom: "+6.2%", deltaClass: "text-emerald-500" },
-                  { label: "Production switchers", visits: "8.1k", mom: "+3.4%", deltaClass: "text-emerald-500" },
-                  { label: "Professional displays", visits: "6.7k", mom: "+1.1%", deltaClass: "text-emerald-500" },
-                  { label: "Cloud production tools", visits: "5.3k", mom: "-2.4%", deltaClass: "text-amber-500" },
-                  { label: "Solutions pages", visits: "4.1k", mom: "+4.6%", deltaClass: "text-emerald-500" },
-                  { label: "Support content", visits: "2.5k", mom: "-1.2%", deltaClass: "text-amber-500" },
-                ].map((area) => (
-                  <div key={area.label} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
-                    <div>
-                      <p className="font-medium text-slate-900">{area.label}</p>
-                    <p className="text-slate-500">LLM visits: {area.visits}</p>
-                    </div>
-                    <span className={`text-sm font-semibold ${area.deltaClass}`}>{area.mom}</span>
+                {!websiteAreasData ? (
+                  <div className="flex items-center justify-center text-slate-400 py-4">
+                    {adobeData?.success === false ? (
+                      <div className="text-center">
+                        <div className="text-red-500 font-medium">Error loading website areas data</div>
+                        <div className="text-[10px] mt-1">{adobeData?.error || 'Unknown error'}</div>
+                      </div>
+                    ) : (
+                      <div>Loading data...</div>
+                    )}
                   </div>
-                ))}
+                ) : websiteAreasData.length === 0 ? (
+                  <div className="flex items-center justify-center text-slate-400 py-4">
+                    No website area data available
+                  </div>
+                ) : (
+                  websiteAreasData.map((area) => (
+                    <div key={area.area} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
+                      <div>
+                        <p className="font-medium text-slate-900">{area.area}</p>
+                        <p className="text-slate-500">LLM entries: {formatWithKSuffix(area.entries)}</p>
+                      </div>
+                      <span className={`text-sm font-semibold ${area.mom >= 0 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                        {area.momString}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </article>
 
