@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { google } from 'googleapis';
 
-// In-memory cache for CSV results
+// In-memory cache for Google Sheets results
 let cache = {
     data: null,
     timestamp: 0,
@@ -26,36 +25,50 @@ export async function GET(request) {
             });
         }
 
-        console.log('LLM Traffic Sources endpoint called - fetching fresh data');
+        console.log('LLM Traffic Sources endpoint called - fetching fresh data from Google Sheets');
 
-        // Path to the CSV file
-        const csvPath = path.join('C:', 'Users', 'maria.liakou', 'Desktop', 'Company Project', 'data', 'GEO Looker - Referrer.csv');
+        // Parse GCP credentials from environment variable
+        const credentials = JSON.parse(process.env.GCP_SERVICE_ACCOUNT);
 
-        // Check if file exists
-        if (!fs.existsSync(csvPath)) {
-            throw new Error(`CSV file not found at: ${csvPath}`);
+        // Initialize Google Sheets API
+        const auth = new google.auth.GoogleAuth({
+            credentials: credentials,
+            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+        });
+
+        const sheets = google.sheets({ version: 'v4', auth });
+
+        // Google Sheets ID and range
+        const spreadsheetId = '1OwgK83BM7Ms22NL9Sb_pD_yExl1fxBJIdSdAALivOw4';
+        const range = 'Sheet1!A:E'; // Adjust if your sheet has a different name or range
+
+        // Fetch data from Google Sheets
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range,
+        });
+
+        const sheetData = response.data.values;
+
+        if (!sheetData || sheetData.length === 0) {
+            throw new Error('No data found in Google Sheet');
         }
 
-        // Read the CSV file
-        const fileContent = fs.readFileSync(csvPath, 'utf-8');
+        console.log(`Fetched ${sheetData.length} rows from Google Sheets`);
 
-        // Parse CSV (simple parsing for this structure)
-        const lines = fileContent.trim().split('\n');
-        const headers = lines[0].split(',');
-
+        // Parse the data (first row is headers)
+        const headers = sheetData[0];
         const rows = [];
-        for (let i = 1; i < lines.length; i++) {
-            const values = lines[i].split(',');
-            if (values.length === headers.length) {
-                const row = {};
-                headers.forEach((header, index) => {
-                    row[header.trim()] = values[index].trim();
-                });
-                rows.push(row);
-            }
+
+        for (let i = 1; i < sheetData.length; i++) {
+            const row = {};
+            headers.forEach((header, index) => {
+                row[header] = sheetData[i][index] || '';
+            });
+            rows.push(row);
         }
 
-        console.log(`Parsed ${rows.length} rows from CSV`);
+        console.log(`Parsed ${rows.length} rows from Google Sheets`);
 
         // Filter for PSE region only
         const pseRows = rows.filter(row => row.Region === 'PSE');
