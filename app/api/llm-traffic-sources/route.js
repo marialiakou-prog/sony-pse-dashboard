@@ -40,7 +40,7 @@ export async function GET(request) {
 
         // Google Sheets ID and range
         const spreadsheetId = '1OwgK83BM7Ms22NL9Sb_pD_yExl1fxBJIdSdAALivOw4';
-        const range = 'Sheet1!A:E'; // Adjust if your sheet has a different name or range
+        const range = 'Referrer!A:E'; // Reading from the 'Referrer' tab
 
         // Fetch data from Google Sheets
         const response = await sheets.spreadsheets.values.get({
