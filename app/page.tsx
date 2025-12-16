@@ -85,6 +85,13 @@ export default function Home() {
     dedupingInterval: 60000,
   });
 
+  // Fetch LLM Countries data
+  const { data: llmCountriesData } = useSWR('/api/llm-countries', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+    dedupingInterval: 60000,
+  });
+
   // Process SEO data to get organic sessions with MoM comparison
   const organicSessions = useMemo(() => {
     if (!seoData?.success || !seoData?.data?.length) return null;
@@ -3168,50 +3175,53 @@ export default function Home() {
               </div>
             </article>
 
-            {/* 3.5 AI visits by market */}
+            {/* 3.5 LLM entries by Market */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                AI visits by market
+                LLM entries by Market
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Share of LLM-driven visits by country (last 30d).
+                Top Markets based on Users&apos; Location
               </p>
               <div className="mt-3 space-y-2 text-[11px] text-slate-700">
-                <div className="mt-3 flex items-center gap-4 text-[11px] text-slate-700">
-                  <div className="relative h-32 w-32 rounded-full border border-slate-100 bg-slate-50">
-                    <div
-                      className="absolute inset-0 rounded-full"
-                      style={{
-                        backgroundImage:
-                          "conic-gradient(#1f78ff 0 32%, #4aa6c5 32% 56%, #5dcf98 56% 74%, #f2c94c 74% 88%, #94a3b8 88% 100%)",
-                      }}
-                    />
-                    <div className="absolute inset-4 rounded-full bg-white" />
-                    <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-[11px] text-slate-500 mb-2">Last Month</div>
+                {!llmCountriesData || !llmCountriesData.success ? (
+                  <div className="flex items-center justify-center text-slate-400 py-4">
+                    {llmCountriesData === undefined ? (
+                      <div>Loading data...</div>
+                    ) : llmCountriesData?.success === false ? (
                       <div className="text-center">
-                        <p className="text-[11px] text-slate-500">Top market</p>
-                        <p className="text-sm text-slate-900">GB - 32%</p>
+                        <div className="text-red-500 font-medium">Error loading countries data</div>
+                        <div className="text-[10px] mt-1">{llmCountriesData?.error || 'Unknown error'}</div>
                       </div>
-                    </div>
+                    ) : (
+                      <div>Loading data...</div>
+                    )}
                   </div>
+                ) : (
                   <div className="flex-1 space-y-1">
-                    {[
-                      { code: "GB", label: "United Kingdom", value: "32%", color: "bg-[#1f78ff]" },
-                      { code: "DE", label: "Germany", value: "24%", color: "bg-[#4aa6c5]" },
-                      { code: "FR", label: "France", value: "18%", color: "bg-[#5dcf98]" },
-                      { code: "IT", label: "Italy", value: "14%", color: "bg-[#f2c94c]" },
-                      { code: "ES", label: "Spain", value: "12%", color: "bg-[#94a3b8]" },
-                    ].map((c) => (
-                      <div key={c.code} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-1.5">
-                        <div className="flex items-center gap-2">
-                          <span className={`h-2.5 w-2.5 rounded-full ${c.color}`} />
-                          <span className="font-medium text-slate-900">{c.label}</span>
+                    {llmCountriesData.countries?.slice(0, 5).map((country: any, index: number) => {
+                      // Color palette for top 5 countries
+                      const colors = [
+                        "bg-[#1f78ff]",
+                        "bg-[#4aa6c5]",
+                        "bg-[#5dcf98]",
+                        "bg-[#f2c94c]",
+                        "bg-[#94a3b8]"
+                      ];
+
+                      return (
+                        <div key={country.country} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-1.5">
+                          <div className="flex items-center gap-2">
+                            <span className={`h-2.5 w-2.5 rounded-full ${colors[index] || 'bg-slate-400'}`} />
+                            <span className="font-medium text-slate-900">{country.country}</span>
+                          </div>
+                          <span className="text-sm text-slate-700">{country.percentage}%</span>
                         </div>
-                        <span className="text-sm text-slate-700">{c.value}</span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
-                </div>
+                )}
               </div>
             </article>
 
