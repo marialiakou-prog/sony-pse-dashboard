@@ -258,6 +258,12 @@ export default function Home() {
 
     if (filteredData.length === 0) return null;
 
+    // Debug: Log first row to see available fields
+    if (filteredData.length > 0) {
+      console.log('First row keys:', Object.keys(filteredData[0]));
+      console.log('First row sample:', filteredData[0]);
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const getMonthValue = (row: any): string => {
       const month = row?.month;
@@ -271,6 +277,8 @@ export default function Home() {
       .filter((m): m is string => Boolean(m))
       .filter(m => new Date(m) >= april2025)
       .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+    console.log('Unique months found:', uniqueMonths);
 
     if (uniqueMonths.length === 0) return null;
 
@@ -300,6 +308,9 @@ export default function Home() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const totalOrganicEntries = monthData.reduce((sum: number, row: any) => {
         const organicEntries = Number(row?.organic_entries ?? 0);
+        if (organicEntries > 0) {
+          console.log('Found organic_entries:', organicEntries, 'for month:', month);
+        }
         return sum + (Number.isFinite(organicEntries) ? organicEntries : 0);
       }, 0);
 
@@ -307,8 +318,13 @@ export default function Home() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const totalOrganicCDC = monthData.reduce((sum: number, row: any) => {
         const organicCdc = Number(row?.organic_cdc ?? 0);
+        if (organicCdc > 0) {
+          console.log('Found organic_cdc:', organicCdc, 'for month:', month);
+        }
         return sum + (Number.isFinite(organicCdc) ? organicCdc : 0);
       }, 0);
+
+      console.log(`Month ${month}: organicEntries=${totalOrganicEntries}, organicCdc=${totalOrganicCDC}`);
 
       // Format month label (e.g., "Apr", "May")
       const monthDate = new Date(month);
@@ -2623,8 +2639,8 @@ export default function Home() {
                 ) : (
 <div className="flex h-full gap-2">
                     {(() => {
-                      // Determine which dataset to use based on filter selection
-                      const chartData = trafficSessionType === "llms" ? aiTrafficChartData : seoChartData;
+                      // Use aiTrafficChartData for both LLMs and Organic (both come from Adobe data)
+                      const chartData = aiTrafficChartData;
 
                       if (!chartData || chartData.length === 0) {
                         return (
@@ -2649,25 +2665,53 @@ export default function Home() {
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       const cdcValues = chartData.map((d: any) => {
                         if (trafficSessionType === "llms") {
-                          return d.cdc ?? 0; // Sum of form_submissions + rfis
+                          return d.cdc ?? 0;
                         } else {
                           return d.organicCdc ?? 0;
                         }
                       });
 
-                      const maxValue = Math.max(...entriesValues, ...cdcValues);
-                      const yAxisTicks = getNiceAxisTicks(maxValue, 5);
+                      // Helper functions for rounding
+                      const roundUpToNearest100 = (value: number) => Math.ceil(value / 100) * 100;
+                      const roundUpToNearest15k = (value: number) => Math.ceil(value / 15000) * 15000;
+
+                      // Left axis: Different logic for LLM vs Organic
+                      const maxEntriesValue = Math.max(...entriesValues);
+                      let leftAxisMax, leftAxisTicks = [];
+
+                      if (trafficSessionType === "llms") {
+                        // LLM: add 100, round to nearest 100, increment by 100
+                        leftAxisMax = roundUpToNearest100(maxEntriesValue + 100);
+                        for (let i = 0; i <= leftAxisMax; i += 100) {
+                          leftAxisTicks.push(i);
+                        }
+                      } else {
+                        // Organic: add 5000, round to nearest 15k, create ticks with 15k increments
+                        leftAxisMax = roundUpToNearest15k(maxEntriesValue + 5000);
+                        // Generate ticks: 0, 15k, 30k, 45k... up to leftAxisMax
+                        for (let i = 0; i <= leftAxisMax; i += 15000) {
+                          leftAxisTicks.push(i);
+                        }
+                      }
+
+                      // Right axis: max CDC value + 100, rounded to nearest 100
+                      const maxCdcValue = Math.max(...cdcValues);
+                      const rightAxisMax = roundUpToNearest100(maxCdcValue + 100);
+                      const rightAxisTicks = [];
+                      for (let i = 0; i <= rightAxisMax; i += 100) {
+                        rightAxisTicks.push(i);
+                      }
 
                       return (
                         <>
-                          {/* Y-axis labels */}
+                          {/* Left Y-axis labels (Entries) */}
                           <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
-                            {yAxisTicks.map(tick => (
+                            {leftAxisTicks.slice().reverse().map(tick => (
                               <span key={tick}>{formatWithKSuffix(tick)}</span>
                             ))}
                           </div>
 
-                          <div className="flex-1 flex h-full items-end gap-2">
+                          <div className="flex-1 flex h-full items-end gap-2 pt-1 pb-6">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {chartData.map((monthData: any) => {
                               // Get entries and CDC values based on session type
@@ -2683,16 +2727,16 @@ export default function Home() {
                                 cdcValue = monthData.organicCdc ?? 0;
                               }
 
-                              // Calculate bar heights as percentage of max value
-                              const entriesHeight = maxValue > 0 ? (entriesValue / maxValue) * 100 : 0;
-                              const cdcHeight = maxValue > 0 ? (cdcValue / maxValue) * 100 : 0;
+                              // Calculate bar heights as percentage based on axis max values
+                              const entriesHeight = leftAxisMax > 0 ? (entriesValue / leftAxisMax) * 100 : 0;
+                              const cdcHeight = rightAxisMax > 0 ? (cdcValue / rightAxisMax) * 100 : 0;
 
                               return (
                                 <div
                                   key={monthData.month}
                                   className="flex flex-1 flex-col justify-end gap-1"
                                 >
-                                  <div className="relative flex h-24 items-end gap-[3px] group">
+                                  <div className="relative flex h-full items-end gap-[3px] group">
                                     {/* Combined tooltip for both metrics */}
                                     <div className="hidden group-hover:block absolute -top-12 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
                                       <div className="text-[9px] font-medium text-slate-700 whitespace-nowrap">
@@ -2724,6 +2768,13 @@ export default function Home() {
                                 </div>
                               );
                             })}
+                          </div>
+
+                          {/* Right Y-axis labels (CDCs) */}
+                          <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
+                            {rightAxisTicks.slice().reverse().map(tick => (
+                              <span key={tick}>{tick}</span>
+                            ))}
                           </div>
                         </>
                       );
