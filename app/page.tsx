@@ -3199,27 +3199,66 @@ export default function Home() {
                     )}
                   </div>
                 ) : (
-                  <div className="flex-1 space-y-1">
-                    {llmCountriesData.countries?.slice(0, 5).map((country: any, index: number) => {
-                      // Color palette for top 5 countries
-                      const colors = [
-                        "bg-[#1f78ff]",
-                        "bg-[#4aa6c5]",
-                        "bg-[#5dcf98]",
-                        "bg-[#f2c94c]",
-                        "bg-[#94a3b8]"
-                      ];
+                  <div className="flex items-center gap-4 text-[11px] text-slate-700">
+                    {/* Pie chart */}
+                    <div className="relative h-32 w-32 rounded-full border border-slate-100 bg-slate-50">
+                      {(() => {
+                        const topCountries = llmCountriesData.countries?.slice(0, 5) || [];
+                        const colors = ['#1f78ff', '#4aa6c5', '#5dcf98', '#f2c94c', '#94a3b8'];
 
-                      return (
-                        <div key={country.country} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-1.5">
-                          <div className="flex items-center gap-2">
-                            <span className={`h-2.5 w-2.5 rounded-full ${colors[index] || 'bg-slate-400'}`} />
-                            <span className="font-medium text-slate-900">{country.country}</span>
+                        // Calculate conic gradient stops
+                        let currentPercentage = 0;
+                        const gradientStops = topCountries.map((country: any, index: number) => {
+                          const startPercentage = currentPercentage;
+                          currentPercentage += parseFloat(country.percentage);
+                          return `${colors[index]} ${startPercentage}% ${currentPercentage}%`;
+                        }).join(', ');
+
+                        const topCountry = topCountries[0];
+
+                        return (
+                          <>
+                            <div
+                              className="absolute inset-0 rounded-full"
+                              style={{
+                                backgroundImage: `conic-gradient(${gradientStops})`,
+                              }}
+                            />
+                            <div className="absolute inset-4 rounded-full bg-white" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="text-center">
+                                <p className="text-[11px] text-slate-500">Top market</p>
+                                <p className="text-sm text-slate-900">{topCountry?.country} - {topCountry?.percentage}%</p>
+                              </div>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+
+                    {/* List of countries */}
+                    <div className="flex-1 space-y-1">
+                      {llmCountriesData.countries?.slice(0, 5).map((country: any, index: number) => {
+                        // Color palette for top 5 countries
+                        const colors = [
+                          "bg-[#1f78ff]",
+                          "bg-[#4aa6c5]",
+                          "bg-[#5dcf98]",
+                          "bg-[#f2c94c]",
+                          "bg-[#94a3b8]"
+                        ];
+
+                        return (
+                          <div key={country.country} className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className={`h-2.5 w-2.5 rounded-full ${colors[index] || 'bg-slate-400'}`} />
+                              <span className="font-medium text-slate-900">{country.country}</span>
+                            </div>
+                            <span className="text-sm text-slate-700">{country.percentage}%</span>
                           </div>
-                          <span className="text-sm text-slate-700">{country.percentage}%</span>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
