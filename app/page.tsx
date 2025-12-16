@@ -252,8 +252,9 @@ export default function Home() {
   const aiTrafficChartData = useMemo(() => {
     if (!adobeData?.success || !adobeData?.data?.length) return null;
 
-    // Use all data from the table (already filtered in BigQuery if needed)
-    const filteredData = adobeData.data;
+    // Filter by pse_bu = 'Media Solutions'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filteredData = adobeData.data.filter((row: any) => row?.pse_bu === 'Media Solutions');
 
     if (filteredData.length === 0) return null;
 
