@@ -2637,7 +2637,7 @@ export default function Home() {
                     )}
                   </div>
                 ) : (
-<div className="flex h-full gap-2">
+<div className="flex gap-2">
                     {(() => {
                       // Use aiTrafficChartData for both LLMs and Organic (both come from Adobe data)
                       const chartData = aiTrafficChartData;
@@ -2705,13 +2705,13 @@ export default function Home() {
                       return (
                         <>
                           {/* Left Y-axis labels (Entries) */}
-                          <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
+                          <div className="flex flex-col justify-between text-[10px] text-slate-400 h-52 pb-6">
                             {leftAxisTicks.slice().reverse().map(tick => (
                               <span key={tick}>{formatWithKSuffix(tick)}</span>
                             ))}
                           </div>
 
-                          <div className="flex-1 flex h-full items-end gap-2 pt-1 pb-6">
+                          <div className="flex-1 flex h-52 items-end gap-2">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {chartData.map((monthData: any) => {
                               // Get entries and CDC values based on session type
@@ -2734,9 +2734,9 @@ export default function Home() {
                               return (
                                 <div
                                   key={monthData.month}
-                                  className="flex flex-1 flex-col justify-end gap-1"
+                                  className="flex flex-1 flex-col items-center gap-1"
                                 >
-                                  <div className="relative flex h-full items-end gap-[3px] group">
+                                  <div className="relative flex h-52 w-full items-end gap-[3px] group">
                                     {/* Combined tooltip for both metrics */}
                                     <div className="hidden group-hover:block absolute -top-12 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
                                       <div className="text-[9px] font-medium text-slate-700 whitespace-nowrap">
@@ -2771,7 +2771,7 @@ export default function Home() {
                           </div>
 
                           {/* Right Y-axis labels (CDCs) */}
-                          <div className="flex flex-col justify-between text-[10px] text-slate-400 pt-1 pb-6">
+                          <div className="flex flex-col justify-between text-[10px] text-slate-400 h-52 pb-6">
                             {rightAxisTicks.slice().reverse().map(tick => (
                               <span key={tick}>{tick}</span>
                             ))}
