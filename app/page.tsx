@@ -2886,20 +2886,22 @@ export default function Home() {
                 Share of Entries from AI assistants - Last Month Data
               </p>
               <div className="mt-3 h-64 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
-                {!llmTrafficSourcesData ? (
+                {!llmTrafficSourcesData || !llmTrafficSourcesData.success ? (
                   <div className="flex h-full items-center justify-center text-slate-400">
                     {llmTrafficSourcesData === undefined ? (
                       <div>Loading data...</div>
-                    ) : (
+                    ) : llmTrafficSourcesData?.success === false ? (
                       <div className="text-center">
                         <div className="text-red-500 font-medium">Error loading LLM traffic data</div>
                         <div className="text-[10px] mt-1">{llmTrafficSourcesData?.error || 'Unknown error'}</div>
                       </div>
+                    ) : (
+                      <div>Loading data...</div>
                     )}
                   </div>
                 ) : (
                   <div className="space-y-1.5">
-                    {llmTrafficSourcesData?.sources?.map((source: any) => {
+                    {llmTrafficSourcesData.sources?.map((source: any) => {
                       // Color mapping for different LLM sources
                       const colorMap: { [key: string]: string } = {
                         'ChatGPT': 'bg-[#4aa6c5]',
