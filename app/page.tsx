@@ -3228,7 +3228,8 @@ export default function Home() {
                             <div className="absolute inset-0 flex items-center justify-center">
                               <div className="text-center">
                                 <p className="text-[11px] text-slate-500">Top market</p>
-                                <p className="text-sm text-slate-900">{topCountry?.country} - {topCountry?.percentage}%</p>
+                                <p className="text-sm font-semibold text-slate-900">{topCountry?.country}</p>
+                                <p className="text-[11px] text-slate-600">{topCountry?.percentage}%</p>
                               </div>
                             </div>
                           </>
