@@ -2624,7 +2624,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 h-52 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px]">
+              <div className="mt-3 h-58 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px]">
                 {!aiTrafficChartData || !seoChartData ? (
                   <div className="flex h-full items-center justify-center text-slate-400">
                     {adobeData?.success === false ? (
@@ -2673,7 +2673,7 @@ export default function Home() {
 
                       // Helper functions for rounding
                       const roundUpToNearest100 = (value: number) => Math.ceil(value / 100) * 100;
-                      const roundUpToNearest15k = (value: number) => Math.ceil(value / 15000) * 15000;
+                      const roundUpToNearest10k = (value: number) => Math.ceil(value / 10000) * 10000;
 
                       // Left axis: Different logic for LLM vs Organic
                       const maxEntriesValue = Math.max(...entriesValues);
@@ -2686,10 +2686,10 @@ export default function Home() {
                           leftAxisTicks.push(i);
                         }
                       } else {
-                        // Organic: add 5000, round to nearest 15k, create ticks with 15k increments
-                        leftAxisMax = roundUpToNearest15k(maxEntriesValue + 5000);
-                        // Generate ticks: 0, 15k, 30k, 45k... up to leftAxisMax
-                        for (let i = 0; i <= leftAxisMax; i += 15000) {
+                        // Organic: round to next 10k (e.g., 18k → 20k), create ticks with 10k increments
+                        leftAxisMax = roundUpToNearest10k(maxEntriesValue);
+                        // Generate ticks: 0, 10k, 20k, 30k... up to leftAxisMax
+                        for (let i = 0; i <= leftAxisMax; i += 10000) {
                           leftAxisTicks.push(i);
                         }
                       }
@@ -2738,7 +2738,7 @@ export default function Home() {
                                 >
                                   <div className="relative flex h-52 w-full items-end gap-[3px] group">
                                     {/* Combined tooltip for both metrics */}
-                                    <div className="hidden group-hover:block absolute -top-12 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
+                                    <div className="hidden group-hover:block absolute top-2 left-1/2 -translate-x-1/2 bg-white px-2 py-1.5 rounded shadow-lg border border-slate-200 z-20 text-left">
                                       <div className="text-[9px] font-medium text-slate-700 whitespace-nowrap">
                                         <div className="flex items-center gap-1">
                                           <span className="w-2 h-2 rounded-full bg-[#4aa6c5]"></span>
