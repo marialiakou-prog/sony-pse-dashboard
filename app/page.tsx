@@ -280,19 +280,33 @@ export default function Home() {
         (row: any) => getMonthValue(row) === month
       );
 
-      // Sum entries for the month
+      // Sum LLM entries for the month
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const totalEntries = monthData.reduce((sum: number, row: any) => {
         const entries = Number(row?.entries ?? 0);
         return sum + (Number.isFinite(entries) ? entries : 0);
       }, 0);
 
-      // Calculate CDC as sum of rfis + form_submissions
+      // Calculate LLM CDC as sum of rfis + form_submissions
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const totalCDC = monthData.reduce((sum: number, row: any) => {
         const rfis = Number(row?.rfis ?? 0);
         const forms = Number(row?.form_submissions ?? 0);
         return sum + (Number.isFinite(rfis) ? rfis : 0) + (Number.isFinite(forms) ? forms : 0);
+      }, 0);
+
+      // Sum Organic entries for the month
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const totalOrganicEntries = monthData.reduce((sum: number, row: any) => {
+        const organicEntries = Number(row?.organic_entries ?? 0);
+        return sum + (Number.isFinite(organicEntries) ? organicEntries : 0);
+      }, 0);
+
+      // Sum Organic CDCs for the month
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const totalOrganicCDC = monthData.reduce((sum: number, row: any) => {
+        const organicCdc = Number(row?.organic_cdc ?? 0);
+        return sum + (Number.isFinite(organicCdc) ? organicCdc : 0);
       }, 0);
 
       // Format month label (e.g., "Apr", "May")
@@ -307,6 +321,10 @@ export default function Home() {
         entriesK: Math.round(totalEntries / 1000),
         cdc: totalCDC,
         cdcK: Math.round(totalCDC / 1000),
+        organicEntries: totalOrganicEntries,
+        organicEntriesK: Math.round(totalOrganicEntries / 1000),
+        organicCdc: totalOrganicCDC,
+        organicCdcK: Math.round(totalOrganicCDC / 1000),
       };
     });
 
@@ -2616,25 +2634,23 @@ export default function Home() {
                       }
 
                       // Extract values for scaling
-                      // For LLMs: use real data (entries and cdc from Adobe)
-                      // For Organic: use mockup data for now
+                      // For LLMs: use entries and cdc from Adobe
+                      // For Organic: use organic_entries and organic_cdc from Adobe
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      const entriesValues = chartData.map((d: any, idx: number) => {
+                      const entriesValues = chartData.map((d: any) => {
                         if (trafficSessionType === "llms") {
                           return d.entries ?? 0;
                         } else {
-                          // Mockup data for Organic entries
-                          return 30000 + idx * 2000;
+                          return d.organicEntries ?? 0;
                         }
                       });
 
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      const cdcValues = chartData.map((d: any, idx: number) => {
+                      const cdcValues = chartData.map((d: any) => {
                         if (trafficSessionType === "llms") {
                           return d.cdc ?? 0; // Sum of form_submissions + rfis
                         } else {
-                          // Mockup data for Organic CDCs
-                          return 5000 + idx * 500;
+                          return d.organicCdc ?? 0;
                         }
                       });
 
@@ -2652,18 +2668,18 @@ export default function Home() {
 
                           <div className="flex-1 flex h-full items-end gap-2">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                            {chartData.map((monthData: any, idx: number) => {
+                            {chartData.map((monthData: any) => {
                               // Get entries and CDC values based on session type
                               let entriesValue, cdcValue;
 
                               if (trafficSessionType === "llms") {
-                                // LLMs: use real Adobe data
+                                // LLMs: use entries and cdc from Adobe
                                 entriesValue = monthData.entries ?? 0;
                                 cdcValue = monthData.cdc ?? 0; // Sum of form_submissions + rfis
                               } else {
-                                // Organic: use mockup data
-                                entriesValue = 30000 + idx * 2000;
-                                cdcValue = 5000 + idx * 500;
+                                // Organic: use organic_entries and organic_cdc from Adobe
+                                entriesValue = monthData.organicEntries ?? 0;
+                                cdcValue = monthData.organicCdc ?? 0;
                               }
 
                               // Calculate bar heights as percentage of max value
