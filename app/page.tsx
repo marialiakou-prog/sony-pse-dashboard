@@ -548,6 +548,60 @@ export default function Home() {
     return productPagesArray;
   }, [adobeData]);
 
+  // Get formatted last month for the header (uses Adobe data as primary source)
+  const formattedLastMonth = useMemo(() => {
+    // Try to get from Adobe data first (most comprehensive)
+    if (adobeData?.success && adobeData?.data?.length) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const filteredData = adobeData.data.filter((row: any) => row?.pse_bu === 'Media Solutions');
+
+      if (filteredData.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const getMonthValue = (row: any): string => {
+          const month = row?.month;
+          return (month && typeof month === "object" ? month.value : month) ?? "";
+        };
+
+        const uniqueMonths = [...new Set(filteredData.map(getMonthValue))]
+          .filter((m): m is string => Boolean(m))
+          .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+        if (uniqueMonths.length > 0) {
+          const lastMonth = uniqueMonths[uniqueMonths.length - 1];
+          const monthDate = new Date(lastMonth);
+
+          if (!Number.isNaN(monthDate.getTime())) {
+            const monthName = monthDate.toLocaleString("en-GB", { month: "long" });
+            const year = monthDate.getFullYear().toString().slice(-2);
+            return `${monthName} ${year}`;
+          }
+        }
+      }
+    }
+
+    // Fallback to LLM Countries data
+    if (llmCountriesData?.success && llmCountriesData?.lastMonth) {
+      const monthDate = new Date(llmCountriesData.lastMonth);
+      if (!Number.isNaN(monthDate.getTime())) {
+        const monthName = monthDate.toLocaleString("en-GB", { month: "long" });
+        const year = monthDate.getFullYear().toString().slice(-2);
+        return `${monthName} ${year}`;
+      }
+    }
+
+    // Fallback to LLM Traffic Sources data
+    if (llmTrafficSourcesData?.success && llmTrafficSourcesData?.lastMonth) {
+      const monthDate = new Date(llmTrafficSourcesData.lastMonth);
+      if (!Number.isNaN(monthDate.getTime())) {
+        const monthName = monthDate.toLocaleString("en-GB", { month: "long" });
+        const year = monthDate.getFullYear().toString().slice(-2);
+        return `${monthName} ${year}`;
+      }
+    }
+
+    return null;
+  }, [adobeData, llmCountriesData, llmTrafficSourcesData]);
+
   const headerTitle = useMemo(() => {
     switch (activeTab) {
       case "seo-health":
@@ -848,57 +902,59 @@ export default function Home() {
             </h1>
             <p className="mt-1 text-xs text-slate-500">{headerSubtitle}</p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1.5 text-xs text-slate-500 sm:flex">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4aa6c5]/60" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#4aa6c5]" />
-              </span>
-              <span>Last sync: 3 min ago</span>
-            </div>
-            <button
-              onClick={() => window.print()}
-              className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-900 shadow-sm hover:bg-slate-100 sm:inline-flex"
-            >
-              Export snapshot
-            </button>
-            {activeTab === "seo-health" && (
+          <div className="flex flex-col gap-2 items-end">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => window.print()}
+                className="hidden rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-900 shadow-sm hover:bg-slate-100 sm:inline-flex"
+              >
+                Export snapshot
+              </button>
+              {activeTab === "seo-health" && (
+                <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
+                  <span>Country</span>
+                  <select
+                    value={keywordCountry}
+                    onChange={(e) => setKeywordCountry(e.target.value as CountryCode)}
+                    className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100 border-none outline-none cursor-pointer"
+                  >
+                    <option value="GB">GB</option>
+                    <option value="DE">DE</option>
+                    <option value="FR">FR</option>
+                    <option value="IT">IT</option>
+                    <option value="ES">ES</option>
+                    <option value="NL">NL</option>
+                    <option value="BE">BE</option>
+                    <option value="AT">AT</option>
+                    <option value="SE">SE</option>
+                    <option value="NO">NO</option>
+                    <option value="DK">DK</option>
+                    <option value="FI">FI</option>
+                    <option value="PL">PL</option>
+                    <option value="PT">PT</option>
+                    <option value="IE">IE</option>
+                    <option value="GR">GR</option>
+                    <option value="CZ">CZ</option>
+                    <option value="RO">RO</option>
+                    <option value="HU">HU</option>
+                    <option value="CH">CH</option>
+                  </select>
+                </div>
+              )}
               <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
-                <span>Country</span>
-                <select
-                  value={keywordCountry}
-                  onChange={(e) => setKeywordCountry(e.target.value as CountryCode)}
-                  className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100 border-none outline-none cursor-pointer"
-                >
-                  <option value="GB">GB</option>
-                  <option value="DE">DE</option>
-                  <option value="FR">FR</option>
-                  <option value="IT">IT</option>
-                  <option value="ES">ES</option>
-                  <option value="NL">NL</option>
-                  <option value="BE">BE</option>
-                  <option value="AT">AT</option>
-                  <option value="SE">SE</option>
-                  <option value="NO">NO</option>
-                  <option value="DK">DK</option>
-                  <option value="FI">FI</option>
-                  <option value="PL">PL</option>
-                  <option value="PT">PT</option>
-                  <option value="IE">IE</option>
-                  <option value="GR">GR</option>
-                  <option value="CZ">CZ</option>
-                  <option value="RO">RO</option>
-                  <option value="HU">HU</option>
-                  <option value="CH">CH</option>
-                </select>
+                <span>Period</span>
+                <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100">
+                  {activeTab === "ai-insights" && formattedLastMonth
+                    ? `Last month: ${formattedLastMonth}`
+                    : 'Last month'}
+                </span>
+              </div>
+            </div>
+            {activeTab === "ai-insights" && (
+              <div className="text-[10px] text-slate-500">
+                📅 Monthly Data updated by 10th working day of next Month
               </div>
             )}
-            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
-              <span>Period</span>
-              <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-medium text-slate-100">
-                Last month
-              </span>
-            </div>
           </div>
         </header>
 
