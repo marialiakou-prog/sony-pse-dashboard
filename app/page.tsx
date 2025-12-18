@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import useSWR from "swr";
 
 type MainTab = "executive-summary" | "seo-health" | "ai-insights";
@@ -3384,99 +3384,259 @@ export default function Home() {
               </div>
             </article>
 
-            {/* 3.7 Brand citations trend */}
+            {/* 3.7 Product Visibility Table */}
             <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2">
               <p className="text-[13px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                Brand citations trend
+                Product Visibility Analysis
               </p>
               <p className="mt-1 text-xs text-slate-500">
-                Monthly Sony citation counts across sampled LLM answers.
+                Brand and website visibility across LLM responses by product.
               </p>
-                <div className="mt-3 h-56 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-[11px] text-slate-700">
+              <div className="mt-4">
                 {(() => {
-                  const points = [
-                    { month: "Apr", sony: 48, comp: 42 },
-                    { month: "May", sony: 54, comp: 46 },
-                    { month: "Jun", sony: 60, comp: 51 },
-                    { month: "Jul", sony: 67, comp: 55 },
-                    { month: "Aug", sony: 73, comp: 58 },
-                    { month: "Sep", sony: 78, comp: 61 },
-                    { month: "Oct", sony: 84, comp: 64 },
+                  const [expandedProducts, setExpandedProducts] = useState<Set<string>>(new Set());
+                  const [promptFilter, setPromptFilter] = useState<'branded' | 'non-branded'>('branded');
+
+                  const productsDataBranded = [
+                    {
+                      name: "FX6",
+                      brandVisibility: 88.3,
+                      websiteVisibility: 71.7,
+                      runs: 15,
+                      prompts: [
+                        { text: "What's the best Sony FX6 for solo filmmakers?", brandVis: 95.0, websiteVis: 85.0, runs: 5 },
+                        { text: "Looking for Sony FX6 with dual native ISO.", brandVis: 80.0, websiteVis: 60.0, runs: 5 },
+                        { text: "Need Sony FX6 with built-in ND filters for outdoor shoots.", brandVis: 90.0, websiteVis: 70.0, runs: 5 }
+                      ]
+                    },
+                    {
+                      name: "FX3",
+                      brandVisibility: 84.0,
+                      websiteVisibility: 66.0,
+                      runs: 15,
+                      prompts: [
+                        { text: "Looking for Sony FX3 for commercial video production.", brandVis: 90.0, websiteVis: 75.0, runs: 5 },
+                        { text: "What are the best features of Sony FX3?", brandVis: 80.0, websiteVis: 60.0, runs: 5 },
+                        { text: "Need Sony FX3 for travel filmmaking.", brandVis: 82.0, websiteVis: 63.0, runs: 5 }
+                      ]
+                    },
+                    {
+                      name: "VENICE 2",
+                      brandVisibility: 92.3,
+                      websiteVisibility: 81.0,
+                      runs: 15,
+                      prompts: [
+                        { text: "Looking for Sony VENICE 2 with dual base ISO.", brandVis: 92.0, websiteVis: 80.0, runs: 5 },
+                        { text: "What's the Sony VENICE 2 price for high-budget shoots?", brandVis: 90.0, websiteVis: 82.0, runs: 5 },
+                        { text: "Need Sony VENICE 2 with exceptional color science.", brandVis: 95.0, websiteVis: 81.0, runs: 5 }
+                      ]
+                    },
+                    {
+                      name: "BURANO",
+                      brandVisibility: 72.3,
+                      websiteVisibility: 66.7,
+                      runs: 15,
+                      prompts: [
+                        { text: "Looking for Sony BURANO for studio and location work.", brandVis: 70.0, websiteVis: 60.0, runs: 5 },
+                        { text: "What's the best feature of Sony BURANO?", brandVis: 72.0, websiteVis: 68.0, runs: 5 },
+                        { text: "Need Sony BURANO with autofocus for documentary work.", brandVis: 75.0, websiteVis: 72.0, runs: 5 }
+                      ]
+                    },
+                    {
+                      name: "FR7",
+                      brandVisibility: 68.7,
+                      websiteVisibility: 62.3,
+                      runs: 15,
+                      prompts: [
+                        { text: "Looking for Sony FR7 for virtual production.", brandVis: 68.0, websiteVis: 58.0, runs: 5 },
+                        { text: "What's the best use case for Sony FR7?", brandVis: 65.0, websiteVis: 62.0, runs: 5 },
+                        { text: "Need Sony FR7 with interchangeable lenses for sports.", brandVis: 73.0, websiteVis: 67.0, runs: 5 }
+                      ]
+                    }
                   ];
-                  const maxVal = 100;
-                  const padding = 8;
-                  const viewWidth = 100;
-                  const viewHeight = 120;
-                  const step = points.length > 1 ? viewWidth / (points.length - 1) : viewWidth;
 
-                  const toCoord = (val: number, idx: number) => ({
-                    x: idx * step,
-                    y: viewHeight - (val / maxVal) * (viewHeight - padding * 2) - padding,
-                  });
+                  const productsDataNonBranded = [
+                    {
+                      name: "FX6",
+                      brandVisibility: 96.7,
+                      websiteVisibility: 85.0,
+                      runs: 15,
+                      prompts: [
+                        { text: "Best cinema camera for documentary filmmaking under $10k?", brandVis: 100.0, websiteVis: 95.0, runs: 5 },
+                        { text: "Which camera do professional videographers use for run-and-gun shooting?", brandVis: 100.0, websiteVis: 80.0, runs: 5 },
+                        { text: "Recommend a full-frame cinema camera with excellent low-light performance.", brandVis: 90.0, websiteVis: 80.0, runs: 5 }
+                      ]
+                    },
+                    {
+                      name: "FX3",
+                      brandVisibility: 93.3,
+                      websiteVisibility: 78.3,
+                      runs: 15,
+                      prompts: [
+                        { text: "Best hybrid camera for both video and photography professionals?", brandVis: 95.0, websiteVis: 80.0, runs: 5 },
+                        { text: "Which compact full-frame camera is ideal for content creators?", brandVis: 100.0, websiteVis: 90.0, runs: 5 },
+                        { text: "Recommend a cinema-quality camera in a mirrorless body.", brandVis: 85.0, websiteVis: 65.0, runs: 5 }
+                      ]
+                    },
+                    {
+                      name: "VENICE 2",
+                      brandVisibility: 98.3,
+                      websiteVisibility: 90.0,
+                      runs: 15,
+                      prompts: [
+                        { text: "What's the best 8K cinema camera for feature film production?", brandVis: 100.0, websiteVis: 95.0, runs: 5 },
+                        { text: "Recommend a high-end digital cinema camera for Hollywood productions.", brandVis: 100.0, websiteVis: 90.0, runs: 5 },
+                        { text: "Which camera do major studios use for Netflix original series?", brandVis: 95.0, websiteVis: 85.0, runs: 5 }
+                      ]
+                    },
+                    {
+                      name: "BURANO",
+                      brandVisibility: 80.0,
+                      websiteVisibility: 70.0,
+                      runs: 15,
+                      prompts: [
+                        { text: "Best compact 8K cinema camera for independent filmmakers?", brandVis: 85.0, websiteVis: 75.0, runs: 5 },
+                        { text: "Which lightweight cinema camera has built-in ND filters?", brandVis: 80.0, websiteVis: 70.0, runs: 5 },
+                        { text: "Recommend a professional camera combining portability with 8K quality.", brandVis: 75.0, websiteVis: 65.0, runs: 5 }
+                      ]
+                    },
+                    {
+                      name: "FR7",
+                      brandVisibility: 75.0,
+                      websiteVisibility: 66.0,
+                      runs: 15,
+                      prompts: [
+                        { text: "Best PTZ camera for broadcast studio production?", brandVis: 80.0, websiteVis: 70.0, runs: 5 },
+                        { text: "Which remote camera system is ideal for live event coverage?", brandVis: 75.0, websiteVis: 68.0, runs: 5 },
+                        { text: "Recommend a robotic camera with cinema-quality image.", brandVis: 70.0, websiteVis: 60.0, runs: 5 }
+                      ]
+                    }
+                  ];
 
-                  const buildPath = (series: "sony" | "comp") =>
-                    points
-                      .map((p, idx) => {
-                        const { x, y } = toCoord(p[series], idx);
-                        return `${idx === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
-                      })
-                      .join(" ");
+                  const products = promptFilter === 'branded' ? productsDataBranded : productsDataNonBranded;
 
-                  const sonyPath = buildPath("sony");
-                  const compPath = buildPath("comp");
-                  const yTicks = [100, 80, 60, 40, 20];
+                  const toggleProduct = (productName: string) => {
+                    setExpandedProducts(prev => {
+                      const newSet = new Set(prev);
+                      if (newSet.has(productName)) {
+                        newSet.delete(productName);
+                      } else {
+                        newSet.add(productName);
+                      }
+                      return newSet;
+                    });
+                  };
 
                   return (
-                    <div className="flex h-full flex-col justify-between">
-                      <div className="flex h-full">
-                        <div className="flex w-10 flex-col justify-between pr-1 text-[10px] text-slate-500">
-                          {yTicks.map((tick) => (
-                            <span key={tick}>{tick}</span>
-                          ))}
-                        </div>
-                        <div className="relative flex-1">
-                          <svg
-                            viewBox={`0 0 ${viewWidth} ${viewHeight}`}
-                            className="h-full w-full overflow-hidden"
-                            preserveAspectRatio="none"
-                          >
-                            {yTicks.map((tick) => {
-                              const y = toCoord(tick, 0).y;
-                              return (
-                                <line
-                                  key={tick}
-                                  x1={0}
-                                  x2={viewWidth}
-                                  y1={y}
-                                  y2={y}
-                                  stroke="#e2e8f0"
-                                  strokeWidth="0.5"
-                                />
-                              );
-                            })}
-                            <path d={compPath} fill="none" stroke="#94a3b8" strokeWidth="1.6" />
-                            <path d={sonyPath} fill="none" stroke="#4aa6c5" strokeWidth="2" />
-                          </svg>
-                          <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between text-[11px] text-slate-500">
-                            {points.map((p) => (
-                              <span key={p.month}>{p.month}</span>
-                            ))}
-                          </div>
-                        </div>
+                    <div className="overflow-hidden">
+                      {/* Filter Buttons */}
+                      <div className="mb-4 flex items-center gap-2">
+                        <span className="text-xs text-slate-500 font-medium">Prompt type:</span>
+                        <button
+                          onClick={() => setPromptFilter('branded')}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                            promptFilter === 'branded'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          }`}
+                        >
+                          Branded
+                        </button>
+                        <button
+                          onClick={() => setPromptFilter('non-branded')}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                            promptFilter === 'non-branded'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          }`}
+                        >
+                          Non-Branded
+                        </button>
                       </div>
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-slate-200 bg-slate-50">
+                            <th className="px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wider text-slate-500">Product</th>
+                            <th className="px-3 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-slate-500">Brand Visibility</th>
+                            <th className="px-3 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-slate-500">Website Visibility</th>
+                            <th className="px-3 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-slate-500">Runs</th>
+                            <th className="px-3 py-2 text-center text-[11px] font-medium uppercase tracking-wider text-slate-500">Expand</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {products.map((product, idx) => {
+                            const isExpanded = expandedProducts.has(product.name);
+                            return (
+                              <React.Fragment key={product.name}>
+                                <tr className={`border-b border-slate-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}>
+                                  <td className="px-3 py-3">
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        onClick={() => toggleProduct(product.name)}
+                                        className="text-slate-400 hover:text-slate-600"
+                                      >
+                                        <span className="text-lg leading-none">
+                                          {isExpanded ? '∧' : '∨'}
+                                        </span>
+                                      </button>
+                                      <span className="font-medium text-slate-900">{product.name}</span>
+                                      <span className="text-xs text-slate-500">{product.prompts.length} prompts</span>
+                                    </div>
+                                  </td>
+                                  <td className="px-3 py-3 text-center text-sm font-medium text-slate-900">
+                                    {product.brandVisibility}%
+                                  </td>
+                                  <td className="px-3 py-3 text-center text-sm font-medium text-slate-900">
+                                    {product.websiteVisibility}%
+                                  </td>
+                                  <td className="px-3 py-3 text-center text-sm text-slate-700">
+                                    {product.runs}
+                                  </td>
+                                  <td className="px-3 py-3 text-center">
+                                    <button
+                                      onClick={() => toggleProduct(product.name)}
+                                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                    >
+                                      {isExpanded ? 'Hide' : 'Show'}
+                                    </button>
+                                  </td>
+                                </tr>
+                                {isExpanded && (
+                                  <tr className={idx % 2 === 0 ? 'bg-slate-50' : 'bg-white'}>
+                                    <td colSpan={5} className="px-3 py-3">
+                                      <div className="ml-8">
+                                        <table className="w-full">
+                                          <thead>
+                                            <tr className="border-b border-slate-200">
+                                              <th className="px-2 py-2 text-left text-[10px] font-medium uppercase tracking-wider text-slate-500">Prompt</th>
+                                              <th className="px-2 py-2 text-center text-[10px] font-medium uppercase tracking-wider text-slate-500">Brand Visibility</th>
+                                              <th className="px-2 py-2 text-center text-[10px] font-medium uppercase tracking-wider text-slate-500">Website Visibility</th>
+                                              <th className="px-2 py-2 text-center text-[10px] font-medium uppercase tracking-wider text-slate-500">Runs</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {product.prompts.map((prompt, promptIdx) => (
+                                              <tr key={promptIdx} className="border-b border-slate-100">
+                                                <td className="px-2 py-2 text-[11px] text-slate-700">{prompt.text}</td>
+                                                <td className="px-2 py-2 text-center text-[11px] font-medium text-slate-900">{prompt.brandVis}%</td>
+                                                <td className="px-2 py-2 text-center text-[11px] font-medium text-slate-900">{prompt.websiteVis}%</td>
+                                                <td className="px-2 py-2 text-center text-[11px] text-slate-700">{prompt.runs}</td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+                              </React.Fragment>
+                            );
+                          })}
+                        </tbody>
+                      </table>
                     </div>
                   );
                 })()}
-                <div className="mt-10 flex items-center gap-4 text-[11px] text-slate-500">
-                  <span className="inline-flex items-center gap-1">
-                    <span className="h-1.5 w-4 rounded-full bg-[#4aa6c5]" />
-                    Sony citations
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <span className="h-1.5 w-4 rounded-full bg-[#94a3b8]" />
-                    Competitor avg.
-                  </span>
-                </div>
               </div>
             </article>
 
