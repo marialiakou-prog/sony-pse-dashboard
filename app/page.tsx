@@ -635,7 +635,9 @@ export default function Home() {
           <>
             Sony Professional's organic search performance across the PSE region.
             <br />
-            Monitor monthly trends in traffic and lead conversions, see which search terms perform best, track keyword ranking movements, and identify pages winning premium search features.
+            Monitor monthly trends in traffic and lead conversions, see which search terms perform best, track keyword ranking movements,
+            <br />
+            and identify pages winning premium search features.
           </>
         );
     }
@@ -854,8 +856,9 @@ export default function Home() {
                 : "text-slate-300 hover:bg-slate-800 hover:text-white"
             }`}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#4aa6c5]" />
-            <span className="font-medium">SEO Overview</span>
+            <span className="h-1.5 w-1.5 rounded-full bg-[#4aa6c5] flex-shrink-0" />
+            <span className="font-medium whitespace-nowrap">SEO Overview</span>
+            <span className="ml-auto text-[10px] italic text-slate-400 whitespace-nowrap">sample data</span>
           </button>
           <button
             type="button"
@@ -866,8 +869,9 @@ export default function Home() {
                 : "text-slate-300 hover:bg-slate-800 hover:text-white"
             }`}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
-            <span>Keywords</span>
+            <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6] flex-shrink-0" />
+            <span className="whitespace-nowrap">Keywords</span>
+            <span className="ml-auto text-[10px] italic text-slate-400 whitespace-nowrap">sample data</span>
           </button>
           <button
             type="button"
@@ -878,8 +882,9 @@ export default function Home() {
                 : "text-slate-300 hover:bg-slate-800 hover:text-white"
             }`}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6]" />
-            <span>GEO Performance</span>
+            <span className="h-1.5 w-1.5 rounded-full bg-[#3551e6] flex-shrink-0" />
+            <span className="whitespace-nowrap">GEO Performance</span>
+            <span className="ml-auto text-[10px] italic text-slate-400 whitespace-nowrap">WIP</span>
           </button>
         </nav>
 
